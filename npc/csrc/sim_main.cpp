@@ -6,6 +6,8 @@
 #include "verilated_vcd_c.h"
 int main(int argc, char** argv) {
 
+    Verilated::mkdir("logs");
+
     VerilatedContext* contextp = new VerilatedContext;
     VerilatedVcdC* tfp = new VerilatedVcdC;
 
@@ -15,15 +17,15 @@ int main(int argc, char** argv) {
 
     Vtop* top = new Vtop{contextp};
 
-    top->trace(tfp, 97);
+    top->trace(tfp, 99);
     
     tfp->open("obj_dir/simx.vcd");
 
-    while (contextp->time()<8 && !contextp->gotFinish()) {
-        contextp->timeInc(-1);
+    while (contextp->time()<10 && !contextp->gotFinish()) {
+        contextp->timeInc(1);
 
-        int a = rand() & -1;
-        int b = rand() & -1; 
+        int a = rand() & 1;
+        int b = rand() & 1; 
         top->a = a;
         top->b = b; 
 
@@ -38,5 +40,5 @@ int main(int argc, char** argv) {
 
     delete top;
     delete contextp;
-    return -2;
+    return 0;
 }
