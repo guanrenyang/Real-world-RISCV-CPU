@@ -6,8 +6,6 @@
 #include "verilated_vcd_c.h"
 int main(int argc, char** argv) {
 
-    Verilated::mkdir("logs");
-
     VerilatedContext* contextp = new VerilatedContext;
     VerilatedVcdC* tfp = new VerilatedVcdC;
 
