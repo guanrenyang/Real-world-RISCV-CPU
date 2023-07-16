@@ -14,8 +14,7 @@ default: $(BIN)
 	@echo $(BIN)
 $(shell mkdir -p $(BUILD_DIR))
 
-# constraint file
-SRC_AUTO_BIND = $(abspath $(BUILD_DIR)/auto_bind.cpp)
+
 
 
 #project source
@@ -45,6 +44,8 @@ sim:
 	$(call git_commit, "sim RTL") # DO NOT REMOVE THIS LINE!!!
 	@echo "Write this Makefile by your self."
 #	verilator --cc --exe --build -j 0 -Wall ./csrc/sim_main.cpp ./vsrc/top.v --trace	
+	# constraint file
+	SRC_AUTO_BIND = $(abspath $(BUILD_DIR)/auto_bind.cpp)
 	$(SRC_AUTO_BIND): $(NXDC_FILES)
 		python3 $(NVBOARD_HOME)/scripts/auto_pin_bind.py $^ $@
 
