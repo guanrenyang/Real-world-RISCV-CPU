@@ -12,8 +12,3 @@
 !init.sh
 /fceux-am
 /nvboard
-
-# My configurations
-!/my_exercises
-#!/my_exercises/*
-# End my configurations
