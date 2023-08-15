@@ -2,8 +2,7 @@ module barrel_shifter(clk, hex0, hex1);
     input clk;
     output [6:0] hex0;
     output [6:0] hex1;
-    output 
-
+    
     reg [7:0] din;
     reg [7:0] dout;
 
