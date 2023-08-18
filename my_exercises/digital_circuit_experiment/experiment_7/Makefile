@@ -1,4 +1,4 @@
-TOPNAME = keyboard_sim
+TOPNAME = key_monitor
 
 BUILD_DIR = ./build_$(TOPNAME)
 BIN = $(BUILD_DIR)/$(TOPNAME)
@@ -7,17 +7,18 @@ OBJ_DIR = $(BUILD_DIR)/obj_dir
 $(shell mkdir -p $(BUILD_DIR))
 
 VERILATOR = verilator
-VERILATOR_CFLAGS += -MMD --build -cc -O3 --x-assign fast --x-initial fast --noassert --trace --timing
-
-SRCS = vsrc/ps2_keyboard.v vtestbench/ps2_keyboard_model.v vtestbench/keyboard_sim.v #csrc/keyboard_sim.cpp
-CSRCS = /home/parallels/ysyx-workbench/my_exercises/digital_circuit_experiment/experiment_7/csrc/keyboard_sim.cpp
+VERILATOR_CFLAGS += -MMD --build -cc -O3 --x-assign fast --x-initial fast --noassert --trace # --timing
 
 INC_PATH ?=
 INCFLAGS = $(addprefix -I, $(INC_PATH))
 CFLAGS += $(INCFLAGS) -DTOP_NAME="\"V$(TOPNAME)\""
 LDFLAGS += -lSDL2 -lSDL2_image
 
-keyboard_sim: $(SRCS) $(CSRCS)
+include $(NVBOARD_HOME)/scripts/nvboard.mk
+
+VSRCS = vsrc/ps2_keyboard.v vtestbench/ps2_keyboard_model.v vtestbench/keyboard_sim.v #csrc/keyboard_sim.cpp
+CSRCS = /home/parallels/ysyx-workbench/my_exercises/digital_circuit_experiment/experiment_7/csrc/keyboard_sim.cpp
+keyboard_sim: $(VSRCS) $(CSRCS)
 	@rm -rf $(OBJ_DIR)
 	@mkdir -p $(BUILD_DIR)
 	$(VERILATOR) $(VERILATOR_CFLAGS) \
@@ -25,12 +26,10 @@ keyboard_sim: $(SRCS) $(CSRCS)
 		$(addprefix -CFLAGS , $(CFLAGS)) $(addprefix -LDFLAGS , $(LDFLAGS)) \
 		--Mdir $(OBJ_DIR) --exe -o $(abspath $(BIN))
 	
-
-include $(NVBOARD_HOME)/scripts/nvboard.mk
+NXDC_FILES = ./constr/$(TOPNAME).nxdc
 SRC_AUTO_BIND = $(abspath $(BUILD_DIR)/auto_bind.cpp)
-# VSRCS = $(abspath ./vtestbench/test_ps2_pin.v)
-$(SRC_AUTO_BIND): ./constr/test_ps2_pin.nxdc
-		python3 $(NVBOARD_HOME)/scripts/auto_pin_bind.py ./constr/test_ps2_pin.nxdc $(SRC_AUTO_BIND) 
+$(SRC_AUTO_BIND): $(NXDC_FILES)
+		python3 $(NVBOARD_HOME)/scripts/auto_pin_bind.py $(NXDC_FILES) $(SRC_AUTO_BIND) 
 
 test_ps2_pin: $(abspath ./csrc/test_ps2_pin.cpp) ./vtestbench/test_ps2_pin.v $(SRC_AUTO_BIND) $(NVBOARD_ARCHIVE)
 	@rm -rf $(OBJ_DIR)
@@ -40,8 +39,18 @@ test_ps2_pin: $(abspath ./csrc/test_ps2_pin.cpp) ./vtestbench/test_ps2_pin.v $(S
 		$(addprefix -CFLAGS , $(CFLAGS)) $(addprefix -LDFLAGS , $(LDFLAGS)) \
 		--Mdir $(OBJ_DIR) --exe -o $(abspath $(BIN))
 
- clean:
-	rm -rf $(BUILD_DIR)
+VSRCS = $(shell find $(abspath ./vsrc) -name "*.v")
+CSRCS = $(abspath ./csrc/$(TOPNAME).cpp)
+key_monitor: $(VSRCS) $(CSRCS) $(SRC_AUTO_BIND) $(NVBOARD_ARCHIVE)
+	@rm -rf $(OBJ_DIR)
+	$(VERILATOR) $(VERILATOR_CFLAGS) \
+		--top-module $(TOPNAME) $^ \
+		$(addprefix -CFLAGS , $(CFLAGS)) $(addprefix -LDFLAGS , $(LDFLAGS)) \
+		--Mdir $(OBJ_DIR) --exe -o $(abspath $(BIN))
+
+
+clean:
+	rm -rf $(shell find $(abspath ./) -name "build_*")
 
 # TOPNAME = barrel_shifter
 # NXDC_FILES = constr/$(TOPNAME).nxdc
