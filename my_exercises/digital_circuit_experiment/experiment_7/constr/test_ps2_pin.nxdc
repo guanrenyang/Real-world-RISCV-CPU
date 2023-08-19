@@ -1,4 +1,0 @@
-top=test_ps2_pin
-
-ps2_clk PS2_CLK
-ps2_data PS2_DAT
