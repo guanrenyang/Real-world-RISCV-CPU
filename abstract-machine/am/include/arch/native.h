@@ -20,7 +20,6 @@ struct Context {
 #define GPR3 uc.uc_mcontext.gregs[REG_RDX]
 #define GPR4 uc.uc_mcontext.gregs[REG_RCX]
 #define GPRx uc.uc_mcontext.gregs[REG_RAX]
-// #define GPRx uc.uc_mcontext.regs[0]
 
 #undef __USE_GNU
 
