@@ -1,0 +1,10 @@
+top=mux41
+
+y (SW1, SW0)
+x[0] (SW3, SW2)
+x[1] (SW5, SW4)
+x[2] (SW7, SW6)
+x[3] (SW9, SW8)
+
+
+f (LD1, LD0)
