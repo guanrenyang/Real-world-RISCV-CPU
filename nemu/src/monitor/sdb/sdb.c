@@ -54,7 +54,6 @@ static int cmd_q(char *args) {
 }
 
 static int cmd_si(char *args) {
-  /*TODO*/
   int nr_instructions;
   if (args==NULL)
     nr_instructions = 1;
