@@ -53,6 +53,16 @@ static int cmd_q(char *args) {
   return -1;
 }
 
+static int cmd_si(char *args) {
+  int nr_instructions;
+  if (args==NULL)
+    nr_instructions = 1;
+  else
+    nr_instructions = atoi(args);
+  
+  cpu_exec(nr_instructions);
+  return 0;
+}
 static int cmd_help(char *args);
 
 static struct {
@@ -65,7 +75,7 @@ static struct {
   { "q", "Exit NEMU", cmd_q },
 
   /* TODO: Add more commands */
-
+  { "si", "Step Instruction", cmd_si},
 };
 
 #define NR_CMD ARRLEN(cmd_table)
