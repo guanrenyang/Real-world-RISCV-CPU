@@ -55,6 +55,8 @@ static int cmd_q(char *args) {
 
 static int cmd_si(char *args) {
   /*TODO*/
+  int nr_instructions = atoi(args);
+  cpu_exec(nr_instructions);
   return 0;
 }
 static int cmd_help(char *args);
