@@ -1,0 +1,4 @@
+early_exercises/valgrind-3.21.0/
+build*/
+obj_dir/
+*.vcd

@@ -6,9 +6,11 @@
 !/nanos-lite/*
 !/navy-apps/*
 !/npc/*
+!/my_exercises/**
 !Makefile
 !README.md
 !.gitignore
 !init.sh
 /fceux-am
 /nvboard
+/am-kernels
