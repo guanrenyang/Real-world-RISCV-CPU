@@ -15,6 +15,7 @@
 
 #include <isa.h>
 #include <cpu/cpu.h>
+#include <memory/paddr.h>
 #include <readline/readline.h>
 #include <readline/history.h>
 #include "sdb.h"
@@ -70,6 +71,35 @@ static int cmd_info(char *args){
   return 0;
 }
 
+static int cmd_x(char *args){
+    char *args_end = args + strlen(args);
+
+    /* extract the first token as the command */
+    char *arg_0 = strtok(args, " ");
+    if (arg_0 == NULL) {
+      printf("Error occurs\n");
+    } 
+    
+    char *arg_1 = arg_0 + strlen(arg_0) + 1;
+    if (arg_1 >= args_end) {
+      arg_1 = NULL;
+    }
+    
+    int nr_elem = atoi(arg_0);
+    
+    char *addr_end;
+    paddr_t addr = strtoul(arg_1, &addr_end, 16);
+    if (addr_end==arg_1)
+      panic("Conversion fail");
+    
+    int i;
+    for (i=0;i<nr_elem;i++, addr+=4) {
+      word_t elem = paddr_read(addr, 4); // read 4 bytes from addr
+      printf("dec: %u, hex: %x\n", elem, elem);
+    }
+    return 0;
+}
+
 static int cmd_help(char *args);
 
 static struct {
@@ -84,7 +114,9 @@ static struct {
   /* TODO: Add more commands */
   { "si", "Step Instruction", cmd_si},
   { "info", "Information", cmd_info}, 
+  { "x", "Scan Memory", cmd_x},
 };
+
 
 #define NR_CMD ARRLEN(cmd_table)
 
