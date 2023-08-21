@@ -15,6 +15,7 @@
 
 #include <isa.h>
 #include <cpu/cpu.h>
+#include <memory/paddr.h>
 #include <readline/readline.h>
 #include <readline/history.h>
 #include "sdb.h"
@@ -91,9 +92,14 @@ static int cmd_x(char *args){
     if (addr_end==arg_1)
       panic("Conversion fail");
     
-    printf("%d, %u\n", nr_elem, addr);
+    int i;
+    for (i=0;i<nr_elem;i++, addr++) {
+      word_t elem = paddr_read(addr, 4); // read 4 bytes from addr
+      printf("%u\n", elem);
+    }
     return 0;
 }
+
 static int cmd_help(char *args);
 
 static struct {
