@@ -86,6 +86,7 @@ static int cmd_x(char *args){
       addr = NULL;
     }
     printf("%d, %s\n", nr_elem, addr);
+    printf("%lu\n", sizeof(long));
     return 0;
 }
 static int cmd_help(char *args);
