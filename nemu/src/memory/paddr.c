@@ -51,7 +51,9 @@ void init_mem() {
   int i;
   for (i = 0; i < (int) (CONFIG_MSIZE / sizeof(p[0])); i ++) {
     p[i] = rand();
-    printf("p[%d]: %u\n", i, p[i]);
+    printf("size of p[i]: %lu\n", sizeof(p[i]));
+    if (i<10)
+      printf("p[%d]: %u\n", i, p[i]);
   }
 #endif
   Log("physical memory area [" FMT_PADDR ", " FMT_PADDR "]", PMEM_LEFT, PMEM_RIGHT);
