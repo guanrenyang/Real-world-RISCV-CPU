@@ -78,15 +78,20 @@ static int cmd_x(char *args){
     if (arg_0 == NULL) {
       printf("Error occurs\n");
     } 
-    int nr_elem = atoi(arg_0);
-   
     
-    char *addr = arg_0 + strlen(arg_0) + 1;
-    if (addr >= args_end) {
-      addr = NULL;
+    char *arg_1 = arg_0 + strlen(arg_0) + 1;
+    if (arg_1 >= args_end) {
+      arg_1 = NULL;
     }
-    printf("%d, %s\n", nr_elem, addr);
-    printf("%lu\n", sizeof(long));
+    
+    int nr_elem = atoi(arg_0);
+    
+    char *addr_end;
+    paddr_t addr = strtoul(arg_1, &addr_end, 16);
+    if (addr_end==arg_1)
+      panic("Conversion fail");
+    
+    printf("%d, %u\n", nr_elem, addr);
     return 0;
 }
 static int cmd_help(char *args);
