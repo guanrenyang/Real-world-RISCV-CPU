@@ -53,7 +53,7 @@ void init_mem() {
     p[i] = rand();
     if (i<10){
       printf("size of p[i]: %lu\n", sizeof(p[i]));
-      printf("p[%d]: %u\n", i, p[i]);
+      printf("p[%d]: %x\n", i, p[i]);
     }
   }
 #endif
