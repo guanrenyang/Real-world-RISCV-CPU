@@ -95,7 +95,7 @@ static int cmd_x(char *args){
     int i;
     for (i=0;i<nr_elem;i++, addr++) {
       word_t elem = paddr_read(addr, 4); // read 4 bytes from addr
-      printf("%u\n", elem);
+      printf("dec: %u, hex: %x\n", elem, elem);
     }
     return 0;
 }
