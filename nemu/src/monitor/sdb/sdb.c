@@ -71,7 +71,22 @@ static int cmd_info(char *args){
 }
 
 static int cmd_x(char *args){
-  return 0;
+    char *args_end = args + strlen(args);
+
+    /* extract the first token as the command */
+    char *arg_0 = strtok(args, " ");
+    if (arg_0 == NULL) {
+      printf("Error occurs\n");
+    } 
+    int nr_elem = atoi(arg_0);
+   
+    
+    char *addr = arg_0 + strlen(arg_0) + 1;
+    if (addr >= args_end) {
+      addr = NULL;
+    }
+    printf("%d, %s\n", nr_elem, addr);
+    return 0;
 }
 static int cmd_help(char *args);
 
@@ -87,7 +102,7 @@ static struct {
   /* TODO: Add more commands */
   { "si", "Step Instruction", cmd_si},
   { "info", "Information", cmd_info}, 
-  { "x", "Scan memory", cmd_x},
+  { "x", "Scan Memory", cmd_x},
 };
 
 
