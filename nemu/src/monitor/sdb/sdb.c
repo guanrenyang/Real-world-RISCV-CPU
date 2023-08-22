@@ -88,8 +88,8 @@ static int cmd_x(char *args){
     /* compute expression */
     bool expr_success = false; 
     word_t expr_result = expr(arg_1, &expr_success);
-    if (!expr_success)
-        panic("Expression computation failed!");
+    // if (!expr_success)
+    //     panic("Expression computation failed!");
     
     int nr_elem = atoi(arg_0);
     
