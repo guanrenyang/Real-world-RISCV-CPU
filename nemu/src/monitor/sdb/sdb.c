@@ -85,13 +85,21 @@ static int cmd_x(char *args){
       arg_1 = NULL;
     }
     
+    /* compute expression */
+    bool expr_success = false; 
+    word_t expr_result = expr(arg_1, &expr_success);
+    // if (!expr_success)
+    //     panic("Expression computation failed!");
+    
     int nr_elem = atoi(arg_0);
     
-    char *addr_end;
-    paddr_t addr = strtoul(arg_1, &addr_end, 16);
-    if (addr_end==arg_1)
-      panic("Conversion fail");
-    
+    // char *addr_end;
+    // paddr_t addr = strtoul(expr_result, &addr_end, 16);
+    // if (addr_end==expr_result)
+    //   panic("Long long conversion failed");
+
+    paddr_t addr = (paddr_t) expr_result;
+
     int i;
     for (i=0;i<nr_elem;i++, addr+=4) {
       word_t elem = paddr_read(addr, 4); // read 4 bytes from addr
