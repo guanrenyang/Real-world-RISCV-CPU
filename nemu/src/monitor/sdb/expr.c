@@ -93,16 +93,27 @@ static bool make_token(char *e) {
         Log("match rules[%d] = \"%s\" at position %d with len %d: %.*s",
             i, rules[i].regex, position, substr_len, substr_len, substr_start);
 
-        position += substr_len;
 
         /* TODO: Now a new token is recognized with rules[i]. Add codes
          * to record the token in the array `tokens'. For certain types
          * of tokens, some extra actions should be performed.
          */
-        //
-        // switch (rules[i].token_type) {
-        //   default: TODO();
-        // }
+        position += substr_len;
+ 
+        switch (rules[i].token_type) {
+          case '+': 
+          case '-':
+          case '*':
+          case '/':
+          case '(':
+          case ')':
+          case TK_POS_INT:
+                Token new_token;
+                new_token.type = rules[i].token_type;
+                strncpy(new_token.str, substr_start, substr_len);
+                break;
+            default: TODO();
+        }
 
         break;
       }
