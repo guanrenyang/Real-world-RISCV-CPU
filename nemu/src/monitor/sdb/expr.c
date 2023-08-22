@@ -75,6 +75,7 @@ typedef struct token {
 
 static Token tokens[32] __attribute__((used)) = {};
 static int nr_token __attribute__((used))  = 0;
+static int next_token_idx = 0;
 
 static bool make_token(char *e) {
   int position = 0;
@@ -108,9 +109,8 @@ static bool make_token(char *e) {
           case '(':
           case ')':
           case TK_POS_INT:
-                Token new_token;
-                new_token.type = rules[i].token_type;
-                strncpy(new_token.str, substr_start, substr_len);
+                tokens[next_token_idx].type = rules[i].token_type;
+                strncpy(tokens[next_token_idx].str, substr_start, substr_len);
                 break;
             default: TODO();
         }
