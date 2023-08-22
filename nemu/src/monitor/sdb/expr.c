@@ -24,7 +24,7 @@ enum {
   TK_NOTYPE = 256, TK_EQ,
 
   /* TODO: Add more token types */
-
+  TK_POS_INT,
 };
 
 static struct rule {
@@ -37,6 +37,7 @@ static struct rule {
    */
 
   {" +", TK_NOTYPE},    // spaces
+  {"[1-9]\\d*", TK_POS_INT}, // positive integer
   {"\\+", '+'},         // plus
   {"\\-", '-'},         // minus
   {"\\*", '*'},         // multiply
