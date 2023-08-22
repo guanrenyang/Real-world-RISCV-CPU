@@ -38,7 +38,7 @@ static struct rule {
 
   {" +", TK_NOTYPE},    // spaces
   // {"^.*", TK_POS_INT}, // positive integer
-  {"^[0-9]*", TK_POS_INT}, // positive integer
+  // {"^[0-9]*", TK_POS_INT}, // positive integer
   {"^[0-9]\\d", TK_POS_INT}, // positive integer
   {"\\+", '+'},         // plus
   {"\\-", '-'},         // minus
@@ -106,7 +106,7 @@ static bool make_token(char *e) {
         //   default: TODO();
         // }
 
-        // break;
+        break;
       }
     }
 
