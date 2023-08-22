@@ -37,7 +37,7 @@ static struct rule {
    */
 
   {" +", TK_NOTYPE},    // spaces
-  {"(?<=\\D)[1-9]\\d*(?=\\D)", TK_POS_INT}, // positive integer
+  {"(\\D|^)[1-9]\\d*(\\D|$)", TK_POS_INT}, // positive integer
   // {"[1-9]\\d*\\b", TK_POS_INT}, // positive integer
   // {"[1-9]\\d*", TK_POS_INT}, // positive integer
   {"\\+", '+'},         // plus
