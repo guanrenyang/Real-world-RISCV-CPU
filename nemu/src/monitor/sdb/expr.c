@@ -110,7 +110,14 @@ static bool make_token(char *e) {
           case ')':
           case TK_POS_INT:
                 tokens[next_token_idx].type = rules[i].token_type;
-                strncpy(tokens[next_token_idx].str, substr_start, substr_len);
+                // strncpy(tokens[next_token_idx].str, substr_start, substr_len);
+                char **substr_start_pos = (char**) tokens[next_token_idx].str;
+                int *substr_len_pos = (int*)(substr_start_pos + 1);
+                int *tmp = (int*)(substr_start_pos + sizeof(char*));
+
+                printf("%ls\n", tmp);
+                *substr_start_pos = substr_start;
+                *substr_len_pos = substr_len;
                 break;
             default: TODO();
         }
