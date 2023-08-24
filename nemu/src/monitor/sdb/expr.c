@@ -70,11 +70,12 @@ void init_regex() {
 
 typedef struct token {
   int type;
-  char str[32];
+  char str[32]; // The first 8 (sizeof(char *)) bytes is a pointer(char **) to the start of substr, the following 4 bytes (sizeof(int*)) is a pointer containing substr_len 
 } Token;
 
 static Token tokens[32] __attribute__((used)) = {};
 static int nr_token __attribute__((used))  = 0;
+static int next_token_idx __attribute__((used))= 0;
 
 static bool make_token(char *e) {
   int position = 0;
@@ -93,15 +94,32 @@ static bool make_token(char *e) {
         Log("match rules[%d] = \"%s\" at position %d with len %d: %.*s",
             i, rules[i].regex, position, substr_len, substr_len, substr_start);
 
-        position += substr_len;
 
         /* TODO: Now a new token is recognized with rules[i]. Add codes
          * to record the token in the array `tokens'. For certain types
          * of tokens, some extra actions should be performed.
          */
-
+        position += substr_len;
+ 
         switch (rules[i].token_type) {
-          default: TODO();
+          case '+': 
+          case '-':
+          case '*':
+          case '/':
+          case '(':
+          case ')':
+          case TK_POS_INT:
+                tokens[next_token_idx].type = rules[i].token_type;
+
+                char **substr_start_pos = (char**) tokens[next_token_idx].str;
+                int *substr_len_pos = (int*)(substr_start_pos + 1);
+
+                next_token_idx ++;
+
+                *substr_start_pos = substr_start;
+                *substr_len_pos = substr_len;
+                break;
+            default: TODO();
         }
 
         break;
