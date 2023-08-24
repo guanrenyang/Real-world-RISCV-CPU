@@ -241,8 +241,9 @@ word_t expr(char *e, bool *success) {
     *success = false;
     return 0;
   }
-
+  
   /* TODO: Insert codes to evaluate the expression. */
-  // TODO();
-  return eval(0, nr_token-1);
+  word_t res = eval(0, nr_token-1);
+  *success = true;
+  return res;
 }
