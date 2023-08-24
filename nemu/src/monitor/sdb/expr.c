@@ -154,6 +154,8 @@ word_t eval(int p, int q){
       
     char *substr;
     substr = malloc(substr_len * sizeof(char) + 1);
+    memset(substr, '\0', substr_len * sizeof(char) + 1);
+
     strncpy(substr, substr_start, substr_len);
     
     char *endptr;
