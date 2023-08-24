@@ -133,6 +133,7 @@ static bool make_token(char *e) {
 
   return true;
 }
+
 bool check_parentheses(int p, int q){
   if(tokens[p].type!='(' || tokens[q].type!=')')  
     return false;
@@ -160,6 +161,7 @@ bool check_parentheses(int p, int q){
   return true;
 
 }
+
 word_t eval(int p, int q){  
   if (p > q) { // First, check if it is a valid expression. 
     /* Bad expression */
@@ -198,22 +200,42 @@ word_t eval(int p, int q){
      * If that is the case, just throw away the parentheses.
      */
     return eval(p + 1, q - 1);
+
+  } else {
+
+    int op=-1;
+    // Find the main op
+    int nr_left_parenthesis = 0;
+    int i;
+    for (i=p;i<=q;i++){
+      int token_type = tokens[i].type;
+      if (token_type=='(') {
+        nr_left_parenthesis++;
+      } else if (token_type==')') {
+        nr_left_parenthesis--;
+      } else if (nr_left_parenthesis==0) {
+        if ( token_type=='+' || token_type=='-' ) {
+          op = i;
+        } else if (( token_type=='*' || token_type=='/' ) && (op==-1 || (tokens[op].type!='+' && tokens[op].type!='-'))) {
+          op = i;  
+        } 
+      }
+    }
+
+    int val1 = eval(p, op - 1);
+    int val2 = eval(op + 1, q);
+
+    switch (tokens[op].type) {
+      case '+': return val1 + val2;
+      case '-': return val1 - val2;
+      case '*': return val1 * val2; 
+      case '/': return val1 / val2; 
+      default: assert(0);
+    }
   }
-  // } else {
-  //   op = the position of 主运算符 in the token expression;
-  //   val1 = eval(p, op - 1);
-  //   val2 = eval(op + 1, q);
-  //
-  //   switch (op_type) {
-  //     case '+': return val1 + val2;
-  //     case '-': /* ... */
-  //     case '*': /* ... */
-  //     case '/': /* ... */
-  //     default: assert(0);
-  //   }
-  // }
-    return 0;
+  return 0;
 }
+
 word_t expr(char *e, bool *success) {
   if (!make_token(e)) {
     *success = false;
