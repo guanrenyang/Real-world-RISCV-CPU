@@ -133,9 +133,34 @@ static bool make_token(char *e) {
 
   return true;
 }
+bool check_parentheses(int p, int q){
+  if(tokens[p].type!='(' || tokens[p].type!=')')  
+    return false;
+  
+  // Next, check parenthesis matching
+  p++;
+  q--;
+  if(p==q) //Single token
+    return true;
 
+  int nr_left_parenthesis = 0;
+  int i;
+  for (i=p;i<=q;i++){
+    if (tokens[i].type=='(') {
+      nr_left_parenthesis++;
+    } else if (tokens[i].type==')'){
+      nr_left_parenthesis--;
+    }
+  }
+  
+  if (nr_left_parenthesis!=0) {
+    panic("Parenthesis not matching!");
+  }
+
+  return true;
+
+}
 word_t eval(int p, int q){  
-  // Second, convert the Token into a data type suitable for evaluation or calculation.
   if (p > q) { // First, check if it is a valid expression. 
     /* Bad expression */
     panic("Bad expression!");
@@ -167,12 +192,13 @@ word_t eval(int p, int q){
     free(substr);
 
     return res;
-    }
-  // } else if (check_parentheses(p, q) == true) {
-  //   /* The expression is surrounded by a matched pair of parentheses.
-  //    * If that is the case, just throw away the parentheses.
-  //    */
-  //   return eval(p + 1, q - 1);
+
+  } else if (check_parentheses(p, q) == true) {
+    /* The expression is surrounded by a matched pair of parentheses.
+     * If that is the case, just throw away the parentheses.
+     */
+    return eval(p + 1, q - 1);
+  }
   // } else {
   //   op = the position of 主运算符 in the token expression;
   //   val1 = eval(p, op - 1);
