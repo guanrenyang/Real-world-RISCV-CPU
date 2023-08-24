@@ -75,7 +75,6 @@ typedef struct token {
 
 static Token tokens[32] __attribute__((used)) = {};
 static int nr_token __attribute__((used))  = 0;
-static int next_token_idx __attribute__((used))= 0;
 
 static bool make_token(char *e) {
   int position = 0;
@@ -109,12 +108,12 @@ static bool make_token(char *e) {
           case '(':
           case ')':
           case TK_POS_INT:
-                tokens[next_token_idx].type = rules[i].token_type;
+                tokens[nr_token].type = rules[i].token_type;
 
-                char **substr_start_pos = (char**) tokens[next_token_idx].str;
+                char **substr_start_pos = (char**) tokens[nr_token].str;
                 int *substr_len_pos = (int*)(substr_start_pos + 1);
 
-                next_token_idx ++;
+                nr_token ++;
 
                 *substr_start_pos = substr_start;
                 *substr_len_pos = substr_len;
@@ -135,15 +134,119 @@ static bool make_token(char *e) {
   return true;
 }
 
+bool check_parentheses(int p, int q){
+  if(tokens[p].type!='(' || tokens[q].type!=')')  
+    return false;
+  
+  // Next, check parenthesis matching
+  p++;
+  q--;
+  if(p==q) //Single token
+    return true;
+
+  int nr_left_parenthesis = 0;
+  int i;
+  for (i=p;i<=q;i++){
+    if (tokens[i].type=='(') {
+      nr_left_parenthesis++;
+    } else if (tokens[i].type==')'){
+      if (nr_left_parenthesis==0) // No surrounding parenthesis 
+        return false;
+      nr_left_parenthesis--;
+    }
+  }
+  
+  if (nr_left_parenthesis!=0) {
+    panic("Parenthesis not matching!");
+  }
+
+  return true;
+
+}
+
+word_t eval(int p, int q){  
+  if (p > q) { // First, check if it is a valid expression. 
+    /* Bad expression */
+    printf("p=%u, q=%u\n", p, q);
+    panic("Bad expression!");
+  } else if (p == q) {
+    /* Single token.
+     * For now this token should be a number.
+     * Return the value of the number.
+     */
+    Token token = tokens[p];
+    if (token.type!=TK_POS_INT) {
+      panic("Token should be a positive integer but it is not.");
+    }
+    
+    char *substr_start = *((char **)token.str);
+    int substr_len =  *( (int *)( (char **)token.str + 1 ) );
+      
+    char *substr;
+    substr = malloc(substr_len * sizeof(char) + 1);
+    memset(substr, '\0', substr_len * sizeof(char) + 1);
+
+    strncpy(substr, substr_start, substr_len);
+    
+    char *endptr;
+    word_t res = (word_t) strtoul(substr, &endptr, 10);
+    if (endptr==substr) {
+        panic("No digits were found!");
+    }
+    
+    free(substr);
+
+    return res;
+
+  } else if (check_parentheses(p, q) == true) {
+    /* The expression is surrounded by a matched pair of parentheses.
+     * If that is the case, just throw away the parentheses.
+     */
+    return eval(p + 1, q - 1);
+
+  } else {
+
+    int op=-1;
+    // Find the main op
+    int nr_left_parenthesis = 0;
+    int i;
+    for (i=p;i<=q;i++){
+      int token_type = tokens[i].type;
+      if (token_type=='(') {
+        nr_left_parenthesis++;
+      } else if (token_type==')') {
+        nr_left_parenthesis--;
+      } else if (nr_left_parenthesis==0) {
+        if ( token_type=='+' || token_type=='-' ) {
+          op = i;
+        } else if (( token_type=='*' || token_type=='/' ) && (op==-1 || (tokens[op].type!='+' && tokens[op].type!='-'))) {
+          op = i;  
+        } 
+      }
+    }
+
+    int val1 = eval(p, op - 1);
+    int val2 = eval(op + 1, q);
+
+    switch (tokens[op].type) {
+      case '+': return val1 + val2;
+      case '-': return val1 - val2;
+      case '*': return val1 * val2; 
+      case '/': return val1 / val2; 
+      default: assert(0);
+    }
+  }
+  return 0;
+}
 
 word_t expr(char *e, bool *success) {
   if (!make_token(e)) {
     *success = false;
     return 0;
   }
-
+  
   /* TODO: Insert codes to evaluate the expression. */
-  TODO();
-
-  return 0;
+  word_t res = eval(0, nr_token-1);
+  *success = true;
+  return res;
 }
