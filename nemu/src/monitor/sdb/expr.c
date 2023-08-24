@@ -70,12 +70,11 @@ void init_regex() {
 
 typedef struct token {
   int type;
-  char str[32];
+  char str[32]; // The first 8 (sizeof(char *)) bytes is a pointer(char **) to the start of substr, the following 4 bytes (sizeof(int*)) is a pointer containing substr_len 
 } Token;
 
 static Token tokens[32] __attribute__((used)) = {};
 static int nr_token __attribute__((used))  = 0;
-static int next_token_idx __attribute__((used))= 0;
 
 static bool make_token(char *e) {
   int position = 0;
@@ -109,13 +108,13 @@ static bool make_token(char *e) {
           case '(':
           case ')':
           case TK_POS_INT:
-                tokens[next_token_idx].type = rules[i].token_type;
-                // strncpy(tokens[next_token_idx].str, substr_start, substr_len);
-                char **substr_start_pos = (char**) tokens[next_token_idx].str;
-                int *substr_len_pos = (int*)(substr_start_pos + 1);
-                int *tmp = (int*)(substr_start_pos + sizeof(char*));
+                tokens[nr_token].type = rules[i].token_type;
 
-                printf("%ls, %s, %ls\n", tmp, (char*)substr_start_pos, substr_len_pos);
+                char **substr_start_pos = (char**) tokens[nr_token].str;
+                int *substr_len_pos = (int*)(substr_start_pos + 1);
+
+                nr_token ++;
+
                 *substr_start_pos = substr_start;
                 *substr_len_pos = substr_len;
                 break;
@@ -135,7 +134,58 @@ static bool make_token(char *e) {
   return true;
 }
 
+word_t eval(int p, int q){  
+  // Second, convert the Token into a data type suitable for evaluation or calculation.
+  if (p > q) { // First, check if it is a valid expression. 
+    /* Bad expression */
+    panic("Bad expression!");
+  } else if (p == q) {
+    /* Single token.
+     * For now this token should be a number.
+     * Return the value of the number.
+     */
+    Token token = tokens[p];
+    if (token.type!=TK_POS_INT) {
+      panic("Token should be a positive integer but it is not.");
+    }
+    
+    char *substr_start = *((char **)token.str);
+    int substr_len =  *( (int *)( (char **)token.str + 1 ) );
+      
+    char *substr;
+    substr = malloc(substr_len * sizeof(char) + 1);
+    strncpy(substr, substr_start, substr_len);
+    
+    char *endptr;
+    word_t res = (word_t) strtoul(substr, &endptr, 10);
+    if (endptr==substr) {
+        panic("No digits were found!");
+    }
+    
+    free(substr);
 
+    return res;
+    }
+  // } else if (check_parentheses(p, q) == true) {
+  //   /* The expression is surrounded by a matched pair of parentheses.
+  //    * If that is the case, just throw away the parentheses.
+  //    */
+  //   return eval(p + 1, q - 1);
+  // } else {
+  //   op = the position of 主运算符 in the token expression;
+  //   val1 = eval(p, op - 1);
+  //   val2 = eval(op + 1, q);
+  //
+  //   switch (op_type) {
+  //     case '+': return val1 + val2;
+  //     case '-': /* ... */
+  //     case '*': /* ... */
+  //     case '/': /* ... */
+  //     default: assert(0);
+  //   }
+  // }
+    return 0;
+}
 word_t expr(char *e, bool *success) {
   if (!make_token(e)) {
     *success = false;
@@ -143,7 +193,6 @@ word_t expr(char *e, bool *success) {
   }
 
   /* TODO: Insert codes to evaluate the expression. */
-  TODO();
-
-  return 0;
+  // TODO();
+  return eval(0, nr_token-1);
 }
