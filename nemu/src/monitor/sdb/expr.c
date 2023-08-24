@@ -150,6 +150,8 @@ bool check_parentheses(int p, int q){
     if (tokens[i].type=='(') {
       nr_left_parenthesis++;
     } else if (tokens[i].type==')'){
+      if (nr_left_parenthesis==0) // No surrounding parenthesis 
+        return false;
       nr_left_parenthesis--;
     }
   }
