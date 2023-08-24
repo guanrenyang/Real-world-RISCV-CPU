@@ -115,7 +115,7 @@ static bool make_token(char *e) {
                 int *substr_len_pos = (int*)(substr_start_pos + 1);
                 int *tmp = (int*)(substr_start_pos + sizeof(char*));
 
-                printf("%ls\n", tmp);
+                printf("%ls, %s, %ls\n", tmp, (char*)substr_start_pos, substr_len_pos);
                 *substr_start_pos = substr_start;
                 *substr_len_pos = substr_len;
                 break;
