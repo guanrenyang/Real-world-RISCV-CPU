@@ -115,7 +115,7 @@ static int cmd_p(char *args){
   if (success == true)
     printf("%u\n", res);
   else
-    printf("Divide by zero!");
+    printf("Divide by zero!\n");
 
   return 0;
 }
