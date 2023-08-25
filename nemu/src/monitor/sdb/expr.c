@@ -99,7 +99,7 @@ static bool make_token(char *e) {
          * of tokens, some extra actions should be performed.
          */
         position += substr_len;
- 
+
         switch (rules[i].token_type) {
           case '+': 
           case '-':
