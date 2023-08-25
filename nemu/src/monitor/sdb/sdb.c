@@ -108,6 +108,17 @@ static int cmd_x(char *args){
     return 0;
 }
 
+static int cmd_p(char *args){
+  bool success;
+  word_t res = expr(args, &success);
+  
+  if (success == true)
+    printf("%u\n", res);
+  else
+    printf("Divide by zero!");
+
+  return 0;
+}
 static int cmd_test(char *args){
   FILE *fp = fopen("./tools/gen-expr/input", "r");
   if (!fp) {
@@ -155,6 +166,7 @@ static struct {
   { "si", "Step Instruction", cmd_si},
   { "info", "Information", cmd_info}, 
   { "x", "Scan Memory", cmd_x},
+  { "p", "Print", cmd_p},
 };
 
 
