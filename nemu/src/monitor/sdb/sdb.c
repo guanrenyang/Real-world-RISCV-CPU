@@ -124,8 +124,12 @@ static int cmd_test(char *args){
     // Here, it looks for an unsigned int and then a string. 
     // The %[^\n] format reads the rest of the line as a string.
     if (sscanf(line, "%u %[^\n]", &correct_res, str) == 2) {
-        printf("Read correct_res: %u\n", correct_res);
-        printf("Read string: %s\n", str);
+        // printf("Read correct_res: %u\n", correct_res);
+        // printf("Read string: %s\n", str);
+        bool success;
+        word_t res =  expr(str, &success);
+        printf("%d\n", res==correct_res);
+
     }
   }
   return 0;
