@@ -120,7 +120,13 @@ static bool make_token(char *e) {
                 break;
             default: TODO();
         }
-
+        
+        // For testing
+        char *test_substr = malloc(sizeof(char)*substr_len+1);
+        memset(test_substr, '\0', substr_len+1);
+        strncpy(test_substr, substr_start, substr_len);
+        printf("%s\n", test_substr); 
+        free(test_substr);
         break;
       }
     }
