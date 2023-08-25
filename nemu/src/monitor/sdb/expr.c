@@ -170,7 +170,7 @@ bool check_parentheses(int p, int q){
 
 }
 
-word_t eval(int p, int q){  
+word_t eval(int p, int q, bool *success){  
   if (p > q) { // First, check if it is a valid expression. 
     /* Bad expression */
     panic("Bad expression with p=%d, q=%d\n!", p, q);
@@ -207,7 +207,7 @@ word_t eval(int p, int q){
     /* The expression is surrounded by a matched pair of parentheses.
      * If that is the case, just throw away the parentheses.
      */
-    return eval(p + 1, q - 1);
+    return eval(p + 1, q - 1, success);
 
   } else {
 
@@ -230,14 +230,17 @@ word_t eval(int p, int q){
       }
     }
 
-    int val1 = eval(p, op - 1);
-    int val2 = eval(op + 1, q);
+    int val1 = eval(p, op - 1, success);
+    int val2 = eval(op + 1, q, success);
 
     switch (tokens[op].type) {
       case '+': return val1 + val2;
       case '-': return val1 - val2;
       case '*': return val1 * val2; 
-      case '/': return val1 / val2; 
+      case '/': 
+        if (val2==0)
+          *success = false;
+        return val1 / val2; 
       default: assert(0);
     }
   }
@@ -249,9 +252,10 @@ word_t expr(char *e, bool *success) {
     *success = false;
     return 0;
   }
-  
+ 
+  ( *success ) = true;
   /* TODO: Insert codes to evaluate the expression. */
-  word_t res = eval(0, nr_token-1);
-  *success = true;
+  word_t res = eval(0, nr_token-1, success);
+
   return res;
 }
