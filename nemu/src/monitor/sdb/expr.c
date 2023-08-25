@@ -117,7 +117,9 @@ static bool make_token(char *e) {
                 *substr_start_pos = substr_start;
                 *substr_len_pos = substr_len;
                 break;
-            default: TODO();
+          case TK_NOTYPE:
+                break;
+          default: TODO();
         }
         
         // // For testing
@@ -252,9 +254,29 @@ word_t expr(char *e, bool *success) {
     *success = false;
     return 0;
   }
- 
-  ( *success ) = true;
-  /* TODO: Insert codes to evaluate the expression. */
+  // Check if the parenthesis match correctly
+  int nr_left_parenthesis = 0;
+  int i;
+  for (i=0;i<nr_token;i++){
+    if (tokens[i].type=='(') {
+      nr_left_parenthesis++;
+    } else if (tokens[i].type==')'){
+      if (nr_left_parenthesis==0) {// No surrounding parenthesis 
+        panic("Invalid expression: Parenthesis not matching!\n");
+        (*success) = false;
+        return 0;
+      }
+      nr_left_parenthesis--;
+    }
+  }
+  if ( nr_left_parenthesis!=0 ){
+    panic("Invalid expression: Parenthesis not matching!\n");
+    (*success) = false;
+    return 0;
+  }
+    
+  // Evaluate the expression
+  (*success) = true;
   word_t res = eval(0, nr_token-1, success);
 
   return res;
