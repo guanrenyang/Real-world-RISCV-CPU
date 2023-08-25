@@ -119,6 +119,7 @@ static int cmd_test(char *args){
   char line[1000]; // Assuming a line doesn't exceed 256 characters.
   char str[1000];  // Assuming a string doesn't exceed 250 characters.
 
+  int id = 0;
   while (fgets(line, sizeof(line), fp)) {
     // sscanf scans the input string for formatted data. 
     // Here, it looks for an unsigned int and then a string. 
@@ -128,8 +129,12 @@ static int cmd_test(char *args){
         // printf("Read string: %s\n", str);
         bool success;
         word_t res =  expr(str, &success);
-        printf("%d\n", res==correct_res);
-
+        bool match = res==correct_res;
+        if (match)
+          printf("test_id: %d, match\n", id);
+        else
+          panic("test_id: %d, not match!", id);
+        id++;
     }
   }
   return 0;
