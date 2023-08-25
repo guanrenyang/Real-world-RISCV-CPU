@@ -116,8 +116,8 @@ static int cmd_test(char *args){
 
   word_t correct_res;
 
-  char line[1000]; // Assuming a line doesn't exceed 256 characters.
-  char str[1000];  // Assuming a string doesn't exceed 250 characters.
+  char line[1000000]; // Assuming a line doesn't exceed 256 characters.
+  char str[1000000];  // Assuming a string doesn't exceed 250 characters.
 
   int id = 0;
   while (fgets(line, sizeof(line), fp)) {
