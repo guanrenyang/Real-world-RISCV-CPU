@@ -117,7 +117,9 @@ static bool make_token(char *e) {
                 *substr_start_pos = substr_start;
                 *substr_len_pos = substr_len;
                 break;
-            default: TODO();
+          case TK_NOTYPE:
+                break;
+          default: TODO();
         }
         
         // // For testing
