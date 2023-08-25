@@ -61,6 +61,7 @@ static void gen_rand_op(){
 }
 
 static void gen_rand_expr() {
+  
   switch (choose(3)) {
     case 0: gen_num(); break;
     case 1: gen('('); gen_rand_expr(); gen(')'); break;
@@ -78,6 +79,9 @@ int main(int argc, char *argv[]) {
   }
   int i;
   for (i = 0; i < loop; i ++) {
+    buf_idx = 0;
+    memset(buf, '\0', sizeof(buf));
+
     gen_rand_expr();
 
     sprintf(code_buf, code_format, buf);
