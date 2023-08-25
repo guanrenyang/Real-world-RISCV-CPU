@@ -109,7 +109,7 @@ static int cmd_x(char *args){
 }
 
 static int cmd_test(char *args){
-  FILE *fp = fopen("../../../tools/gen-expr/input", "r");
+  FILE *fp = fopen("./tools/gen-expr/input", "r");
   if (!fp) {
     panic("Unable to load file!");
   }
