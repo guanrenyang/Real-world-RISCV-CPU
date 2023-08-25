@@ -172,11 +172,9 @@ bool check_parentheses(int p, int q){
 }
 
 word_t eval(int p, int q){  
-  printf("p=%d, q=%d\n", p, q);
   if (p > q) { // First, check if it is a valid expression. 
     /* Bad expression */
-    // printf("p=%u, q=%u\n", p, q);
-    panic("Bad expression!");
+    panic("Bad expression with p=%d, q=%d\n!", p, q);
   } else if (p == q) {
     /* Single token.
      * For now this token should be a number.
