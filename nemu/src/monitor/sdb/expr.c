@@ -37,7 +37,7 @@ static struct rule {
    */
 
   {" +", TK_NOTYPE},    // spaces
-  {"^[1-9][0-9]*", TK_POS_INT}, // positive integer
+  {"(^[1-9][0-9]*)|(^[0-9])", TK_POS_INT}, // positive integer
   {"\\+", '+'},         // plus
   {"\\-", '-'},         // minus
   {"\\*", '*'},         // multiply
@@ -73,7 +73,7 @@ typedef struct token {
   char str[32]; // The first 8 (sizeof(char *)) bytes is a pointer(char **) to the start of substr, the following 4 bytes (sizeof(int*)) is a pointer containing substr_len 
 } Token;
 
-static Token tokens[32] __attribute__((used)) = {};
+static Token tokens[3200000] __attribute__((used)) = {};
 static int nr_token __attribute__((used))  = 0;
 
 static bool make_token(char *e) {
@@ -90,8 +90,7 @@ static bool make_token(char *e) {
         char *substr_start = e + position;
         int substr_len = pmatch.rm_eo;
 
-        Log("match rules[%d] = \"%s\" at position %d with len %d: %.*s",
-            i, rules[i].regex, position, substr_len, substr_len, substr_start);
+        Log("match rules[%d] = \"%s\" at position %d with len %d: %.*s", i, rules[i].regex, position, substr_len, substr_len, substr_start);
 
 
         /* TODO: Now a new token is recognized with rules[i]. Add codes
@@ -99,7 +98,7 @@ static bool make_token(char *e) {
          * of tokens, some extra actions should be performed.
          */
         position += substr_len;
- 
+
         switch (rules[i].token_type) {
           case '+': 
           case '-':
@@ -120,7 +119,14 @@ static bool make_token(char *e) {
                 break;
             default: TODO();
         }
-
+        
+        // // For testing
+        // char *test_substr = malloc(sizeof(char)*substr_len+1);
+        // memset(test_substr, '\0', substr_len+1);
+        // strncpy(test_substr, substr_start, substr_len);
+        // printf("%s\n", test_substr); 
+        // printf("%s\n", substr_start);
+        // free(test_substr);
         break;
       }
     }
@@ -167,8 +173,7 @@ bool check_parentheses(int p, int q){
 word_t eval(int p, int q){  
   if (p > q) { // First, check if it is a valid expression. 
     /* Bad expression */
-    printf("p=%u, q=%u\n", p, q);
-    panic("Bad expression!");
+    panic("Bad expression with p=%d, q=%d\n!", p, q);
   } else if (p == q) {
     /* Single token.
      * For now this token should be a number.
