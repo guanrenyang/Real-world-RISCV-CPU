@@ -73,7 +73,7 @@ typedef struct token {
   char str[32]; // The first 8 (sizeof(char *)) bytes is a pointer(char **) to the start of substr, the following 4 bytes (sizeof(int*)) is a pointer containing substr_len 
 } Token;
 
-static Token tokens[32000] __attribute__((used)) = {};
+static Token tokens[3200000] __attribute__((used)) = {};
 static int nr_token __attribute__((used))  = 0;
 
 static bool make_token(char *e) {
