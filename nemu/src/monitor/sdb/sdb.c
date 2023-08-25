@@ -91,7 +91,6 @@ static int cmd_x(char *args){
     if (!expr_success)
         panic("Expression computation failed!");
     printf("%u\n", expr_result); 
-
     int nr_elem = atoi(arg_0);
     
     // char *addr_end;
@@ -109,6 +108,28 @@ static int cmd_x(char *args){
     return 0;
 }
 
+static int cmd_test(char *args){
+  FILE *fp = fopen("../../../tools/gen-expr/input", "r");
+  if (!fp) {
+    panic("Unable to load file!");
+  }
+
+  word_t correct_res;
+
+  char line[1000]; // Assuming a line doesn't exceed 256 characters.
+  char str[1000];  // Assuming a string doesn't exceed 250 characters.
+
+  while (fgets(line, sizeof(line), fp)) {
+    // sscanf scans the input string for formatted data. 
+    // Here, it looks for an unsigned int and then a string. 
+    // The %[^\n] format reads the rest of the line as a string.
+    if (sscanf(line, "%u %[^\n]", &correct_res, str) == 2) {
+        printf("Read correct_res: %u\n", correct_res);
+        printf("Read string: %s\n", str);
+    }
+  }
+  return 0;
+}
 static int cmd_help(char *args);
 
 static struct {
@@ -116,6 +137,7 @@ static struct {
   const char *description;
   int (*handler) (char *);
 } cmd_table [] = {
+  { "test", "Test command used when debugging.", cmd_test},
   { "help", "Display information about all supported commands", cmd_help },
   { "c", "Continue the execution of the program", cmd_c },
   { "q", "Exit NEMU", cmd_q },

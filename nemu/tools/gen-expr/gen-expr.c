@@ -31,9 +31,44 @@ static char *code_format =
 "  return 0; "
 "}";
 
-static void gen_rand_expr() {
-  buf[0] = '\0';
+static int buf_idx = 0;
+
+static inline uint32_t choose(uint32_t n){
+  return rand() % n;
 }
+static void gen_num(){
+  uint32_t num = rand()%200; // Every operand should be smaller than 200
+
+  sprintf(buf + buf_idx, "%u", num); 
+  int substr_len = strlen(buf + buf_idx);
+  buf_idx += substr_len; 
+}
+
+static void gen(char c){
+  buf[buf_idx] = c;
+  buf_idx++;
+}
+
+static void gen_rand_op(){
+  char op;
+  switch (choose(4)) {
+    case 0: op = '+'; break;
+    case 1: op = '-'; break;
+    case 2: op = '*'; break;
+    default: op = '/'; break;
+  }
+  gen(op);  
+}
+
+static void gen_rand_expr() {
+  
+  switch (choose(3)) {
+    case 0: gen_num(); break;
+    case 1: gen('('); gen_rand_expr(); gen(')'); break;
+    default: gen_rand_expr(); gen_rand_op(); gen_rand_expr(); break;
+  }
+}
+
 
 int main(int argc, char *argv[]) {
   int seed = time(0);
@@ -44,6 +79,9 @@ int main(int argc, char *argv[]) {
   }
   int i;
   for (i = 0; i < loop; i ++) {
+    buf_idx = 0;
+    memset(buf, '\0', sizeof(buf));
+
     gen_rand_expr();
 
     sprintf(code_buf, code_format, buf);
