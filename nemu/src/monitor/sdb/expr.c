@@ -190,8 +190,8 @@ word_t eval(int p, int q, bool *success){
      * Return the value of the number.
      */
     Token token = tokens[p];
-    if (token.type!=TK_POS_INT && token.type!=TK_HEX_NUM) {
-      panic("Token should be a positive integer but it is not.");
+    if (token.type!=TK_POS_INT && token.type!=TK_HEX_NUM && token.type!=TK_REG) {
+      panic("Token should be a positive integer or register name but it is not.");
     }
     
     char *substr_start = *((char **)token.str);
