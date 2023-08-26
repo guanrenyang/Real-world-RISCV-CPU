@@ -81,6 +81,13 @@ typedef struct token {
 static Token tokens[3200000] __attribute__((used)) = {};
 static int nr_token __attribute__((used))  = 0;
 
+static void store_metadata_to_token_str(char *token_str, char *substr_start, int substr_len){
+  char **substr_start_pos = (char**) token_str;
+  int *substr_len_pos = (int*)(substr_start_pos + 1);
+
+  *substr_start_pos = substr_start;
+  *substr_len_pos = substr_len;
+}
 static bool make_token(char *e) {
   int position = 0;
   int i;
@@ -114,17 +121,11 @@ static bool make_token(char *e) {
           case TK_POS_INT:
           case TK_HEX_NUM:
                 tokens[nr_token].type = rules[i].token_type;
-
-                char **substr_start_pos = (char**) tokens[nr_token].str;
-                int *substr_len_pos = (int*)(substr_start_pos + 1);
-
                 nr_token ++;
-
-                *substr_start_pos = substr_start;
-                *substr_len_pos = substr_len;
+                store_metadata_to_token_str(tokens[nr_token].str, substr_start, substr_len);
                 break;
           case TK_REG:
-                break;
+                // isa_reg_str2val();
           case TK_NOTYPE:
                 break;
           default: TODO();
