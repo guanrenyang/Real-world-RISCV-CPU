@@ -120,12 +120,11 @@ static bool make_token(char *e) {
           case ')':
           case TK_POS_INT:
           case TK_HEX_NUM:
+          case TK_REG:
                 tokens[nr_token].type = rules[i].token_type;
                 store_metadata_to_token_str(tokens[nr_token].str, substr_start, substr_len);
                 nr_token ++;
                 break;
-          case TK_REG:
-                // isa_reg_str2val();
           case TK_NOTYPE:
                 break;
           default: TODO();
@@ -201,7 +200,7 @@ word_t eval(int p, int q, bool *success){
     char *substr;
     substr = malloc(substr_len * sizeof(char) + 1);
     memset(substr, '\0', substr_len * sizeof(char) + 1);
-
+  
     strncpy(substr, substr_start, substr_len);
    
     word_t res;
@@ -218,6 +217,11 @@ word_t eval(int p, int q, bool *success){
         if (endptr==substr) {
           panic("No digits were found!");
         }
+        break;
+      case TK_REG:
+        assert(substr[0]=='$');
+        char *reg_name = substr + 1;       
+        res = isa_reg_str2val(reg_name, success);
         break;
       default: TODO();
     }
