@@ -21,7 +21,7 @@
 #include <regex.h>
 
 enum {
-  TK_NOTYPE = 256, TK_EQ,
+  TK_NOTYPE = 256, TK_EQ, TK_NOEQ, TK_AND,
 
   /* TODO: Add more token types */
   TK_POS_INT, TK_HEX_NUM,
@@ -50,6 +50,8 @@ static struct rule {
   {"\\(", '('},         // left parenthesis
   {"\\)", ')'},         // right parenthesis
   {"==", TK_EQ},        // equal
+  {"!-", TK_NOEQ},      // not equal
+  {"&&", TK_AND},       // and
 };
 
 #define NR_REGEX ARRLEN(rules)
@@ -121,6 +123,9 @@ static bool make_token(char *e) {
           case TK_POS_INT:
           case TK_HEX_NUM:
           case TK_REG:
+          case TK_NOEQ:
+          case TK_EQ:
+          case TK_AND:
                 tokens[nr_token].type = rules[i].token_type;
                 store_metadata_to_token_str(tokens[nr_token].str, substr_start, substr_len);
                 nr_token ++;
@@ -245,18 +250,42 @@ word_t eval(int p, int q, bool *success){
     int i;
     for (i=p;i<=q;i++){
       int token_type = tokens[i].type;
-      if (token_type=='(') {
-        nr_left_parenthesis++;
-      } else if (token_type==')') {
-        nr_left_parenthesis--;
-      } else if (nr_left_parenthesis==0) {
-        if ( token_type=='+' || token_type=='-' ) {
-          op = i;
-        } else if (( token_type=='*' || token_type=='/' ) && (op==-1 || (tokens[op].type!='+' && tokens[op].type!='-'))) {
-          op = i;  
-        } 
+      switch (token_type) {
+        case '(': nr_left_parenthesis++; break;
+        case ')': nr_left_parenthesis--; break;
+        case TK_AND: 
+          if (nr_left_parenthesis!=0) break; 
+          op = i; break;
+        case TK_EQ:
+        case TK_NOEQ:
+          if (nr_left_parenthesis!=0) break;
+          if (op!=-1 && tokens[op].type==TK_AND)  break;
+          op = i; break;
+        case '+':
+        case '-':
+          if (nr_left_parenthesis!=0) break;
+          if (op!=-1 && (tokens[op].type==TK_AND || tokens[op].type==TK_EQ || tokens[op].type==TK_NOEQ)) break;
+          op = i; break;
+        case '*':
+        case '/':
+          if (nr_left_parenthesis!=0) break;
+          if (op!=-1 && (tokens[op].type==TK_AND || tokens[op].type==TK_EQ || tokens[op].type==TK_NOEQ || tokens[op].type=='+' || tokens[op].type=='-')) break;
+          op = i; break;
+        default: TODO();
       }
     }
+    //   if (token_type=='(') {
+    //     nr_left_parenthesis++;
+    //   } else if (token_type==')') {
+    //     nr_left_parenthesis--;
+    //   } else if (nr_left_parenthesis==0) {
+    //     if ( token_type=='+' || token_type=='-' ) {
+    //       op = i;
+    //     } else if (( token_type=='*' || token_type=='/' ) && (op==-1 || (tokens[op].type!='+' && tokens[op].type!='-'))) {
+    //       op = i;  
+    //     } 
+    //   }
+    // }
 
     int val1 = eval(p, op - 1, success);
     int val2 = eval(op + 1, q, success);
