@@ -186,7 +186,7 @@ word_t eval(int p, int q, bool *success){
      * Return the value of the number.
      */
     Token token = tokens[p];
-    if (token.type!=TK_POS_INT || token.type!=TK_HEX_NUM) {
+    if (token.type!=TK_POS_INT && token.type!=TK_HEX_NUM) {
       panic("Token should be a positive integer but it is not.");
     }
     
@@ -198,12 +198,25 @@ word_t eval(int p, int q, bool *success){
     memset(substr, '\0', substr_len * sizeof(char) + 1);
 
     strncpy(substr, substr_start, substr_len);
-    
+   
+    word_t res;
     char *endptr;
-    word_t res = (word_t) strtoul(substr, &endptr, 10);
-    if (endptr==substr) {
-        panic("No digits were found!");
+    switch (token.type) {
+      case TK_POS_INT:
+        res = (word_t) strtoul(substr, &endptr, 10);
+        if (endptr==substr) {
+          panic("No digits were found!");
+        }
+        break;
+      case TK_HEX_NUM:
+        res = (word_t) strtoul(substr, &endptr, 16);
+        if (endptr==substr) {
+          panic("No digits were found!");
+        }
+        break;
+      default: TODO();
     }
+    
     
     free(substr);
 
