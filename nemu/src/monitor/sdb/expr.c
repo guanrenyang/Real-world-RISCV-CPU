@@ -14,7 +14,7 @@
 ***************************************************************************************/
 
 #include <isa.h>
-
+#include <memory/paddr.h>
 /* We use the POSIX regex functions to process regular expressions.
  * Type 'man regex' for more information about POSIX regex functions.
  */
@@ -281,7 +281,7 @@ word_t eval(int p, int q, bool *success){
 
     switch (tokens[p].type) {
       case TK_NEGATE: return -operand;
-      case TK_PTR_DEREF: TODO();
+      case TK_PTR_DEREF: return paddr_read((paddr_t)operand, 4);
     }
 
   } else if (check_parentheses(p, q) == true) {
@@ -292,8 +292,8 @@ word_t eval(int p, int q, bool *success){
 
   } else {
 
-    int op=-1;
     // Find the main op
+    int op=-1;
     int nr_left_parenthesis = 0;
     int i;
     for (i=p;i<=q;i++){
@@ -321,22 +321,31 @@ word_t eval(int p, int q, bool *success){
           op = i; break;
       }
     }
-    
-    int val1 = eval(p, op - 1, success);
-    int val2 = eval(op + 1, q, success);
-
-    switch (tokens[op].type) {
-      case '+': return val1 + val2;
-      case '-': return val1 - val2;
-      case '*': return val1 * val2; 
-      case '/': 
-        if (val2==0)
-          *success = false;
-        return val1 / val2; 
-      case TK_EQ: return val1 == val2;
-      case TK_NOEQ: return val1 != val2;
-      case TK_AND: return val1 && val2;
-      default: assert(0);
+   
+    if (op==-1) { // no main op, meaning that it is a series of single operand operator
+      assert(tokens[p].type==TK_NEGATE || tokens[p].type==TK_PTR_DEREF); 
+  
+      switch (tokens[p].type) {
+        case TK_NEGATE: return -eval(p+1, q, success);
+        case TK_PTR_DEREF: return paddr_read(eval(p+1, q, success), 4);
+      }
+    } else {
+      int val1 = eval(p, op - 1, success);
+      int val2 = eval(op + 1, q, success);
+  
+      switch (tokens[op].type) {
+        case '+': return val1 + val2;
+        case '-': return val1 - val2;
+        case '*': return val1 * val2; 
+        case '/': 
+          if (val2==0)
+            *success = false;
+          return val1 / val2; 
+        case TK_EQ: return val1 == val2;
+        case TK_NOEQ: return val1 != val2;
+        case TK_AND: return val1 && val2;
+        default: assert(0);
+      }        
     }
   }
   return 0;
