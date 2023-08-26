@@ -14,7 +14,7 @@
 ***************************************************************************************/
 
 #include <isa.h>
-
+#include <memory/paddr.h>
 /* We use the POSIX regex functions to process regular expressions.
  * Type 'man regex' for more information about POSIX regex functions.
  */
@@ -114,6 +114,20 @@ static word_t parse_number_from_token_str(void *token_str, int base){
   free(substr);
   return res;
 }
+static word_t parse_reg_val_from_token_str(void *token_str, bool *success){
+  char *substr_start = *((char **)token_str);
+  int substr_len =  *( (int *)( (char **)token_str + 1 ) );
+ 
+  char *regname = malloc(substr_len * sizeof(char) + 1);
+  memset(regname, '\0', substr_len * sizeof(char) + 1);
+  
+  strncpy(regname, substr_start+1, substr_len-1); // Omit the leading $ in register name
+
+  word_t res = isa_reg_str2val(regname, success);
+
+  free(regname);
+  return res;
+}
 
 static bool make_token(char *e) {
   int position = 0;
@@ -171,7 +185,7 @@ static bool make_token(char *e) {
                 break;
           case TK_NOTYPE:
                 break;
-          default: TODO();
+          default: panic("You should not be here!\n");
         }
         
         // // For testing
@@ -247,22 +261,29 @@ word_t eval(int p, int q, bool *success){
         res = parse_number_from_token_str(token.str, 16);
         break;
       case TK_REG:
-        // assert(substr[0]=='$');
-        // char *reg_name = substr + 1;       
-        // res = isa_reg_str2val(reg_name, success);
+        res = parse_reg_val_from_token_str(token.str, success);
         break;
-      default: TODO();
+      default: panic("You should not be here!");
     }
     
     return res;
 
-  } else if (p==q-1) {
+  } else if (p == q - 1) {
     assert(tokens[p].type==TK_NEGATE || tokens[p].type==TK_PTR_DEREF); 
-    
-    // char *subst = malloc()
-    switch (tokens[p].type) {
-      case TK_NEGATE: return 0;
+  
+    word_t operand;
+    switch (tokens[q].type) {
+      case TK_HEX_NUM: operand = parse_number_from_token_str(tokens[q].str, 16); break;
+      case TK_POS_INT: operand = parse_number_from_token_str(tokens[q].str, 10); break;
+      case TK_REG: operand = parse_reg_val_from_token_str(tokens[q].str, success); break;
+      default: panic("You should not be here!");
     }
+
+    switch (tokens[p].type) {
+      case TK_NEGATE: return -operand;
+      case TK_PTR_DEREF: return paddr_read((paddr_t)operand, 4);
+    }
+
   } else if (check_parentheses(p, q) == true) {
     /* The expression is surrounded by a matched pair of parentheses.
      * If that is the case, just throw away the parentheses.
@@ -271,8 +292,8 @@ word_t eval(int p, int q, bool *success){
 
   } else {
 
-    int op=-1;
     // Find the main op
+    int op=-1;
     int nr_left_parenthesis = 0;
     int i;
     for (i=p;i<=q;i++){
@@ -300,22 +321,31 @@ word_t eval(int p, int q, bool *success){
           op = i; break;
       }
     }
-    
-    int val1 = eval(p, op - 1, success);
-    int val2 = eval(op + 1, q, success);
-
-    switch (tokens[op].type) {
-      case '+': return val1 + val2;
-      case '-': return val1 - val2;
-      case '*': return val1 * val2; 
-      case '/': 
-        if (val2==0)
-          *success = false;
-        return val1 / val2; 
-      case TK_EQ: return val1 == val2;
-      case TK_NOEQ: return val1 != val2;
-      case TK_AND: return val1 && val2;
-      default: assert(0);
+   
+    if (op==-1) { // no main op, meaning that it is a series of single operand operator
+      assert(tokens[p].type==TK_NEGATE || tokens[p].type==TK_PTR_DEREF); 
+  
+      switch (tokens[p].type) {
+        case TK_NEGATE: return -eval(p+1, q, success);
+        case TK_PTR_DEREF: return paddr_read(eval(p+1, q, success), 4);
+      }
+    } else {
+      int val1 = eval(p, op - 1, success);
+      int val2 = eval(op + 1, q, success);
+  
+      switch (tokens[op].type) {
+        case '+': return val1 + val2;
+        case '-': return val1 - val2;
+        case '*': return val1 * val2; 
+        case '/': 
+          if (val2==0)
+            *success = false;
+          return val1 / val2; 
+        case TK_EQ: return val1 == val2;
+        case TK_NOEQ: return val1 != val2;
+        case TK_AND: return val1 && val2;
+        default: assert(0);
+      }        
     }
   }
   return 0;
