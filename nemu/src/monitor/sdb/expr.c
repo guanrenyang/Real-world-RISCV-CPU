@@ -271,7 +271,6 @@ word_t eval(int p, int q, bool *success){
           if (nr_left_parenthesis!=0) break;
           if (op!=-1 && (tokens[op].type==TK_AND || tokens[op].type==TK_EQ || tokens[op].type==TK_NOEQ || tokens[op].type=='+' || tokens[op].type=='-')) break;
           op = i; break;
-        default: TODO();
       }
     }
     //   if (token_type=='(') {
