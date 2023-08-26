@@ -24,7 +24,7 @@ enum {
   TK_NOTYPE = 256, TK_EQ,
 
   /* TODO: Add more token types */
-  TK_POS_INT,
+  TK_POS_INT, TK_HEX_NUM,
 };
 
 static struct rule {
@@ -37,6 +37,9 @@ static struct rule {
    */
 
   {" +", TK_NOTYPE},    // spaces
+  /* Checking hex number must be done before checking decimal number, 
+   * otherwise the leading 0 of 0x will be parsed sparately as `0`.*/
+  {"0x[0-9a-fA-F]*", TK_HEX_NUM}, // hex number
   {"(^[1-9][0-9]*)|(^[0-9])", TK_POS_INT}, // positive integer
   {"\\+", '+'},         // plus
   {"\\-", '-'},         // minus
@@ -107,6 +110,7 @@ static bool make_token(char *e) {
           case '(':
           case ')':
           case TK_POS_INT:
+          case TK_HEX_NUM:
                 tokens[nr_token].type = rules[i].token_type;
 
                 char **substr_start_pos = (char**) tokens[nr_token].str;
@@ -182,7 +186,7 @@ word_t eval(int p, int q, bool *success){
      * Return the value of the number.
      */
     Token token = tokens[p];
-    if (token.type!=TK_POS_INT) {
+    if (token.type!=TK_POS_INT && token.type!=TK_HEX_NUM) {
       panic("Token should be a positive integer but it is not.");
     }
     
@@ -194,12 +198,25 @@ word_t eval(int p, int q, bool *success){
     memset(substr, '\0', substr_len * sizeof(char) + 1);
 
     strncpy(substr, substr_start, substr_len);
-    
+   
+    word_t res;
     char *endptr;
-    word_t res = (word_t) strtoul(substr, &endptr, 10);
-    if (endptr==substr) {
-        panic("No digits were found!");
+    switch (token.type) {
+      case TK_POS_INT:
+        res = (word_t) strtoul(substr, &endptr, 10);
+        if (endptr==substr) {
+          panic("No digits were found!");
+        }
+        break;
+      case TK_HEX_NUM:
+        res = (word_t) strtoul(substr, &endptr, 16);
+        if (endptr==substr) {
+          panic("No digits were found!");
+        }
+        break;
+      default: TODO();
     }
+    
     
     free(substr);
 
