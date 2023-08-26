@@ -25,6 +25,7 @@ enum {
 
   /* TODO: Add more token types */
   TK_POS_INT, TK_HEX_NUM,
+  TK_REG,
 };
 
 static struct rule {
@@ -41,6 +42,7 @@ static struct rule {
    * otherwise the leading 0 of 0x will be parsed sparately as `0`.*/
   {"0x[0-9a-fA-F]*", TK_HEX_NUM}, // hex number
   {"(^[1-9][0-9]*)|(^[0-9])", TK_POS_INT}, // positive integer
+  {"\\$[\\$0-9a-z]*", TK_REG},
   {"\\+", '+'},         // plus
   {"\\-", '-'},         // minus
   {"\\*", '*'},         // multiply
@@ -79,6 +81,13 @@ typedef struct token {
 static Token tokens[3200000] __attribute__((used)) = {};
 static int nr_token __attribute__((used))  = 0;
 
+static void store_metadata_to_token_str(char *token_str, char *substr_start, int substr_len){
+  char **substr_start_pos = (char**) token_str;
+  int *substr_len_pos = (int*)(substr_start_pos + 1);
+
+  *substr_start_pos = substr_start;
+  *substr_len_pos = substr_len;
+}
 static bool make_token(char *e) {
   int position = 0;
   int i;
@@ -111,15 +120,10 @@ static bool make_token(char *e) {
           case ')':
           case TK_POS_INT:
           case TK_HEX_NUM:
+          case TK_REG:
                 tokens[nr_token].type = rules[i].token_type;
-
-                char **substr_start_pos = (char**) tokens[nr_token].str;
-                int *substr_len_pos = (int*)(substr_start_pos + 1);
-
+                store_metadata_to_token_str(tokens[nr_token].str, substr_start, substr_len);
                 nr_token ++;
-
-                *substr_start_pos = substr_start;
-                *substr_len_pos = substr_len;
                 break;
           case TK_NOTYPE:
                 break;
@@ -186,8 +190,8 @@ word_t eval(int p, int q, bool *success){
      * Return the value of the number.
      */
     Token token = tokens[p];
-    if (token.type!=TK_POS_INT && token.type!=TK_HEX_NUM) {
-      panic("Token should be a positive integer but it is not.");
+    if (token.type!=TK_POS_INT && token.type!=TK_HEX_NUM && token.type!=TK_REG) {
+      panic("Token should be a positive integer or register name but it is not.");
     }
     
     char *substr_start = *((char **)token.str);
@@ -196,7 +200,7 @@ word_t eval(int p, int q, bool *success){
     char *substr;
     substr = malloc(substr_len * sizeof(char) + 1);
     memset(substr, '\0', substr_len * sizeof(char) + 1);
-
+  
     strncpy(substr, substr_start, substr_len);
    
     word_t res;
@@ -213,6 +217,11 @@ word_t eval(int p, int q, bool *success){
         if (endptr==substr) {
           panic("No digits were found!");
         }
+        break;
+      case TK_REG:
+        assert(substr[0]=='$');
+        char *reg_name = substr + 1;       
+        res = isa_reg_str2val(reg_name, success);
         break;
       default: TODO();
     }
