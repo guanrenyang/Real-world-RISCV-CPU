@@ -21,11 +21,14 @@
 #include <regex.h>
 
 enum {
-  TK_NOTYPE = 256, TK_EQ,
+  TK_NOTYPE = 256, TK_EQ, TK_NOEQ, TK_AND,
 
   /* TODO: Add more token types */
   TK_POS_INT, TK_HEX_NUM,
   TK_REG,
+  
+  TK_PTR_DEREF, 
+  TK_NEGATE,
 };
 
 static struct rule {
@@ -42,7 +45,7 @@ static struct rule {
    * otherwise the leading 0 of 0x will be parsed sparately as `0`.*/
   {"0x[0-9a-fA-F]*", TK_HEX_NUM}, // hex number
   {"(^[1-9][0-9]*)|(^[0-9])", TK_POS_INT}, // positive integer
-  {"\\$[\\$0-9a-z]*", TK_REG},
+  {"\\$[\\$0-9a-z]*", TK_REG}, // register name
   {"\\+", '+'},         // plus
   {"\\-", '-'},         // minus
   {"\\*", '*'},         // multiply
@@ -50,6 +53,8 @@ static struct rule {
   {"\\(", '('},         // left parenthesis
   {"\\)", ')'},         // right parenthesis
   {"==", TK_EQ},        // equal
+  {"!=", TK_NOEQ},      // not equal
+  {"&&", TK_AND},       // and
 };
 
 #define NR_REGEX ARRLEN(rules)
@@ -81,13 +86,35 @@ typedef struct token {
 static Token tokens[3200000] __attribute__((used)) = {};
 static int nr_token __attribute__((used))  = 0;
 
-static void store_metadata_to_token_str(char *token_str, char *substr_start, int substr_len){
+static void store_metadata_to_token_str(void *token_str, char *substr_start, int substr_len){
   char **substr_start_pos = (char**) token_str;
   int *substr_len_pos = (int*)(substr_start_pos + 1);
 
   *substr_start_pos = substr_start;
   *substr_len_pos = substr_len;
 }
+
+static word_t parse_number_from_token_str(void *token_str, int base){
+  char *substr_start = *((char **)token_str);
+  int substr_len =  *( (int *)( (char **)token_str + 1 ) );
+  
+  char *substr;
+  substr = malloc(substr_len * sizeof(char) + 1);
+  memset(substr, '\0', substr_len * sizeof(char) + 1);
+
+  strncpy(substr, substr_start, substr_len);
+  
+  word_t res;
+  char *endptr;
+  res = (word_t) strtoul(substr, &endptr, base);
+  if (endptr==substr) {
+    panic("No digits were found!");
+  }
+
+  free(substr);
+  return res;
+}
+
 static bool make_token(char *e) {
   int position = 0;
   int i;
@@ -113,17 +140,34 @@ static bool make_token(char *e) {
 
         switch (rules[i].token_type) {
           case '+': 
-          case '-':
-          case '*':
           case '/':
           case '(':
           case ')':
           case TK_POS_INT:
           case TK_HEX_NUM:
           case TK_REG:
+          case TK_NOEQ:
+          case TK_EQ:
+          case TK_AND:
                 tokens[nr_token].type = rules[i].token_type;
                 store_metadata_to_token_str(tokens[nr_token].str, substr_start, substr_len);
-                nr_token ++;
+                nr_token++;
+                break;
+          case '-':
+                if (nr_token==0 || (tokens[nr_token-1].type!=TK_POS_INT && tokens[nr_token-1].type!=TK_HEX_NUM && tokens[nr_token-1].type!=TK_REG && tokens[nr_token-1].type!=')'))
+                  tokens[nr_token].type = TK_NEGATE;
+                else
+                  tokens[nr_token].type = '-';
+                store_metadata_to_token_str(tokens[nr_token].str, substr_start, substr_len);
+                nr_token++;
+                break;
+          case '*': 
+                if (nr_token==0 || (tokens[nr_token-1].type!=TK_POS_INT && tokens[nr_token-1].type!=TK_HEX_NUM && tokens[nr_token-1].type!=TK_REG && tokens[nr_token-1].type!=')'))
+                  tokens[nr_token].type = TK_PTR_DEREF;
+                else
+                  tokens[nr_token].type = '*';
+                store_metadata_to_token_str(tokens[nr_token].str, substr_start, substr_len);
+                nr_token++;
                 break;
           case TK_NOTYPE:
                 break;
@@ -193,44 +237,32 @@ word_t eval(int p, int q, bool *success){
     if (token.type!=TK_POS_INT && token.type!=TK_HEX_NUM && token.type!=TK_REG) {
       panic("Token should be a positive integer or register name but it is not.");
     }
-    
-    char *substr_start = *((char **)token.str);
-    int substr_len =  *( (int *)( (char **)token.str + 1 ) );
-      
-    char *substr;
-    substr = malloc(substr_len * sizeof(char) + 1);
-    memset(substr, '\0', substr_len * sizeof(char) + 1);
-  
-    strncpy(substr, substr_start, substr_len);
-   
-    word_t res;
-    char *endptr;
+
+    word_t res = 0;
     switch (token.type) {
       case TK_POS_INT:
-        res = (word_t) strtoul(substr, &endptr, 10);
-        if (endptr==substr) {
-          panic("No digits were found!");
-        }
+        res = parse_number_from_token_str(token.str, 10);
         break;
       case TK_HEX_NUM:
-        res = (word_t) strtoul(substr, &endptr, 16);
-        if (endptr==substr) {
-          panic("No digits were found!");
-        }
+        res = parse_number_from_token_str(token.str, 16);
         break;
       case TK_REG:
-        assert(substr[0]=='$');
-        char *reg_name = substr + 1;       
-        res = isa_reg_str2val(reg_name, success);
+        // assert(substr[0]=='$');
+        // char *reg_name = substr + 1;       
+        // res = isa_reg_str2val(reg_name, success);
         break;
       default: TODO();
     }
     
-    
-    free(substr);
-
     return res;
 
+  } else if (p==q-1) {
+    assert(tokens[p].type==TK_NEGATE || tokens[p].type==TK_PTR_DEREF); 
+    
+    // char *subst = malloc()
+    switch (tokens[p].type) {
+      case TK_NEGATE: return 0;
+    }
   } else if (check_parentheses(p, q) == true) {
     /* The expression is surrounded by a matched pair of parentheses.
      * If that is the case, just throw away the parentheses.
@@ -245,19 +277,30 @@ word_t eval(int p, int q, bool *success){
     int i;
     for (i=p;i<=q;i++){
       int token_type = tokens[i].type;
-      if (token_type=='(') {
-        nr_left_parenthesis++;
-      } else if (token_type==')') {
-        nr_left_parenthesis--;
-      } else if (nr_left_parenthesis==0) {
-        if ( token_type=='+' || token_type=='-' ) {
-          op = i;
-        } else if (( token_type=='*' || token_type=='/' ) && (op==-1 || (tokens[op].type!='+' && tokens[op].type!='-'))) {
-          op = i;  
-        } 
+      switch (token_type) {
+        case '(': nr_left_parenthesis++; break;
+        case ')': nr_left_parenthesis--; break;
+        case TK_AND: 
+          if (nr_left_parenthesis!=0) break; 
+          op = i; break;
+        case TK_EQ:
+        case TK_NOEQ:
+          if (nr_left_parenthesis!=0) break;
+          if (op!=-1 && tokens[op].type==TK_AND)  break;
+          op = i; break;
+        case '+':
+        case '-':
+          if (nr_left_parenthesis!=0) break;
+          if (op!=-1 && (tokens[op].type==TK_AND || tokens[op].type==TK_EQ || tokens[op].type==TK_NOEQ)) break;
+          op = i; break;
+        case '*':
+        case '/':
+          if (nr_left_parenthesis!=0) break;
+          if (op!=-1 && (tokens[op].type==TK_AND || tokens[op].type==TK_EQ || tokens[op].type==TK_NOEQ || tokens[op].type=='+' || tokens[op].type=='-')) break;
+          op = i; break;
       }
     }
-
+    
     int val1 = eval(p, op - 1, success);
     int val2 = eval(op + 1, q, success);
 
@@ -269,6 +312,9 @@ word_t eval(int p, int q, bool *success){
         if (val2==0)
           *success = false;
         return val1 / val2; 
+      case TK_EQ: return val1 == val2;
+      case TK_NOEQ: return val1 != val2;
+      case TK_AND: return val1 && val2;
       default: assert(0);
     }
   }
