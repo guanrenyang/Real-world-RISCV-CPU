@@ -50,7 +50,7 @@ static struct rule {
   {"\\(", '('},         // left parenthesis
   {"\\)", ')'},         // right parenthesis
   {"==", TK_EQ},        // equal
-  {"!-", TK_NOEQ},      // not equal
+  {"!=", TK_NOEQ},      // not equal
   {"&&", TK_AND},       // and
 };
 
