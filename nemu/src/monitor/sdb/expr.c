@@ -42,7 +42,7 @@ static struct rule {
    * otherwise the leading 0 of 0x will be parsed sparately as `0`.*/
   {"0x[0-9a-fA-F]*", TK_HEX_NUM}, // hex number
   {"(^[1-9][0-9]*)|(^[0-9])", TK_POS_INT}, // positive integer
-  {"\\$[0-9a-z]*", TK_REG},
+  {"\\$[\\$0-9a-z]*", TK_REG},
   {"\\+", '+'},         // plus
   {"\\-", '-'},         // minus
   {"\\*", '*'},         // multiply
