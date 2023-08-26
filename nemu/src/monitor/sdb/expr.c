@@ -110,6 +110,7 @@ static bool make_token(char *e) {
           case '(':
           case ')':
           case TK_POS_INT:
+          case TK_HEX_NUM:
                 tokens[nr_token].type = rules[i].token_type;
 
                 char **substr_start_pos = (char**) tokens[nr_token].str;
@@ -185,7 +186,7 @@ word_t eval(int p, int q, bool *success){
      * Return the value of the number.
      */
     Token token = tokens[p];
-    if (token.type!=TK_POS_INT) {
+    if (token.type!=TK_POS_INT || token.type!=TK_HEX_NUM) {
       panic("Token should be a positive integer but it is not.");
     }
     
