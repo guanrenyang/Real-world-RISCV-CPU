@@ -25,6 +25,7 @@ enum {
 
   /* TODO: Add more token types */
   TK_POS_INT, TK_HEX_NUM,
+  TK_REG,
 };
 
 static struct rule {
@@ -41,6 +42,7 @@ static struct rule {
    * otherwise the leading 0 of 0x will be parsed sparately as `0`.*/
   {"0x[0-9a-fA-F]*", TK_HEX_NUM}, // hex number
   {"(^[1-9][0-9]*)|(^[0-9])", TK_POS_INT}, // positive integer
+  {"\\$[0-9a-z]*", TK_REG},
   {"\\+", '+'},         // plus
   {"\\-", '-'},         // minus
   {"\\*", '*'},         // multiply
@@ -120,6 +122,8 @@ static bool make_token(char *e) {
 
                 *substr_start_pos = substr_start;
                 *substr_len_pos = substr_len;
+                break;
+          case TK_REG:
                 break;
           case TK_NOTYPE:
                 break;
