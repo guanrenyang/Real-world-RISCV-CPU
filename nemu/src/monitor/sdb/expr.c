@@ -121,8 +121,8 @@ static bool make_token(char *e) {
           case TK_POS_INT:
           case TK_HEX_NUM:
                 tokens[nr_token].type = rules[i].token_type;
-                nr_token ++;
                 store_metadata_to_token_str(tokens[nr_token].str, substr_start, substr_len);
+                nr_token ++;
                 break;
           case TK_REG:
                 // isa_reg_str2val();
