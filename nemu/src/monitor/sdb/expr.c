@@ -24,7 +24,7 @@ enum {
   TK_NOTYPE = 256, TK_EQ,
 
   /* TODO: Add more token types */
-  TK_POS_INT,
+  TK_POS_INT, TK_HEX_NUM,
 };
 
 static struct rule {
@@ -37,6 +37,9 @@ static struct rule {
    */
 
   {" +", TK_NOTYPE},    // spaces
+  /* Checking hex number must be done before checking decimal number, 
+   * otherwise the leading 0 of 0x will be parsed sparately as `0`.*/
+  {"0x[0-9a-fA-F]*", TK_HEX_NUM}, // hex number
   {"(^[1-9][0-9]*)|(^[0-9])", TK_POS_INT}, // positive integer
   {"\\+", '+'},         // plus
   {"\\-", '-'},         // minus
