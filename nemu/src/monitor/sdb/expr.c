@@ -273,19 +273,7 @@ word_t eval(int p, int q, bool *success){
           op = i; break;
       }
     }
-    //   if (token_type=='(') {
-    //     nr_left_parenthesis++;
-    //   } else if (token_type==')') {
-    //     nr_left_parenthesis--;
-    //   } else if (nr_left_parenthesis==0) {
-    //     if ( token_type=='+' || token_type=='-' ) {
-    //       op = i;
-    //     } else if (( token_type=='*' || token_type=='/' ) && (op==-1 || (tokens[op].type!='+' && tokens[op].type!='-'))) {
-    //       op = i;  
-    //     } 
-    //   }
-    // }
-
+    
     int val1 = eval(p, op - 1, success);
     int val2 = eval(op + 1, q, success);
 
@@ -297,6 +285,9 @@ word_t eval(int p, int q, bool *success){
         if (val2==0)
           *success = false;
         return val1 / val2; 
+      case TK_EQ: return val1 == val2;
+      case TK_NOEQ: return val1 != val2;
+      case TK_AND: return val1 && val2;
       default: assert(0);
     }
   }
