@@ -119,6 +119,18 @@ static int cmd_p(char *args){
 
   return 0;
 }
+
+static int cmd_w(char *args){
+  new_wp(args);
+  return 0;
+}
+
+static int cmd_d(char *args){
+  int NO = atoi(args);
+  free_wp(NO);
+  return 0;
+}
+
 static int cmd_test(char *args){
   FILE *fp = fopen("./tools/gen-expr/input", "r");
   if (!fp) {
@@ -167,6 +179,8 @@ static struct {
   { "info", "Information", cmd_info}, 
   { "x", "Scan Memory", cmd_x},
   { "p", "Print", cmd_p},
+  { "w", "Set watchpoint", cmd_w}, 
+  { "d", "Delete watchpoint", cmd_d},
 };
 
 
