@@ -43,7 +43,8 @@ static void trace_and_difftest(Decode *_this, vaddr_t dnpc) {
   
   bool all_unchanged = true;
   scan_watchpoint(false, &all_unchanged);
-
+  if (!all_unchanged)
+    nemu_state.state = NEMU_STOP; 
 // #ifdef CONFIG_WATCHPOINT
 //   
 // #endif /* ifdef CONFIG_WATCHPOINT */
