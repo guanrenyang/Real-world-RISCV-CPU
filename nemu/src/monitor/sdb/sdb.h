@@ -19,6 +19,7 @@
 #include <common.h>
 
 word_t expr(char *e, bool *success);
+void scan_watchpoint(bool print_unchanged, bool *all_unchanged);
 void new_wp(char expr[]);
 void free_wp(int NO);
 

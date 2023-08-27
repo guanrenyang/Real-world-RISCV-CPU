@@ -24,6 +24,7 @@ typedef struct watchpoint {
   /* TODO: Add more members if necessary */
   char *expr;
   word_t value;
+  bool computed;
 } WP;
 
 static WP wp_pool[NR_WP] = {};
@@ -35,6 +36,7 @@ void init_wp_pool() {
     wp_pool[i].NO = i;
     wp_pool[i].next = (i == NR_WP - 1 ? NULL : &wp_pool[i + 1]);
     wp_pool[i].expr = NULL;
+    wp_pool[i].computed = false;
   }
 
   head = NULL;
@@ -91,8 +93,9 @@ void free_wp(int NO){
     prev_candidate -> next = candidate -> next;
   }
  
-  // Set candidate
+  // clear candidate
   candidate -> NO = 0;
+  candidate -> computed = false;
   free(candidate -> expr); 
 
   // Insert candidate into free watchpoint list
@@ -105,7 +108,35 @@ void free_wp(int NO){
   }
 }
 
+void scan_watchpoint(bool print_unchanged, bool *all_unchanged){
+  if (head == NULL) {// No watchpoint at all 
+    (*all_unchanged) = true;
+    return;
+  }
 
+  (*all_unchanged) = true;
+
+  WP* p = head;
+  while (p!=NULL) {
+    bool success = false;
+    word_t new_value = expr(p->expr, &success);
+    if (!success) {
+      panic("Expression computation failed!\n");
+    }
+    
+    if (p->computed==false || new_value != p->value) { // value changed or first computed
+      (*all_unchanged) = false;
+      p->value = new_value;
+      p->computed = true;
+      
+      printf("watchpoint %d, value = %u\n", p->NO, p->value);
+    } else if (print_unchanged) {
+      printf("watchpoint %d, value = %u\n", p->NO, p->value);
+    }
+    
+    p = p->next;
+  }
+}
 
 
 
