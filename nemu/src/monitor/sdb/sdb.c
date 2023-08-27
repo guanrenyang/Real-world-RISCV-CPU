@@ -167,6 +167,8 @@ static struct {
   { "info", "Information", cmd_info}, 
   { "x", "Scan Memory", cmd_x},
   { "p", "Print", cmd_p},
+  { "w", "Set watchpoint", cmd_w}, 
+  { "d", "Delete watchpoint", cmd_d},
 };
 
 
