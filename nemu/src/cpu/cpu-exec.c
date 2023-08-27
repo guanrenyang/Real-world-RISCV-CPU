@@ -32,12 +32,23 @@ static bool g_print_step = false;
 
 void device_update();
 
+void scan_watchpoint(bool print_unchanged, bool *all_unchanged);
+
 static void trace_and_difftest(Decode *_this, vaddr_t dnpc) {
 #ifdef CONFIG_ITRACE_COND
   if (ITRACE_COND) { log_write("%s\n", _this->logbuf); }
 #endif
   if (g_print_step) { IFDEF(CONFIG_ITRACE, puts(_this->logbuf)); }
   IFDEF(CONFIG_DIFFTEST, difftest_step(_this->pc, dnpc));
+  
+  bool all_unchanged = true;
+  scan_watchpoint(false, &all_unchanged);
+  if (!all_unchanged) // Only pause execution when some watchpoint been updated
+    if (nemu_state.state != NEMU_END && nemu_state.state != NEMU_ABORT) // Only pause execution when it won't end
+      nemu_state.state = NEMU_STOP; 
+// #ifdef CONFIG_WATCHPOINT
+//   
+// #endif /* ifdef CONFIG_WATCHPOINT */
 }
 
 static void exec_once(Decode *s, vaddr_t pc) {
