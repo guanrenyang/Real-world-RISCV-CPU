@@ -12,7 +12,11 @@ module barrel_shifter(clk, hex0, hex1);
     end 
 
     always @(posedge clk) begin
-        dout <= {din[4] ^ din[3] ^ din[2] ^ din[0], din[7:1]};
+        if (din == 8'b00000000) begin
+            dout <= 8'b00000001;
+        end else begin 
+            dout <= {din[4] ^ din[3] ^ din[2] ^ din[0], din[7:1]};
+        end
         din <= dout;
     end
 

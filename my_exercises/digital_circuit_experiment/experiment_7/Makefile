@@ -51,7 +51,6 @@ key_monitor: $(VSRCS) $(CSRCS) $(SRC_AUTO_BIND) $(NVBOARD_ARCHIVE)
 
 clean:
 	rm -rf $(shell find $(abspath ./) -name "build_*")
-
 # TOPNAME = barrel_shifter
 # NXDC_FILES = constr/$(TOPNAME).nxdc
 # INC_PATH ?=
