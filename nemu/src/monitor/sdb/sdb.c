@@ -68,6 +68,8 @@ static int cmd_si(char *args) {
 static int cmd_info(char *args){
   if (args==NULL || !strcmp(args, "r"))
     isa_reg_display();
+  if (args==NULL || !strcmp(args, "w"))
+    scan_watchpoint(true, NULL);
   return 0;
 }
 
