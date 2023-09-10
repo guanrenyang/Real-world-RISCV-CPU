@@ -109,9 +109,14 @@ void free_wp(int NO){
 }
 
 void scan_watchpoint(bool print_unchanged, bool *all_unchanged){
+  bool tmp;
+  if (all_unchanged == NULL){
+    all_unchanged = &tmp;
+  }
+
   if (head == NULL) {// No watchpoint at all 
     (*all_unchanged) = true;
-    return;
+    return ;
   }
 
   (*all_unchanged) = true;
@@ -124,7 +129,7 @@ void scan_watchpoint(bool print_unchanged, bool *all_unchanged){
       panic("Expression computation failed!\n");
     }
     
-    if (p->computed==false || new_value != p->value) { // value changed or first computed
+    if (p->computed==false || new_value != p->value) {
       (*all_unchanged) = false;
       p->value = new_value;
       p->computed = true;
