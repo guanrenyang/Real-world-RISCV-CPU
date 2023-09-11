@@ -8,6 +8,7 @@ List *List_create()
 
 void List_destroy(List *list)
 {
+    check(list!=NULL, "ptr list is NULL.");
     LIST_FOREACH(list, first, next, cur) {
         if(cur->prev) {
             free(cur->prev);
@@ -16,26 +17,48 @@ void List_destroy(List *list)
 
     free(list->last);
     free(list);
+error:
+    return;
+
 }
 
 
 void List_clear(List *list)
 {
+    check(list!=NULL, "ptr list is NULL.");
     LIST_FOREACH(list, first, next, cur) {
         free(cur->value);
     }
+error:
+    return;
+
 }
 
 
 void List_clear_destroy(List *list)
 {
-    List_clear(list);
-    List_destroy(list);
+    check(list!=NULL, "ptr list is NULL.");
+    // List_clear(list);
+    // List_destroy(list);
+    LIST_FOREACH(list, first, next, cur) {
+        free(cur->value);
+        if(cur->prev) {
+            free(cur->prev);
+        }
+    }
+
+    free(list->last);
+    free(list);
+error:
+    return;
+
 }
 
 
 void List_push(List *list, void *value)
 {
+    check(list!=NULL, "ptr list is NULL.");
+
     ListNode *node = calloc(1, sizeof(ListNode));
     check_mem(node);
 
@@ -58,12 +81,20 @@ error:
 
 void *List_pop(List *list)
 {
+    check(list!=NULL, "ptr list is NULL.");
+
     ListNode *node = list->last;
     return node != NULL ? List_remove(list, node) : NULL;
+
+error:
+    return NULL;
+
 }
 
 void List_unshift(List *list, void *value)
 {
+    check(list!=NULL, "ptr list is NULL.");
+
     ListNode *node = calloc(1, sizeof(ListNode));
     check_mem(node);
 
@@ -86,13 +117,20 @@ error:
 
 void *List_shift(List *list)
 {
+    check(list!=NULL, "ptr list is NULL.");
+
     ListNode *node = list->first;
     return node != NULL ? List_remove(list, node) : NULL;
+error:
+    return NULL;
+
 }
 
 void *List_remove(List *list, ListNode *node)
 {
     void *result = NULL;
+
+    check(list!=NULL, "ptr list is NULL.");
 
     check(list->first && list->last, "List is empty.");
     check(node, "node can't be NULL");
