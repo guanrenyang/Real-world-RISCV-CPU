@@ -80,7 +80,7 @@ char *all_tests()
   mu_suite_start();
 
   mu_run_test(test_bubble_sort);
-  // mu_run_test(test_merge_sort);
+  mu_run_test(test_merge_sort);
 
   return NULL;
 }
