@@ -1,87 +1,114 @@
 #include <lcthw/list_algos.h>
 #include <lcthw/dbg.h>
 
-inline void ListNode_swap(ListNode *a, ListNode *b)
+void ListNode_swap(ListNode *node1, ListNode *node2)
 {
-    void *temp = a->value;
-    a->value = b->value;
-    b->value = temp;
+  check_mem(node1);
+  check_mem(node2);
+
+  void *tmp;
+  tmp = node2->value;
+  node2->value = node1->value;
+  node1->value = tmp;
+error:
+  return ;
 }
 
 int List_bubble_sort(List *list, List_compare cmp)
 {
-    int sorted = 1;
-
-    if(List_count(list) <= 1) {
-        return 0;  // already sorted
+  if (list == NULL || list->first==list->last)  
+      return 0;
+  
+  int sorted = 1;
+  while (sorted) {
+    LIST_FOREACH(list, first, next, cur){
+      if (cur->next && cmp(cur->value, cur->next->value)>0) {
+        sorted = 0;
+        ListNode_swap(cur, cur->next);
+      }
+    }
+    if (sorted) {
+      return 0;
     }
 
-    do {
-        sorted = 1;
-        LIST_FOREACH(list, first, next, cur) {
-            if(cur->next) {
-                if(cmp(cur->value, cur->next->value) > 0) {
-                    ListNode_swap(cur, cur->next);
-                    sorted = 0;
-                }
-            }
-        }
-    } while(!sorted);
-
-    return 0;
+    sorted = 1;
+  }
+ 
+  return 0;
+  
 }
 
-inline List *List_merge(List *left, List *right, List_compare cmp)
-{
-    List *result = List_create();
-    void *val = NULL;
-
-    while(List_count(left) > 0 || List_count(right) > 0) {
-        if(List_count(left) > 0 && List_count(right) > 0) {
-            if(cmp(List_first(left), List_first(right)) <= 0) {
-                val = List_shift(left);
-            } else {
-                val = List_shift(right);
-            }
-
-            List_push(result, val);
-        } else if(List_count(left) > 0) {
-            val = List_shift(left);
-            List_push(result, val);
-        } else if(List_count(right) > 0) {
-            val = List_shift(right);
-            List_push(result, val);
-        }
+List *List_merge(List *list_1, List *list_2, List_compare cmp){
+  List *result = List_create();
+ 
+  void* value_1;
+  void* value_2;
+  while (list_1->count && list_2->count) {
+    value_1 = list_1->first->value;
+    value_2 = list_2->first->value;
+    if (cmp(value_1, value_2)>0) {
+      List_push(result, value_2);
+      List_shift(list_2);
+    } else {
+      List_push(result, value_1);
+      List_shift(list_1);
     }
-
-    return result;
+  }
+  void *value;
+  while (list_1->count) {
+    value = List_shift(list_1);
+    List_push(result, value);
+  }
+  while (list_2->count) {
+    value = List_shift(list_2);
+    List_push(result, value);
+  }
+  
+  return result;
 }
 
 List *List_merge_sort(List *list, List_compare cmp)
 {
-    if(List_count(list) <= 1) {
-        return list;
-    }
+  check_mem(list);
+  check(list->count!=0, "Error: merge an empty list.");
 
-    List *left = List_create();
-    List *right = List_create();
-    int middle = List_count(list) / 2;
+  if (list->count==1) {
+    return list;
+  }  
+  
+  List *left = List_create();
+  List *right = List_create();
 
-    LIST_FOREACH(list, first, next, cur) {
-        if(middle > 0) {
-            List_push(left, cur->value);
-        } else {
-            List_push(right, cur->value);
-        }
+  int i=0;
+  LIST_FOREACH(list, first, next, cur){
+    if (i<(list->count)/2)
+      List_push(left, cur->value);
+    else 
+      List_push(right, cur->value);
+    i++;
+  }
 
-        middle--;
-    }
+  left = List_merge_sort(left, cmp);
+  right = List_merge_sort(right, cmp);
+  List * result = List_merge(left, right, cmp);
 
-    List *sort_left = List_merge_sort(left, cmp);
-    List *sort_right = List_merge_sort(right, cmp);
+  List_destroy(left);
+  List_destroy(right);
 
-    if(sort_left != left) List_destroy(left);
-    if(sort_right != right) List_destroy(right);
-
-    return List_merge(sort_left, sort_right, cmp);
+error:
+  return result;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
