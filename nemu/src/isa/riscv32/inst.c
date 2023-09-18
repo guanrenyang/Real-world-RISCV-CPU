@@ -24,7 +24,7 @@
 
 enum {
   TYPE_I, TYPE_U, TYPE_S,
-  TYPE_J,
+  TYPE_J, TYPE_R,
   TYPE_N, // none
 };
 
@@ -45,6 +45,7 @@ static void decode_operand(Decode *s, int *rd, word_t *src1, word_t *src2, word_
     case TYPE_U:                   immU(); break;
     case TYPE_S: src1R(); src2R(); immS(); break;
     case TYPE_J:                   immJ(); break;
+    case TYPE_R: src1R(); src2R();       ; break;
   }
 }
 
@@ -67,6 +68,7 @@ static int decode_exec(Decode *s) {
   // The instruction I wrote myself
   INSTPAT("??????? ????? ????? 010 ????? 00000 11", lw     , I, SEXT(Mr(src1 + imm, 4), 32));
   INSTPAT("??????? ????? ????? 010 ????? 01000 11", sw     , S, Mw(src1 + imm, 4, src2));
+  INSTPAT("0000000 ????? ????? 000 ????? 01100 11", add    , R, R(rd) = src1 + src2);
   INSTPAT("??????? ????? ????? 000 ????? 00100 11", addi   , I, R(rd) = src1 + imm);
 
 #define JUMP(dnpc, npc, rd, snpc) (dnpc) = (npc); R((rd)) = snpc
