@@ -1,31 +1,32 @@
-define ysys_23060061_Width 32
-
 module ysyx_23060061_Top (
   input clk,
   input rst, 
-  input [ysys_23060061_Width-1 : 0] inst,
-  output [ysys_23060061_Width-1 : 0] pc
+  input [31 : 0] inst,
+  output [31 : 0] pc
 );
   // IF: reg PC and its updating rule.
-  wire pc;
-  ysyx_23060061_Reg #(32, 32'h80000000) pc_reg(.clk(clk), .rst(rst), .din(snpc), .dout(pc), .wen(1'b1));
-  assign snpc = pc + 4;
-  
-  // ID: Decoder unit
+  wire [31:0] snpc;
+  wire [31:0] imm;
   wire RegWrite;
-  ysyx_23060061_Decoder(.opcode(inst[6:0]), .funct3(inst[14:12]), .RegWrite(RegWrite));
-  
-  wire [4:0] rs1;
   wire [4:0] rs2;
   wire [4:0] rd;
+  wire [4:0] rs1;
+  wire [31:0] regData1;
+  wire [31:0] regData2;
+  wire [31:0] aluOut;
+
+  assign snpc = pc + 4;
+  ysyx_23060061_Reg #(32, 32'h80000000) pc_reg(.clk(clk), .rst(rst), .din(snpc), .dout(pc), .wen(1'b1));
+  
+  // ID: Decoder unit
+  ysyx_23060061_Decoder decoder(.opcode(inst[6:0]), .funct3(inst[14:12]), .RegWrite(RegWrite));
+  
   assign rs1 = inst[19:15];
   assign rs2 = inst[24:20];
   assign rd = inst[11:7];
   
-  wire regData1;
-  wire regData2;
   // Register File
-  ysys_23060061_RegisterFile #(5, 32) registerFile(
+  ysyx_23060061_RegisterFile #(5, 32) registerFile(
     .clk(clk),
     .wdata(aluOut),
     .waddr(rd),
@@ -37,11 +38,9 @@ module ysyx_23060061_Top (
   );
 
   // EX
-  wire [ysys_23060061_Width-1:0] imm;
-  assign imm = {20{inst[31]}, inst[31:20]}; // Sign extension
+  assign imm = {{20{inst[31]}}, inst[31:20]}; // Sign extension (only for I-type)
 
-  wire aluOut;
-  ysys_23060061_ALU(.clk(clk), .a(regData1), .b(imm), .aluOut(aluOut));
+  ysyx_23060061_ALU #(32, 32'd0) alu(.clk(clk), .a(regData1), .b(imm), .aluOut(aluOut));
 
 endmodule
 
