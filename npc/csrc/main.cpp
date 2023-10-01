@@ -44,8 +44,8 @@ int main() {
   // top->clk = 0b0; top->rst = 0b0; step_and_dump_wave();
   
   // cycle 2
-  top->clk = 0b1; top->rst = 0b0; step_and_dump_wave();
-  printf("pc before eval: %x\n", top->pc);
+  top->clk = 0b1; top->rst = 0b0; printf("pc before eval: %x\n", top->pc);
+; step_and_dump_wave();
   top->clk = 0b0; top->rst = 0b0; top->eval();
   printf("pc after eval: %x\n", top->pc); 
   top->inst = 0b00000000000100000000000010011011; step_and_dump_wave();
