@@ -1,64 +1,55 @@
-/*LED*/
-#include <nvboard.h>
-#include <Vtop.h>
+#include "verilated.h"
+#include "verilated_vcd_c.h"
 
-static TOP_NAME dut;
+#include <Vysyx_23060061_Top.h>
 
-void nvboard_bind_all_pins(Vtop* top);
+#define TOPNAME Vysyx_23060061_Top
 
-static void single_cycle() {
-  dut.clk = 0; dut.eval();
-  dut.clk = 1; dut.eval();
+VerilatedVcdC* tfp = nullptr;
+VerilatedContext* contextp = NULL;
+static TOPNAME* top;
+
+void step_and_dump_wave(){
+    top->eval();
+    contextp->timeInc(1);
+    tfp->dump(contextp->time());
 }
 
-static void reset(int n) {
-  dut.rst = 1;
-  while (n -- > 0)
-    single_cycle();
-  dut.rst = 0;
+void sim_init(){
+    top = new TOPNAME;
+
+    contextp = new VerilatedContext;
+    tfp = new VerilatedVcdC;
+
+    contextp->traceEverOn(true);
+    top->trace(tfp, 0);
+    tfp->open("./build/dump.vcd");
+}
+
+void sim_exit(){
+    step_and_dump_wave();
+    tfp->close();
 }
 
 int main() {
-  nvboard_bind_all_pins(&dut);
-  nvboard_init();
-
-  reset(10);
-
-  while (1)
-  {
-    nvboard_update();
-    single_cycle();
-  }
+  Verilated::traceEverOn(true);
+  sim_init();
   
+  // cycle 1 
+  top->clk = 0b1; top->rst = 0b1; step_and_dump_wave();
+  top->clk = 0b0; top->rst = 0b1; step_and_dump_wave();
+
+  // // cycle 2
+  // top->clk = 0b1; top->rst = 0b0; step_and_dump_wave();
+  // top->clk = 0b0; top->rst = 0b0; step_and_dump_wave();
+  
+  // cycle 2
+  top->clk = 0b1; top->rst = 0b0; step_and_dump_wave();
+  top->clk = 0b0; top->rst = 0b0; top->eval();
+  printf("pr: %x\n", top->pc);
+  top->inst = 0b00000000000100000000000010011011; step_and_dump_wave();
+  
+  sim_exit();
+
+  return 0;
 }
-/* example*/
-// #include <stdio.h>
-
-// int main() {
-//   printf("Hello, ysyx!\n");
-//   return 0;
-// }
-
-/* On-off Switch*/
-// #include <nvboard.h>
-// #include <Vtop.h>
-
-// static TOP_NAME dut;
-
-// void nvboard_bind_all_pins(Vtop* top);
-
-// static void single_cycle() {
-//   dut.eval();
-//   printf("a: %d, b: %d, f: %d", dut.a, dut.b, dut.f);
-// }
-
-// int main() {
-//   nvboard_bind_all_pins(&dut);
-//   nvboard_init();
-
-//   while(1) {
-//     nvboard_update();
-//     single_cycle();
-//   }
-// }
-
