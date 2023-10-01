@@ -45,15 +45,15 @@ int main() {
   
   // cycle 2
   top->clk = 0b1; top->rst = 0b0; step_and_dump_wave();
-  top->clk = 0b0; top->rst = 0b0; top->inst = 0b00000000000100000000000010011011; step_and_dump_wave();
+  top->clk = 0b0; top->rst = 0b0; top->inst = 0b00000000000100000000000010010011; step_and_dump_wave();
   
   //cycle 3 
   top->clk = 0b1; top->rst = 0b0; step_and_dump_wave();
-  top->clk = 0b0; top->rst = 0b0; top->inst = 0b00000000000100001000000010011011; step_and_dump_wave();
+  top->clk = 0b0; top->rst = 0b0; top->inst = 0b00000000000100001000000010010011; step_and_dump_wave();
  
   //cycle 4 
   top->clk = 0b1; top->rst = 0b0; step_and_dump_wave();
-  top->clk = 0b0; top->rst = 0b0; top->inst = 0b00000000000100001000000010011011; step_and_dump_wave();
+  top->clk = 0b0; top->rst = 0b0; top->inst = 0b00000000000100001000000010010011; step_and_dump_wave();
 
   sim_exit();
 
