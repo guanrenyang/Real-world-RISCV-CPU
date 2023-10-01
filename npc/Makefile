@@ -31,7 +31,10 @@ $(BIN): $(VSRCS) $(CSRCS)
 
 sim: $(BIN)
 	$(call git_commit, "sim RTL") # DO NOT REMOVE THIS LINE!!!
-	
+	@./build/ysyx_23060061_Top	
+
+wave: sim
+	@gtkwave ./build/dump.vcd
 .PHONY: clean
 clean:
 	rm -rf $(abspath $(BUILD_DIR))

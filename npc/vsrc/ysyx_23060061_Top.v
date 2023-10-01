@@ -28,6 +28,7 @@ module ysyx_23060061_Top (
   // Register File
   ysyx_23060061_RegisterFile #(5, 32) registerFile(
     .clk(clk),
+    .rst(rst),
     .wdata(aluOut),
     .waddr(rd),
     .wen(RegWrite),
