@@ -69,8 +69,7 @@ int main() {
   // cycle 2
   while(true){
     top->clk = 0b1; top->rst = 0b0; step_and_dump_wave();
-    top->clk = 0b0; top->rst = 0b0; top->inst = 0b00000000000100000000000010010011; step_and_dump_wave();
-    break;
+    top->clk = 0b0; top->rst = 0b0; top->inst = paddr_read(top->pc); step_and_dump_wave();
   }
  //  top->clk = 0b1; top->rst = 0b0; step_and_dump_wave();
  //  top->clk = 0b0; top->rst = 0b0; top->inst = paddr_read(top->pc); step_and_dump_wave();
