@@ -1,9 +1,9 @@
 #include "verilated.h"
 #include "verilated_vcd_c.h"
 #include <inttypes.h>
-// #include "svdpi.h"
+#include "svdpi.h"
 #include <stdlib.h>
-// #include "Vysyx_23060061_Top__Dpi.h"
+#include "Vysyx_23060061_Top__Dpi.h"
 #include <Vysyx_23060061_Top.h>
 
 #define TOPNAME Vysyx_23060061_Top
@@ -19,12 +19,13 @@ static uint32_t instMem[] = {
 };
 
 static uint32_t paddr_read(uint32_t paddr){
+  printf("%u\n", paddr);
   return instMem[(paddr-MEMBASE)/4];
 }
 
 void trap() {
   printf("here is trap\n");
-  // exit(0);
+  exit(0);
 }
 VerilatedVcdC* tfp = nullptr;
 VerilatedContext* contextp = NULL;
@@ -67,7 +68,8 @@ int main() {
   // cycle 2
   while(true){
     top->clk = 0b1; top->rst = 0b0; step_and_dump_wave();
-    top->clk = 0b0; top->rst = 0b0; top->inst = paddr_read(top->pc); step_and_dump_wave();
+    top->clk = 0b0; top->rst = 0b0; top->inst = 0b00000000000100000000000010010011; step_and_dump_wave();
+    break;
   }
  //  top->clk = 0b1; top->rst = 0b0; step_and_dump_wave();
  //  top->clk = 0b0; top->rst = 0b0; top->inst = paddr_read(top->pc); step_and_dump_wave();

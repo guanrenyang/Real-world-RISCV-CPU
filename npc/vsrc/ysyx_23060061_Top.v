@@ -1,4 +1,4 @@
-// import "DPI-C" function void trap ();
+import "DPI-C" function void trap ();
 
 module ysyx_23060061_Top (
   input clk,
@@ -24,9 +24,9 @@ module ysyx_23060061_Top (
   // ID: Decoder unit
   ysyx_23060061_Decoder decoder(.opcode(inst[6:0]), .funct3(inst[14:12]), .RegWrite(RegWrite), .ebreak(ebreak));
   
-  // always @(posedge clk) begin
-  //   if(ebreak) trap(); 
-  // end
+  always @(*) begin
+    if(ebreak) trap(); 
+  end
 
   assign rs1 = inst[19:15];
   assign rs2 = inst[24:20];
