@@ -18,14 +18,15 @@ static uint32_t instMem[] = {
   0b00000000000000000000000001110011
 };
 
+
 static uint32_t paddr_read(uint32_t paddr){
   printf("%u\n", paddr);
   return instMem[(paddr-MEMBASE)/4];
 }
 
+bool Trap = false;
 void trap() {
-  printf("here is trap\n");
-  exit(0);
+  Trap = true;
 }
 VerilatedVcdC* tfp = nullptr;
 VerilatedContext* contextp = NULL;
@@ -67,7 +68,7 @@ int main() {
   // top->clk = 0b0; top->rst = 0b0; step_and_dump_wave();
   
   // cycle 2
-  while(true){
+  while(!Trap){
     top->clk = 0b1; top->rst = 0b0; step_and_dump_wave();
     top->clk = 0b0; top->rst = 0b0; top->inst = paddr_read(top->pc); step_and_dump_wave();
   }
