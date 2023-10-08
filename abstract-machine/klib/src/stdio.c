@@ -24,7 +24,7 @@ char* itoa(int n, char* str) {
 
   size_t i = 0;
   while (long_n!=0) {
-    str[i++] = long_n%10;
+    str[i++] = long_n%10 + '0';
     long_n = long_n/10;
   }
   if (is_negative)
