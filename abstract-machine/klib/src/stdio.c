@@ -71,8 +71,9 @@ int sprintf(char *out, const char *fmt, ...) {
 	        break;
 	      case '%':
 	        out[out_i++] = '%';
+          break;
 	      default:
-          panic("Not implemented");
+          break;
       }
     }  
   }
