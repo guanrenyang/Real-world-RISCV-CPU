@@ -59,7 +59,7 @@ int sprintf(char *out, const char *fmt, ...) {
       switch (fmt[++i]) {
 	      case 'd':
 	        d = va_arg(ap, int);
-	        char str_d[12];
+	        char str_d[20];
 	        itoa(d, str_d);
 	        strcpy(out+out_i, str_d);
 	        out_i += strlen(str_d);
