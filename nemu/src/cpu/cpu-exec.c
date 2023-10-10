@@ -94,11 +94,11 @@ static void exec_once(Decode *s, vaddr_t pc) {
 }
 
 static void display_iringbuf(Decode *_this){
-  Log("%s\n", "Recently executed instructions:");
+  Log("%s", "Recently executed instructions:");
 
   size_t i = 0;
   for( i = 0 ;i < IRINGBUF_SIZE && (int)(g_nr_guest_inst - 1 - i) >= 0; i++){
-    Log("%s\n", _this->iringbuf[(g_nr_guest_inst - 1 - i) % IRINGBUF_SIZE]);
+    Log("%s", _this->iringbuf[(g_nr_guest_inst - 1 - i) % IRINGBUF_SIZE]);
   }
 }
 
