@@ -88,7 +88,7 @@ static void exec_once(Decode *s, vaddr_t pc) {
 static void display_iringbuf(Decode *_this){
   Log("%s", "Recently executed instructions:");
 
-  Log(ANSI_FMT("Instruction causing ABORT:", ANSI_FG_RED) "%s", _this->iringbuf[g_nr_guest_inst - 1 - 0 % CONFIG_IRINGBUF_SIZE]);
+  Log(ANSI_FMT("Instruction causing ABORT: ", ANSI_FG_RED) "%s", _this->iringbuf[g_nr_guest_inst - 1 - 0 % CONFIG_IRINGBUF_SIZE]);
   size_t i = 1;
   for( i = 1 ;i < CONFIG_IRINGBUF_SIZE && (int)(g_nr_guest_inst - 1 - i) >= 0; i++){
     Log("%s", _this->iringbuf[(g_nr_guest_inst - 1 - i) % CONFIG_IRINGBUF_SIZE]);
