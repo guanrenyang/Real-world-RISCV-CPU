@@ -93,12 +93,22 @@ static void exec_once(Decode *s, vaddr_t pc) {
 #endif
 }
 
+static void display_iringbuf(Decode *_this){
+  log_write("%s\n", "Recently executed instructions:");
+
+  size_t i = 0;
+  for( i = 0 ;i < IRINGBUF_SIZE && (g_nr_guest_inst - 1 - i) >= 0; i++){
+    log_write("%s\n", _this->iringbuf[(g_nr_guest_inst - 1 - i) % IRINGBUF_SIZE]);
+  }
+}
+
 static void execute(uint64_t n) {
   Decode s;
   for (;n > 0; n --) {
     exec_once(&s, cpu.pc);
     g_nr_guest_inst ++;
     trace_and_difftest(&s, cpu.pc);
+    if (nemu_state.state == NEMU_QUIT) IFDEF(CONFIG_ITRACE, display_iringbuf(&s));
     if (nemu_state.state != NEMU_RUNNING) break;
     IFDEF(CONFIG_DEVICE, device_update());
   }
