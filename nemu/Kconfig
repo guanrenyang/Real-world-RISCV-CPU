@@ -151,7 +151,11 @@ config ITRACE_COND
   string "Only trace instructions when the condition is true"
   default "true"
 
-
+config IRINGBUF_SIZE
+  depends on ITRACE
+  int "Size of the ring buffer of instruction trace"
+  default 100
+  
 config DIFFTEST
   depends on TARGET_NATIVE_ELF
   bool "Enable differential testing"
