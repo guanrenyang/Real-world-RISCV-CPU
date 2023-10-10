@@ -97,7 +97,7 @@ static void display_iringbuf(Decode *_this){
   Log("%s\n", "Recently executed instructions:");
 
   size_t i = 0;
-  for( i = 0 ;i < IRINGBUF_SIZE && (g_nr_guest_inst - 1 - i) >= 0; i++){
+  for( i = 0 ;i < IRINGBUF_SIZE && (int)(g_nr_guest_inst - 1 - i) >= 0; i++){
     Log("%s\n", _this->iringbuf[(g_nr_guest_inst - 1 - i) % IRINGBUF_SIZE]);
   }
 }
