@@ -24,6 +24,7 @@
  * You can modify this value as you want.
  */
 #define MAX_INST_TO_PRINT 10
+#define IRINGBUF_SIZE 10 // must be less than or equal to 128 (see include/cpu/decode.h)
 
 CPU_state cpu = {};
 uint64_t g_nr_guest_inst = 0;
@@ -35,20 +36,21 @@ void device_update();
 void scan_watchpoint(bool print_unchanged, bool *all_unchanged);
 
 static void trace_and_difftest(Decode *_this, vaddr_t dnpc) {
+
 #ifdef CONFIG_ITRACE_COND
   if (ITRACE_COND) { log_write("%s\n", _this->logbuf); }
 #endif
   if (g_print_step) { IFDEF(CONFIG_ITRACE, puts(_this->logbuf)); }
   IFDEF(CONFIG_DIFFTEST, difftest_step(_this->pc, dnpc));
-  
+
+#ifdef CONFIG_WATCHPOINT
   bool all_unchanged = true;
   scan_watchpoint(false, &all_unchanged);
   if (!all_unchanged) // Only pause execution when some watchpoint been updated
     if (nemu_state.state != NEMU_END && nemu_state.state != NEMU_ABORT) // Only pause execution when it won't end
       nemu_state.state = NEMU_STOP; 
-// #ifdef CONFIG_WATCHPOINT
-//   
-// #endif /* ifdef CONFIG_WATCHPOINT */
+#endif /* ifdef CONFIG_WATCHPOINT */
+
 }
 
 static void exec_once(Decode *s, vaddr_t pc) {
@@ -58,23 +60,32 @@ static void exec_once(Decode *s, vaddr_t pc) {
   cpu.pc = s->dnpc;
 #ifdef CONFIG_ITRACE
   char *p = s->logbuf;
+  char *ring_p = s->iringbuf[g_nr_guest_inst % IRINGBUF_SIZE];
+
   p += snprintf(p, sizeof(s->logbuf), FMT_WORD ":", s->pc);
+  ring_p += snprintf(ring_p, sizeof(s->iringbuf[g_nr_guest_inst % IRINGBUF_SIZE]), FMT_WORD ":", s->pc);
+
   int ilen = s->snpc - s->pc;
   int i;
   uint8_t *inst = (uint8_t *)&s->isa.inst.val;
   for (i = ilen - 1; i >= 0; i --) {
     p += snprintf(p, 4, " %02x", inst[i]);
+    ring_p += snprintf(ring_p, 4, " %02x", inst[i]);
   }
   int ilen_max = MUXDEF(CONFIG_ISA_x86, 8, 4);
   int space_len = ilen_max - ilen;
   if (space_len < 0) space_len = 0;
   space_len = space_len * 3 + 1;
   memset(p, ' ', space_len);
+  memset(ring_p, ' ', space_len);
   p += space_len;
+  ring_p += space_len;
 
 #ifndef CONFIG_ISA_loongarch32r
   void disassemble(char *str, int size, uint64_t pc, uint8_t *code, int nbyte);
   disassemble(p, s->logbuf + sizeof(s->logbuf) - p,
+      MUXDEF(CONFIG_ISA_x86, s->snpc, s->pc), (uint8_t *)&s->isa.inst.val, ilen);
+  disassemble(ring_p, s->iringbuf[g_nr_guest_inst % IRINGBUF_SIZE] + sizeof(s->iringbuf[g_nr_guest_inst % IRINGBUF_SIZE]) - ring_p,
       MUXDEF(CONFIG_ISA_x86, s->snpc, s->pc), (uint8_t *)&s->isa.inst.val, ilen);
 #else
   p[0] = '\0'; // the upstream llvm does not support loongarch32r
