@@ -155,7 +155,12 @@ config IRINGBUF_SIZE
   depends on ITRACE
   int "Size of the ring buffer of instruction trace (<=128)"
   default 100
-  
+
+config MTRACE
+  depends on TRACE && TARGET_NATIVE_ELF && ENGINE_INTERPRETER
+  bool "Enable memory tracer"
+  default n
+ 
 config DIFFTEST
   depends on TARGET_NATIVE_ELF
   bool "Enable differential testing"
