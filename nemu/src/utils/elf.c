@@ -57,14 +57,14 @@ void init_elf(const char *elf_file){
     /* print the strtab*/
     Log("strtab: ");
     for (int i = 0; i < strtab_size; i++) {
-        printf("%c", strtab[i]);
+        printf("%x ", strtab[i]);
     }
     printf("\n");
 
     /* print the symtab*/
     Log("symtab: ");
     for (int i = 0; i < symtab_size; i++) {
-        printf("%c", symtab[i]);
+        printf("%x ", symtab[i]);
     }
     printf("\n");
    
