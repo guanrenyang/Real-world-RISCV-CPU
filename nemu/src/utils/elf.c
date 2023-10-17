@@ -9,6 +9,7 @@
 
 char *strtab, *symtab;
 size_t strtab_size, symtab_size;  
+
 void init_elf(const char *elf_file){
 /*read the `elf_file` and extract the symbol table and string table*/
     int fd;
@@ -70,4 +71,10 @@ void init_elf(const char *elf_file){
    
     munmap(map, lseek(fd, 0, SEEK_END));
     close(fd);
+}
+
+void clear_elf(){
+/* release the memory used to store the symbol table and string table*/
+    free(strtab);
+    free(symtab);
 }
