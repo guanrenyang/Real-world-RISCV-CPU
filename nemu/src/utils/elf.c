@@ -15,7 +15,6 @@ void init_elf(const char *elf_file){
     void *map;
     Elf32_Ehdr *ehdr;
     Elf32_Shdr *shdr;
-    int i, j;
 
     /* open the elf file*/
     if ((fd = open(elf_file, O_RDONLY)) < 0) {
@@ -31,25 +30,44 @@ void init_elf(const char *elf_file){
     shdr = (Elf32_Shdr *)(map + ehdr->e_shoff);
     
     /* Find the string table section*/
+    int i;
     strtab = NULL;
     for (i = 0; i < ehdr->e_shnum; i++) {
         if (shdr[i].sh_type == SHT_STRTAB) {
-            strtab = (char *)(map + shdr[i].sh_offset);
             strtab_size = shdr[i].sh_size;
-            break;
-        }
-    }
-    
-    symtab = NULL;
-    for (j = 0; j < ehdr->e_shnum; j++) {
-        if (shdr[j].sh_type == SHT_SYMTAB) {
-            symtab = (char *)(map + shdr[j].sh_offset);
-            symtab_size = shdr[j].sh_size;
+
+            strtab = malloc(strtab_size);
+            memcpy(strtab, map + shdr[i].sh_offset, strtab_size);
             break;
         }
     }
 
-  /* Clean up */
-  munmap(map, lseek(fd, 0, SEEK_END));
-  close(fd);
+    int j;
+    symtab = NULL;
+    for (j = 0; j < ehdr->e_shnum; j++) {
+        if (shdr[j].sh_type == SHT_SYMTAB) {
+            symtab_size = shdr[j].sh_size;
+
+            symtab = malloc(symtab_size);
+            memcpy(symtab, map + shdr[j].sh_offset, symtab_size);
+            break;
+        }
+    }
+    
+    /* print the strtab*/
+    Log("strtab: ");
+    for (int i = 0; i < strtab_size; i++) {
+        printf("%c", strtab[i]);
+    }
+    printf("\n");
+
+    /* print the symtab*/
+    Log("symtab: ");
+    for (int i = 0; i < symtab_size; i++) {
+        printf("%c", symtab[i]);
+    }
+    printf("\n");
+   
+    munmap(map, lseek(fd, 0, SEEK_END));
+    close(fd);
 }
