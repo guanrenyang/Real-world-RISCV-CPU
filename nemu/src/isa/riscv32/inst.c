@@ -19,7 +19,7 @@
 #include <cpu/decode.h>
 
 size_t stack_top = -1; 
-char func_name_stack[100][20];
+char func_name_stack[10000][20];
 void ftrace(vaddr_t addr){
   void source_function(vaddr_t addr, char* func_name);
 
