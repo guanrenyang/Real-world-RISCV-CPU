@@ -35,7 +35,8 @@ void ftrace(vaddr_t addr){
     Log("Ret: %s(%x)", func_name, addr);
   } 
   
-  Assert(stack_top>100, "Function name stack overflow!");
+  Log("%lu", stack_top);
+  Assert(stack_top<100, "Function name stack overflow!");
 }
 
 #define R(i) gpr(i)
