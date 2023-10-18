@@ -61,9 +61,9 @@ void ftrace(vaddr_t addr, int rd, int type){
     printf(message, func_name);
     INDENT[strlen(INDENT)-2] = '\0';
   } else {
+    strcat(INDENT, "  ");
     strcat(message, "Call %s(%x);\n");
     printf(message, func_name, addr);
-    strcat(INDENT, "  ");
   }
   //Log("is_return: %d, addr: %x, func_addr: %x, func_name: %s", (type==TYPE_I && rd==0), addr, func_addr, func_name);
   /*
