@@ -18,26 +18,7 @@
 #include <cpu/ifetch.h>
 #include <cpu/decode.h>
 
-size_t stack_top = -1; 
-char func_name_stack[10000][20];
-void ftrace(vaddr_t addr){
-  void source_function(vaddr_t addr, char* func_name);
 
-  char func_name[30];
-  source_function(addr, func_name);
-
-  if(stack_top==-1 || strcmp(func_name, func_name_stack[stack_top])!=0){
-    stack_top++;
-    strcpy(func_name_stack[stack_top], func_name);
-    Log("Call: %s(%x)", func_name, addr);
-  } else{
-    stack_top--;
-    Log("Ret: %s(%x)", func_name, addr);
-  } 
-  
-  Log("%lu", stack_top);
-  Assert(stack_top<10000, "Function name stack overflow!");
-}
 
 #define R(i) gpr(i)
 #define Mr vaddr_read
@@ -57,6 +38,35 @@ enum {
 #define immJ() do { *imm = SEXT((BITS(i, 31, 31) << 20) | (BITS(i, 19, 12) << 12) | (BITS(i, 20, 20) << 11) | (BITS(i, 30, 21) << 1), 21) ; } while (0)
 #define immB() do { *imm = SEXT((BITS(i, 31, 31) << 12) | (BITS(i, 30, 25) << 5) | (BITS(i, 11, 8) << 1) | (BITS(i, 7, 7) << 11), 13); } while (0) 
 
+size_t stack_top = -1; 
+vaddr_t func_addr_stack[10000];
+void ftrace(vaddr_t addr, int rd, int type){
+  void source_func_name(vaddr_t addr, char* func_name);
+  void source_func_addr(vaddr_t addr, vaddr_t* func_addr);
+  
+  char func_name[30];
+  vaddr_t func_addr;
+
+  source_func_name(addr, func_name);
+  source_func_addr(addr, &func_addr);
+
+  Log("addr: %x, func_addr: %x, func_name: %s", addr, func_addr, func_name);
+  /*
+  if (type==TYPE_I && rd == 0) {
+    stack_top--;
+    Log("Ret: %s(%x)", func_name, addr);
+  }
+ 
+  if(stack_top==-1){
+    stack_top++;
+    strcpy(func_name_stack[stack_top], func_name);
+    Log("Call: %s(%x)", func_name, addr);
+  }
+  
+  Log("%lu", stack_top);
+  Assert(stack_top<10000, "Function name stack overflow!");
+  */
+}
 static void decode_operand(Decode *s, int *rd, word_t *src1, word_t *src2, word_t *imm, int type) {
   uint32_t i = s->isa.inst.val;
   int rs1 = BITS(i, 19, 15);
@@ -91,9 +101,9 @@ static int decode_exec(Decode *s) {
   // The instruction I wrote myself
   INSTPAT("??????? ????? ????? 010 ????? 01000 11", sw     , S, Mw(src1 + imm, 4, src2));
   INSTPAT("??????? ????? ????? 000 ????? 00100 11", addi   , I, R(rd) = src1 + imm);
-#define JUMP(dnpc, npc, rd, snpc) (dnpc) = (npc); R((rd)) = snpc; IFDEF(CONFIG_FTRACE, ftrace(dnpc))
-  INSTPAT("??????? ????? ????? ??? ????? 11011 11", jal    , J, JUMP(s->dnpc, s->pc + imm, rd, s->snpc));
-  INSTPAT("??????? ????? ????? 000 ????? 11001 11", jalr   , I, JUMP(s->dnpc, (src1 + imm) & (~1), rd, s->snpc));
+#define JUMP(dnpc, npc, rd, snpc, type) (dnpc) = (npc); R((rd)) = snpc; IFDEF(CONFIG_FTRACE, ftrace(dnpc, rd, type))
+  INSTPAT("??????? ????? ????? ??? ????? 11011 11", jal    , J, JUMP(s->dnpc, s->pc + imm, rd, s->snpc, TYPE_J));
+  INSTPAT("??????? ????? ????? 000 ????? 11001 11", jalr   , I, JUMP(s->dnpc, (src1 + imm) & (~1), rd, s->snpc, TYPE_I));
 
   INSTPAT("??????? ????? ????? 001 ????? 00000 11", lh     , I, R(rd) = SEXT(Mr(src1 + imm, 2), 16));
   INSTPAT("??????? ????? ????? 101 ????? 00000 11", lhu    , I, R(rd) = (word_t) Mr(src1 + imm, 2));

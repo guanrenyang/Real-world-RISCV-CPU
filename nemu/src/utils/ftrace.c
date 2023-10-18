@@ -79,7 +79,7 @@ void clear_elf(){
     free(symtab);
 }
 
-void source_function(vaddr_t addr, char* func_name){
+void source_func_name(vaddr_t addr, char* func_name){
     // to determine which function the address `addr` belongs to
     Elf32_Sym *sym = (Elf32_Sym *)symtab;
     int i;
@@ -93,4 +93,20 @@ void source_function(vaddr_t addr, char* func_name){
             }
         }
     }
+}
+
+void source_func_addr(vaddr_t addr, vaddr_t* func_addr) {
+    Elf32_Sym *sym = (Elf32_Sym *)symtab;
+    int i;
+    for (i = 0; i < symtab_size / sizeof(Elf32_Sym); i++) {
+        if (ELF32_ST_TYPE(sym[i].st_info) == STT_FUNC) {
+            if (addr >= sym[i].st_value && addr < sym[i].st_value + sym[i].st_size) {
+                // return the function name
+                // Log("function name: %s", strtab + sym[i].st_name);
+                *func_addr = sym[i].st_value;
+                return;
+            }
+        }
+    }
+    panic("not in a function");
 }
