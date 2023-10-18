@@ -87,7 +87,7 @@ void source_function(vaddr_t addr, char* func_name){
         if (ELF32_ST_TYPE(sym[i].st_info) == STT_FUNC) {
             if (addr >= sym[i].st_value && addr < sym[i].st_value + sym[i].st_size) {
                 // return the function name
-                Log("function name: %s", strtab + sym[i].st_name);
+                // Log("function name: %s", strtab + sym[i].st_name);
                 strcpy(func_name, strtab + sym[i].st_name);
                 return;
             }
