@@ -83,6 +83,7 @@ static void exec_once(Decode *s, vaddr_t pc) {
 #endif
 }
 
+#ifdef CONFIG_ITRACE
 static void display_iringbuf(Decode *_this){
   Log("%s", "Recently executed instructions:");
 
@@ -92,6 +93,7 @@ static void display_iringbuf(Decode *_this){
     Log("%s", _this->iringbuf[(g_nr_guest_inst - 1 - i) % CONFIG_IRINGBUF_SIZE]);
   }
 }
+#endif
 
 static void execute(uint64_t n) {
   Decode s;
