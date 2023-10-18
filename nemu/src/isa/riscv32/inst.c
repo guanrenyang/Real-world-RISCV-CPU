@@ -38,18 +38,30 @@ enum {
 #define immJ() do { *imm = SEXT((BITS(i, 31, 31) << 20) | (BITS(i, 19, 12) << 12) | (BITS(i, 20, 20) << 11) | (BITS(i, 30, 21) << 1), 21) ; } while (0)
 #define immB() do { *imm = SEXT((BITS(i, 31, 31) << 12) | (BITS(i, 30, 25) << 5) | (BITS(i, 11, 8) << 1) | (BITS(i, 7, 7) << 11), 13); } while (0) 
 
-size_t stack_top = -1; 
-vaddr_t func_addr_stack[10000];
+// size_t stack_top = -1; 
+// vaddr_t func_addr_stack[10000];
+
+char INDENT[1000] = "";
 void ftrace(vaddr_t addr, int rd, int type){
   void source_func_name(vaddr_t addr, char* func_name);
   void source_func_addr(vaddr_t addr, vaddr_t* func_addr);
-  
+
+
   char func_name[30];
   vaddr_t func_addr;
 
   source_func_name(addr, func_name);
   source_func_addr(addr, &func_addr);
 
+  char message[2000];
+  if (type==TYPE_I && rd==0) {
+    Log("Ret: %s(%x)", func_name, addr);
+  } else {
+    strcpy(message, INDENT);
+    strcat(message, "Call %s(%x)");
+    printf(message, func_name, addr);
+    strcat(INDENT, "  ");
+  }
   Log("is_return: %d, addr: %x, func_addr: %x, func_name: %s", (type==TYPE_I && rd==0), addr, func_addr, func_name);
   /*
   if (type==TYPE_I && rd == 0) {
