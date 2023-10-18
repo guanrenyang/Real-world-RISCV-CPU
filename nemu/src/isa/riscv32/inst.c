@@ -42,29 +42,30 @@ enum {
 // vaddr_t func_addr_stack[10000];
 
 char INDENT[1000] = "";
-void ftrace(vaddr_t addr, int rd, int type){
+void ftrace(vaddr_t dnpc, vaddr_t pc, int rd, int type){
   void source_func_name(vaddr_t addr, char* func_name);
   void source_func_addr(vaddr_t addr, vaddr_t* func_addr);
 
-
+  char curr_func_name[30];
   char func_name[30];
   vaddr_t func_addr;
 
-  source_func_name(addr, func_name);
-  source_func_addr(addr, &func_addr);
+  source_func_name(pc, curr_func_name);
+  source_func_name(dnpc, func_name);
+  source_func_addr(dnpc, &func_addr);
 
   char message[2000];
   if (type==TYPE_I && rd==0) {
     //Log("Ret: %s(%x)", func_name, addr);
     strcpy(message, INDENT);
-    strcat(message, "Ret %s;\n");
-    printf(message, func_name);
+    strcat(message, "Ret to %s from %s;\n");
+    printf(message, func_name, curr_func_name);
     INDENT[strlen(INDENT)-2] = '\0';
   } else {
     strcat(INDENT, "  ");
     strcpy(message, INDENT);
     strcat(message, "Call %s(%x);\n");
-    printf(message, func_name, addr);
+    printf(message, func_name, dnpc);
   }
   //Log("is_return: %d, addr: %x, func_addr: %x, func_name: %s", (type==TYPE_I && rd==0), addr, func_addr, func_name);
   /*
@@ -117,9 +118,9 @@ static int decode_exec(Decode *s) {
   // The instruction I wrote myself
   INSTPAT("??????? ????? ????? 010 ????? 01000 11", sw     , S, Mw(src1 + imm, 4, src2));
   INSTPAT("??????? ????? ????? 000 ????? 00100 11", addi   , I, R(rd) = src1 + imm);
-#define JUMP(dnpc, npc, rd, snpc, type) (dnpc) = (npc); R((rd)) = snpc; IFDEF(CONFIG_FTRACE, ftrace(dnpc, rd, type))
-  INSTPAT("??????? ????? ????? ??? ????? 11011 11", jal    , J, JUMP(s->dnpc, s->pc + imm, rd, s->snpc, TYPE_J));
-  INSTPAT("??????? ????? ????? 000 ????? 11001 11", jalr   , I, JUMP(s->dnpc, (src1 + imm) & (~1), rd, s->snpc, TYPE_I));
+#define JUMP(dnpc, npc, pc, rd, snpc, type) (dnpc) = (npc); R((rd)) = snpc; IFDEF(CONFIG_FTRACE, ftrace(dnpc, pc, rd, type))
+  INSTPAT("??????? ????? ????? ??? ????? 11011 11", jal    , J, JUMP(s->dnpc, s->pc + imm, s->pc, rd, s->snpc, TYPE_J));
+  INSTPAT("??????? ????? ????? 000 ????? 11001 11", jalr   , I, JUMP(s->dnpc, (src1 + imm) & (~1), s->pc, rd, s->snpc, TYPE_I));
 
   INSTPAT("??????? ????? ????? 001 ????? 00000 11", lh     , I, R(rd) = SEXT(Mr(src1 + imm, 2), 16));
   INSTPAT("??????? ????? ????? 101 ????? 00000 11", lhu    , I, R(rd) = (word_t) Mr(src1 + imm, 2));
