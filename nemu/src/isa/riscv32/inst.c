@@ -58,7 +58,7 @@ void ftrace(vaddr_t addr, int rd, int type){
     Log("Ret: %s(%x)", func_name, addr);
   } else {
     strcpy(message, INDENT);
-    strcat(message, "Call %s(%x)");
+    strcat(message, "Call %s(%x)\n");
     printf(message, func_name, addr);
     strcat(INDENT, "  ");
   }
