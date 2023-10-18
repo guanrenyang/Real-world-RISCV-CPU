@@ -122,6 +122,13 @@ static int decode_exec(Decode *s) {
 
 int isa_exec_once(Decode *s) {
   s->isa.inst.val = inst_fetch(&s->snpc, 4);
+  
+#ifdef CONFIG_FTRACE
+  void source_function(vaddr_t addr, char* func_name);
+  char func_name[30];
+  source_function(s->pc, func_name);
+#endif
+
 #ifdef CONFIG_ITRACE
   extern uint64_t g_nr_guest_inst;
   char *ring_p = s->iringbuf[g_nr_guest_inst % CONFIG_IRINGBUF_SIZE];
