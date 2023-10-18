@@ -60,8 +60,8 @@ void ftrace(vaddr_t dnpc, vaddr_t pc, int rd, int type){
     strcpy(message, INDENT);
     strcat(message, "Ret to %s from %s;\n");
     printf(message, func_name, curr_func_name);
-    Assert(strlen(INDENT)-2<0, "INDENT(for ftrace) overflow!");
-    INDENT[strlen(INDENT)-2] = '\0';
+    if(strlen(INDENT)>2)
+      INDENT[strlen(INDENT)-2] = '\0';
   } else {
     strcat(INDENT, "  ");
     strcpy(message, INDENT);
