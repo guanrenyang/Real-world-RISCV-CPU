@@ -18,6 +18,26 @@
 #include <cpu/ifetch.h>
 #include <cpu/decode.h>
 
+size_t stack_top = -1; 
+char func_name_stack[100][20];
+void ftrace(vaddr_t addr){
+  void source_function(vaddr_t addr, char* func_name);
+
+  char func_name[30];
+  source_function(addr, func_name);
+
+  if(stack_top==-1 || strcmp(func_name, func_name_stack[stack_top])!=0){
+    stack_top++;
+    strcpy(func_name_stack[stack_top], func_name);
+    Log("Call: %s(%x)", func_name, addr);
+  } else{
+    stack_top--;
+    Log("Ret: %s(%x)", func_name, addr);
+  } 
+  
+  Assert(stack_top<100, "Function name stack overflow!");
+}
+
 #define R(i) gpr(i)
 #define Mr vaddr_read
 #define Mw vaddr_write
@@ -70,7 +90,7 @@ static int decode_exec(Decode *s) {
   // The instruction I wrote myself
   INSTPAT("??????? ????? ????? 010 ????? 01000 11", sw     , S, Mw(src1 + imm, 4, src2));
   INSTPAT("??????? ????? ????? 000 ????? 00100 11", addi   , I, R(rd) = src1 + imm);
-#define JUMP(dnpc, npc, rd, snpc) (dnpc) = (npc); R((rd)) = snpc
+#define JUMP(dnpc, npc, rd, snpc) (dnpc) = (npc); R((rd)) = snpc; IFDEF(CONFIG_FTRACE, ftrace(dnpc))
   INSTPAT("??????? ????? ????? ??? ????? 11011 11", jal    , J, JUMP(s->dnpc, s->pc + imm, rd, s->snpc));
   INSTPAT("??????? ????? ????? 000 ????? 11001 11", jalr   , I, JUMP(s->dnpc, (src1 + imm) & (~1), rd, s->snpc));
 
@@ -123,11 +143,6 @@ static int decode_exec(Decode *s) {
 int isa_exec_once(Decode *s) {
   s->isa.inst.val = inst_fetch(&s->snpc, 4);
   
-#ifdef CONFIG_FTRACE
-  void source_function(vaddr_t addr, char* func_name);
-  char func_name[30];
-  source_function(s->pc, func_name);
-#endif
 
 #ifdef CONFIG_ITRACE
   extern uint64_t g_nr_guest_inst;
