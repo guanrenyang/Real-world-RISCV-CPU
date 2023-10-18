@@ -54,15 +54,18 @@ void ftrace(vaddr_t addr, int rd, int type){
   source_func_addr(addr, &func_addr);
 
   char message[2000];
+  strcpy(message, INDENT);
   if (type==TYPE_I && rd==0) {
-    Log("Ret: %s(%x)", func_name, addr);
+    //Log("Ret: %s(%x)", func_name, addr);
+    strcat(message, "Ret %s;\n");
+    printf(message, func_name);
+    INDENT[strlen(INDENT)-2] = '\0';
   } else {
-    strcpy(message, INDENT);
-    strcat(message, "Call %s(%x)\n");
+    strcat(message, "Call %s(%x);\n");
     printf(message, func_name, addr);
     strcat(INDENT, "  ");
   }
-  Log("is_return: %d, addr: %x, func_addr: %x, func_name: %s", (type==TYPE_I && rd==0), addr, func_addr, func_name);
+  //Log("is_return: %d, addr: %x, func_addr: %x, func_name: %s", (type==TYPE_I && rd==0), addr, func_addr, func_name);
   /*
   if (type==TYPE_I && rd == 0) {
     stack_top--;
