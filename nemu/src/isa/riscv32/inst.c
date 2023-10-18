@@ -50,7 +50,7 @@ void ftrace(vaddr_t addr, int rd, int type){
   source_func_name(addr, func_name);
   source_func_addr(addr, &func_addr);
 
-  Log("addr: %x, func_addr: %x, func_name: %s", addr, func_addr, func_name);
+  Log("type: %d, addr: %x, func_addr: %x, func_name: %s", type, addr, func_addr, func_name);
   /*
   if (type==TYPE_I && rd == 0) {
     stack_top--;
