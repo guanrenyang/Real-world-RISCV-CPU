@@ -45,6 +45,7 @@ char INDENT[1000] = "";
 void ftrace(vaddr_t dnpc, vaddr_t pc, int rd, int type){
   void source_func_name(vaddr_t addr, char* func_name);
   void source_func_addr(vaddr_t addr, vaddr_t* func_addr);
+  bool is_func(vaddr_t addr);
 
   char curr_func_name[30];
   char func_name[30];
@@ -62,7 +63,7 @@ void ftrace(vaddr_t dnpc, vaddr_t pc, int rd, int type){
     printf(message, func_name, curr_func_name);
     if(strlen(INDENT)>2)
       INDENT[strlen(INDENT)-2] = '\0';
-  } else {
+  } else if (is_func(dnpc)){
     strcat(INDENT, "  ");
     strcpy(message, INDENT);
     strcat(message, "Call %s(%x);\n");
