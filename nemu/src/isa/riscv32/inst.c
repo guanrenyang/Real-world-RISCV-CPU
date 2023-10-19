@@ -58,7 +58,8 @@ void ftrace(vaddr_t dnpc, vaddr_t pc, int rd, int type){
   char message[2000];
   if (type==TYPE_I && rd==0) {
     //Log("Ret: %s(%x)", func_name, addr);
-    strcpy(message, INDENT);
+    sprintf(message, "%x: ", pc);
+    strcat(message, INDENT);
     strcat(message, "Ret to %s(%x) from %s(%x);\n");
     printf(message, func_name, dnpc, curr_func_name, pc);
     //if(strlen(INDENT)>2)
@@ -66,7 +67,9 @@ void ftrace(vaddr_t dnpc, vaddr_t pc, int rd, int type){
       INDENT[strlen(INDENT)-2] = '\0';
   } else if (is_func(dnpc)){
     strcat(INDENT, "  ");
-    strcpy(message, INDENT);
+
+    sprintf(message, "%x: ", pc);
+    strcat(message, INDENT);
     strcat(message, "Call %s(%x);\n");
     printf(message, func_name, dnpc);
   }
