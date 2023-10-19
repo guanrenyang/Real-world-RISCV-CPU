@@ -61,7 +61,8 @@ void ftrace(vaddr_t dnpc, vaddr_t pc, int rd, int type){
     strcpy(message, INDENT);
     strcat(message, "Ret to %s from %s;\n");
     printf(message, func_name, curr_func_name);
-    if(strlen(INDENT)>2)
+    //if(strlen(INDENT)>2)
+    Assert(strlen(INDENT)>2, "Indentation error!");
       INDENT[strlen(INDENT)-2] = '\0';
   } else if (is_func(dnpc)){
     strcat(INDENT, "  ");
