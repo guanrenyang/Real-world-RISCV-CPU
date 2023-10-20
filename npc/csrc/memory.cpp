@@ -5,7 +5,7 @@
 #define MEMSIZE 0x8000000
 
 
-uint8_t *instMem = new uint8_t[MEMSIZE];
+uint8_t *instMem;
 
 // uint8_t* guest_to_host(uint32_t paddr) { return  instMem + paddr - MEMBASE; }
 
@@ -16,7 +16,11 @@ uint8_t *instMem = new uint8_t[MEMSIZE];
 //   0b00000000000100001000000010010011,
 //   0b00000000000100001000000010010011,
 //   0b00000000000000000000000001110011
-// }; void init_mem() {
+// }; 
+void init_mem() {
+	instMem = new uint8_t [MEMSIZE];
+}
+
 uint32_t host_read(void *addr, int len){
   switch (len) {
     case 1: return *(uint8_t  *)addr;

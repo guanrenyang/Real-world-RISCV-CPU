@@ -15,6 +15,7 @@ char *img_file = NULL;
 extern uint32_t instMem[];
 
 uint32_t paddr_read(uint32_t paddr);
+void init_mem();
 
 static int parse_args(int argc, char *argv[]) {
   const struct option table[] = {
@@ -92,7 +93,8 @@ void sim_exit(){
 int main(int argc, char **argv) {
 
   parse_args(argc, argv);
-	
+
+  init_mem();	
   long img_size = load_img();
 
   Verilated::traceEverOn(true);
