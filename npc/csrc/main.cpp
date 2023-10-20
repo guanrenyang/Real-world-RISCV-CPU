@@ -97,6 +97,8 @@ int main(int argc, char **argv) {
   parse_args(argc, argv);
 
   init_mem();	
+  
+  long size = load_img();
 
   Verilated::traceEverOn(true);
   sim_init();
