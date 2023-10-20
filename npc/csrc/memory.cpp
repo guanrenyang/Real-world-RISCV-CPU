@@ -22,8 +22,8 @@ uint8_t* guest_to_host(uint32_t paddr) { return  instMem + paddr - MEMBASE; }
 
 
 void init_mem() {
-	// instMem = (uint8_t*) malloc(MEMSIZE);
-	instMem = new uint8_t [MEMSIZE];
+	instMem = (uint8_t*) malloc(MEMSIZE);
+	// instMem = new uint8_t [MEMSIZE];
 }
 
 uint32_t host_read(void *addr, int len){
