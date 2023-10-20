@@ -23,7 +23,6 @@ static inline uint32_t host_read(void *addr, int len){
     case 2: return *(uint16_t *)addr;
     case 4: return *(uint32_t *)addr;
   }
-
 }
 uint32_t paddr_read(uint32_t paddr){
   printf("%u\n", paddr);
