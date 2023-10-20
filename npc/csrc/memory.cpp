@@ -8,7 +8,7 @@
 static uint8_t *instMem = NULL;
 
 extern char *img_file;
-// uint8_t* guest_to_host(uint32_t paddr) { return  instMem + paddr - MEMBASE; }
+uint8_t* guest_to_host(uint32_t paddr) { return  instMem + paddr - MEMBASE; }
 
 // Memory
 // = {
@@ -53,9 +53,9 @@ uint32_t host_read(void *addr, int len){
 }
 uint32_t paddr_read(uint32_t paddr){
   printf("%x\n", paddr);
-  // uint32_t ret = host_read(guest_to_host(paddr), 4);
+  uint32_t ret = host_read(guest_to_host(paddr), 4);
   // uint32_t ret = host_read(instMem+paddr - MEMBASE, 4);
-  uint32_t ret = *(uint32_t*)(instMem + paddr - MEMBASE);
+  // uint32_t ret = *(uint32_t*)(instMem + paddr - MEMBASE); // right
   printf("inst: %x at addr %x\n", ret, paddr);
   return ret;
 }
