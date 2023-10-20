@@ -17,7 +17,7 @@ uint8_t* guest_to_host(uint32_t paddr) { return  instMem + paddr - MEMBASE; }
 //   0b00000000000100001000000010010011,
 //   0b00000000000000000000000001110011
 // }; void init_mem() {
-static uint32_t host_read(void *addr, int len){
+uint32_t host_read(void *addr, int len){
   switch (len) {
     case 1: return *(uint8_t  *)addr;
     case 2: return *(uint16_t *)addr;
