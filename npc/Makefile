@@ -29,12 +29,13 @@ $(BIN): $(VSRCS) $(CSRCS)
 		$(addprefix -CFLAGS , $(CFLAGS)) $(addprefix -LDFLAGS , $(LDFLAGS)) \
 		--Mdir $(OBJ_DIR) --exe -o $(abspath $(BIN))
 
-sim: $(BIN)
+run: $(BIN)
 	$(call git_commit, "sim RTL") # DO NOT REMOVE THIS LINE!!!
 	@./build/ysyx_23060061_Top	
 
 wave: sim
 	@gtkwave ./build/dump.vcd
+
 .PHONY: clean
 clean:
 	rm -rf $(abspath $(BUILD_DIR))
