@@ -26,7 +26,8 @@ static uint32_t host_read(void *addr, int len){
 }
 uint32_t paddr_read(uint32_t paddr){
   printf("%x\n", paddr);
-  uint32_t ret = host_read(guest_to_host(paddr), 4);
+  // uint32_t ret = host_read(guest_to_host(paddr), 4);
+  uint32_t ret = host_read(instMem+paddr - MEMBASE, 4);
   return ret;
 }
 
