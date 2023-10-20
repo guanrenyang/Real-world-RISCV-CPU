@@ -40,11 +40,11 @@ NPC_EXEC := $(BIN) $(ARGS) $(IMG)
 
 run: $(BIN)
 	$(call git_commit, "sim RTL") # DO NOT REMOVE THIS LINE!!!
-	$(NEMU_EXEC)
+	$(NPC_EXEC)
 
 gdb: $(BIN)
 	$(call git_commit, "sim RTL") # DO NOT REMOVE THIS LINE!!!
-	gdb -s $(BIN) --args $(NEMU_EXEC)
+	gdb -s $(BIN) --args $(NPC_EXEC)
 
 wave: run
 	@gtkwave ./build/dump.vcd
