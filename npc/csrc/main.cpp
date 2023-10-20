@@ -5,29 +5,64 @@
 #include <stdlib.h>
 #include "Vysyx_23060061_Top__Dpi.h"
 #include <Vysyx_23060061_Top.h>
+#include <getopt.h>
+#include <stdio.h>
 
 #define TOPNAME Vysyx_23060061_Top
-#define MEMBASE 0x80000000
 
-// Memory
-static uint32_t instMem[] = {
-  0b00000000000100000000000010010011,
-  0b00000000000100001000000010010011,
-  0b00000000000100001000000010010011,
-  0b00000000000100001000000010010011,
-  0b00000000000000000000000001110011
-};
+char *log_file = NULL;
+char *img_file = NULL;
+extern uint32_t instMem[];
 
+uint32_t paddr_read(uint32_t paddr);
 
-static uint32_t paddr_read(uint32_t paddr){
-  printf("%u\n", paddr);
-  return instMem[(paddr-MEMBASE)/4];
+static int parse_args(int argc, char *argv[]) {
+  const struct option table[] = {
+    {"log"      , required_argument, NULL, 'l'},
+    {0          , 0                , NULL,  0 },
+  };
+  int o;
+  while ( (o = getopt_long(argc, argv, "-l:", table, NULL)) != -1) {
+    switch (o) {
+      case 'l': log_file = optarg; break;
+      case 1: img_file = optarg; return 0;
+      default:
+        printf("Usage: %s [OPTION...] IMAGE [args]\n\n", argv[0]);
+        printf("\t-l,--log=FILE           output log to FILE\n");
+        printf("\n");
+        exit(0);
+    }
+  }
+  return 0;
 }
+
+static long load_img() {
+  if (img_file == NULL) {
+    printf("No image is given. Use the default build-in image.");
+    return 4096; // built-in image size
+  }
+
+  FILE *fp = fopen(img_file, "rb");
+  // Assert(fp, "Can not open '%s'", img_file);
+
+  fseek(fp, 0, SEEK_END);
+  long size = ftell(fp);
+  
+  fseek(fp, 0, SEEK_SET); 
+  int ret = fread(instMem, size, 1, fp);
+  // Assert(ret == 1, "fread failed");
+
+  fclose(fp);
+  return size;
+}
+
+
 
 bool Trap = false;
 void trap() {
   Trap = true;
 }
+
 VerilatedVcdC* tfp = nullptr;
 VerilatedContext* contextp = NULL;
 static TOPNAME* top;
@@ -54,7 +89,12 @@ void sim_exit(){
     tfp->close();
 }
 
-int main() {
+int main(int argc, char **argv) {
+
+  parse_args(argc, argv);
+	
+  long img_size = load_img();
+
   Verilated::traceEverOn(true);
   sim_init();
   

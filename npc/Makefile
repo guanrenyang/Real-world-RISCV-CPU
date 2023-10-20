@@ -33,7 +33,11 @@ run: $(BIN)
 	$(call git_commit, "sim RTL") # DO NOT REMOVE THIS LINE!!!
 	@./build/ysyx_23060061_Top	
 
-wave: sim
+gdb: $(BIN)
+	$(call git_commit, "sim RTL") # DO NOT REMOVE THIS LINE!!!
+	@gdb ./build/ysyx_23060061_Top
+
+wave: run
 	@gtkwave ./build/dump.vcd
 
 .PHONY: clean
