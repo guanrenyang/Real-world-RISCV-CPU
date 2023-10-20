@@ -19,8 +19,11 @@ CFLAGS += $(INCFLAGS) -DTOP_NAME="\"V$(TOPNAME)\""
 LDFLAGS += -lSDL2 -lSDL2_image
 
 # for debugging
-CFLAGS += -ggdb3 -DVL_DEBUG=1 -D_GLIBCXX_DEBUG
-LDFLAGS += -ggdb 
+ifeq ($(MAKECMDGOALS),gdb)
+	CFLAGS += -ggdb3 -DVL_DEBUG=1 -D_GLIBCXX_DEBUG
+	LDFLAGS += -ggdb 
+endif
+
 
 all: $(BIN)
 	@echo "Write this Makefile by your self."
