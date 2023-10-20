@@ -39,7 +39,8 @@ static long load_img() {
 }
 
 void init_mem_and_load_img() {
-	instMem = (uint8_t*) malloc(MEMSIZE);
+	// instMem = (uint8_t*) malloc(MEMSIZE);
+	instMem = new uint8_t [MEMSIZE];
 	load_img();
 }
 
