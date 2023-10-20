@@ -17,16 +17,18 @@ uint8_t *instMem;
 //   0b00000000000100001000000010010011,
 //   0b00000000000000000000000001110011
 // }; 
+#include <stdlib.h>
+
 void init_mem() {
-	instMem = new uint8_t [MEMSIZE];
+	instMem = (uint8_t*) malloc(MEMSIZE);
 }
 
 uint32_t host_read(void *addr, int len){
-  switch (len) {
-    case 1: return *(uint8_t  *)addr;
-    case 2: return *(uint16_t *)addr;
-    case 4: return *(uint32_t *)addr;
-  }
+	switch (len) {
+		case 1: return *(uint8_t  *)addr;
+		case 2: return *(uint16_t *)addr;
+		case 4: return *(uint32_t *)addr;
+	}
 }
 uint32_t paddr_read(uint32_t paddr){
   printf("%x\n", paddr);
