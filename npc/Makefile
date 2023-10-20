@@ -36,13 +36,15 @@ $(BIN): $(VSRCS) $(CSRCS)
 		$(addprefix -CFLAGS , $(CFLAGS)) $(addprefix -LDFLAGS , $(LDFLAGS)) \
 		--Mdir $(OBJ_DIR) --exe -o $(abspath $(BIN))
 
+NPC_EXEC := $(BIN) $(ARGS) $(IMG)
+
 run: $(BIN)
 	$(call git_commit, "sim RTL") # DO NOT REMOVE THIS LINE!!!
-	@./build/ysyx_23060061_Top	
+	$(NEMU_EXEC)
 
 gdb: $(BIN)
 	$(call git_commit, "sim RTL") # DO NOT REMOVE THIS LINE!!!
-	@gdb ./build/ysyx_23060061_Top
+	gdb -s $(BIN) --args $(NEMU_EXEC)
 
 wave: run
 	@gtkwave ./build/dump.vcd
