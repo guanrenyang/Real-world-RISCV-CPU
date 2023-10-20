@@ -20,7 +20,7 @@ LDFLAGS += -lSDL2 -lSDL2_image
 
 # for debugging
 ifeq ($(MAKECMDGOALS),gdb)
-	CFLAGS += -ggdb3 -DVL_DEBUG=1 -D_GLIBCXX_DEBUG
+	CFLAGS += -ggdb3 -DVL_DEBUG=1 -D_GLIBCXX_DEBUG -O0
 	LDFLAGS += -ggdb 
 endif
 
