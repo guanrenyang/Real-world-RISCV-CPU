@@ -9,13 +9,15 @@
 #include <stdio.h>
 
 #define TOPNAME Vysyx_23060061_Top
+#define RESET_VECTOR 0x80000000
 
 char *log_file = NULL;
 char *img_file = NULL;
 extern uint8_t *instMem;
 
 uint32_t paddr_read(uint32_t paddr);
-void init_mem_and_load_img();
+void init_mem();
+uint8_t* guest_to_host(uint32_t paddr);
 
 static int parse_args(int argc, char *argv[]) {
   const struct option table[] = {
@@ -37,7 +39,25 @@ static int parse_args(int argc, char *argv[]) {
   return 0;
 }
 
+static long load_img() {
+  if (img_file == NULL) {
+    printf("No image is given. Use the default build-in image.");
+    return 4096; // built-in image size
+  }
 
+  FILE *fp = fopen(img_file, "rb");
+  // Assert(fp, "Can not open '%s'", img_file);
+
+  fseek(fp, 0, SEEK_END);
+  long size = ftell(fp);
+  
+  fseek(fp, 0, SEEK_SET); 
+  int ret = fread(guest_to_host(RESET_VECTOR), size, 1, fp);
+  // Assert(ret == 1, "fread failed");
+
+  fclose(fp);
+  return size;
+}
 
 
 
@@ -76,7 +96,7 @@ int main(int argc, char **argv) {
 
   parse_args(argc, argv);
 
-  init_mem_and_load_img();	
+  init_mem();	
 
   Verilated::traceEverOn(true);
   sim_init();
