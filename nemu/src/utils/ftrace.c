@@ -79,6 +79,22 @@ void clear_elf(){
     free(symtab);
 }
 
+bool is_func(vaddr_t addr){
+    // to determine which function the address `addr` belongs to
+    Elf32_Sym *sym = (Elf32_Sym *)symtab;
+    int i;
+    for (i = 0; i < symtab_size / sizeof(Elf32_Sym); i++) {
+        if (ELF32_ST_TYPE(sym[i].st_info) == STT_FUNC) {
+            if (addr == sym[i].st_value) {
+                // return the function name
+                // Log("function name: %s", strtab + sym[i].st_name);
+                return true;
+            }
+        }
+    }
+    
+    return false;
+}
 void source_func_name(vaddr_t addr, char* func_name){
     // to determine which function the address `addr` belongs to
     Elf32_Sym *sym = (Elf32_Sym *)symtab;
