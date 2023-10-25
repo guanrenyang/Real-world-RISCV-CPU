@@ -116,7 +116,7 @@ int main(int argc, char **argv) {
   while(!Trap){
     top->clk = 0b1; top->rst = 0b0; step_and_dump_wave(); // printf("pc: %x\n", top->pc);
     top->clk = 0b0; top->rst = 0b0; top->inst = paddr_read(top->pc); step_and_dump_wave(); // printf("pc: %x\n", top->pc);
-	if (top->inst == 0x0000006f) {
+	if (top->inst == 0x00008067) {
 		top->clk = 0b1; top->rst = 0b0; step_and_dump_wave(); // printf("pc: %x\n", top->pc);
     	top->clk = 0b0; top->rst = 0b0; top->inst = paddr_read(top->pc); step_and_dump_wave(); // printf("pc: %x\n", top->pc);
 		break;
