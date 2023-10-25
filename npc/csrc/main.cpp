@@ -111,11 +111,11 @@ int main(int argc, char **argv) {
   // // cycle 2
   // top->clk = 0b1; top->rst = 0b0; step_and_dump_wave();
   // top->clk = 0b0; top->rst = 0b0; step_and_dump_wave();
-  printf("pc: %x\n", top->pc);
+  // printf("pc: %x\n", top->pc);
   // cycle 2
   while(!Trap){
-    top->clk = 0b1; top->rst = 0b0; step_and_dump_wave(); printf("pc: %x\n", top->pc);
-    top->clk = 0b0; top->rst = 0b0; top->inst = paddr_read(top->pc); step_and_dump_wave(); printf("pc: %x\n", top->pc);
+    top->clk = 0b1; top->rst = 0b0; step_and_dump_wave(); // printf("pc: %x\n", top->pc);
+    top->clk = 0b0; top->rst = 0b0; top->inst = paddr_read(top->pc); step_and_dump_wave(); // printf("pc: %x\n", top->pc);
 
   }
  //  top->clk = 0b1; top->rst = 0b0; step_and_dump_wave();
