@@ -44,6 +44,8 @@ module ysyx_23060061_Top (
     .rdata1(regData1),
     .rdata2(regData2)
   );
+  
+  ysyx_23060061_ImmGen imm_gen(.inst(inst[31:7]), .ImmSel(inst[14:12]), .imm(imm));
 
   // EX
   assign imm = {{20{inst[31]}}, inst[31:20]}; // Sign extension (only for I-type)
