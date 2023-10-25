@@ -12,6 +12,7 @@ BIN = $(BUILD_DIR)/$(TOPNAME)
 VSRCS = $(shell find $(abspath ./vsrc) -name "*.v")
 CSRCS = $(shell find $(abspath ./csrc) -name "*.c" -or -name "*.cc" -or -name "*.cpp")
 CSRCS += $(SRC_AUTO_BIND)
+VINCPATH = $(abspath ./vsrc) 
 
 # rules for verilator
 INCFLAGS = $(addprefix -I, $(INC_PATH))
@@ -31,7 +32,7 @@ all: $(BIN)
 $(BIN): $(VSRCS) $(CSRCS)
 	@rm -rf $(OBJ_DIR)
 	$(shell mkdir $(abspath $(BUILD_DIR)))
-	$(VERILATOR) $(VERILATOR_CFLAGS) \
+	$(VERILATOR) $(VERILATOR_CFLAGS) $(addprefix -I, $(VINCPATH)) \
 		--top-module $(TOPNAME) $^ \
 		$(addprefix -CFLAGS , $(CFLAGS)) $(addprefix -LDFLAGS , $(LDFLAGS)) \
 		--Mdir $(OBJ_DIR) --exe -o $(abspath $(BIN))
