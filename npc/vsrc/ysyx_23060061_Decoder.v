@@ -20,7 +20,7 @@ module ysyx_23060061_Decoder (
 	.key({opcode, (opcode != 7'b0010111 && opcode != 7'b0110111 && opcode != 7'b1101111)? funct3 : 3'b000}), 
 	.default_out({10'b0000000000}), 
 	.lut({
-    	{7'b0010011, 3'b000}, {10'b1000100100}, // addi
+    	{7'b0010011, 3'b000}, {10'b1100100100}, // addi
     	{7'b1110011, 3'b000}, {10'bx1xxxxxxxx}, // ebreak
 
 		{7'b0010111, 3'b000}, {10'b1001100100}, // auipc
