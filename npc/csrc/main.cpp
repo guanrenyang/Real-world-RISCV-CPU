@@ -112,6 +112,8 @@ int main(int argc, char **argv) {
   // top->clk = 0b1; top->rst = 0b0; step_and_dump_wave();
   // top->clk = 0b0; top->rst = 0b0; step_and_dump_wave();
   printf("%x", top->pc);
+  int tmp;
+  scanf("%d", &tmp);
   // cycle 2
   while(!Trap){
     top->clk = 0b1; top->rst = 0b0; step_and_dump_wave();
