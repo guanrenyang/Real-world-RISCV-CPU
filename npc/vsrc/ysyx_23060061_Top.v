@@ -3,11 +3,17 @@ import "DPI-C" function void trap ();
 module ysyx_23060061_Top (
   input clk,
   input rst, 
+
   input [31 : 0] inst,
-  output [31 : 0] pc
+  input [31 : 0] memDataR,
+  output [31 : 0] pc,
+  output MemWrite,
+  output [31:0] memDataW,
+  output [31:0] memAddrW
 );
   // IF: reg PC and its updating rule.
   wire [31:0] snpc;
+  wire [31:0] dnpc;
   wire [31:0] imm;
   wire RegWrite;
   wire [4:0] rs2;
@@ -15,14 +21,39 @@ module ysyx_23060061_Top (
   wire [4:0] rs1;
   wire [31:0] regData1;
   wire [31:0] regData2;
-  wire [31:0] aluOut;
   wire ebreak;
+  wire [2:0] instType;
+
+  wire [31:0] aluOpA;
+  wire [31:0] aluOpB;
+  wire [31:0] aluOut;
+
+  wire [1:0] aluOp;
+  wire [1:0] WBSel;
+  wire PCSel;
+  wire aluAsel;
+  wire aluBsel;
+  
+  wire [31:0] regDataWB;
 
   assign snpc = pc + 4;
-  ysyx_23060061_Reg #(32, 32'h80000000) pc_reg(.clk(clk), .rst(rst), .din(snpc), .dout(pc), .wen(1'b1));
-  
+  assign dnpc = PCSel == 0 ? snpc : aluOut;
+  ysyx_23060061_Reg #(32, 32'h80000000) pc_reg(.clk(clk), .rst(rst), .din(dnpc), .dout(pc), .wen(1'b1));
   // ID: Decoder unit
-  ysyx_23060061_Decoder decoder(.opcode(inst[6:0]), .funct3(inst[14:12]), .RegWrite(RegWrite), .ebreak(ebreak));
+  ysyx_23060061_Decoder decoder(
+	.opcode(inst[6:0]), 
+	.funct3(inst[14:12]), 
+
+	.instType(instType),
+	.RegWrite(RegWrite), 
+	.ebreak(ebreak),
+	.PCSel(PCSel),
+	.aluAsel(aluAsel),
+	.aluBsel(aluBsel),
+	.MemWrite(MemWrite),
+	.WBSel(WBSel),
+	.aluOp(aluOp)
+  );
   
   always @(*) begin
     if(ebreak) trap(); 
@@ -36,7 +67,7 @@ module ysyx_23060061_Top (
   ysyx_23060061_RegisterFile #(5, 32) registerFile(
     .clk(clk),
     .rst(rst),
-    .wdata(aluOut),
+    .wdata(regDataWB),
     .waddr(rd),
     .wen(RegWrite),
     .raddr1(rs1),
@@ -45,12 +76,27 @@ module ysyx_23060061_Top (
     .rdata2(regData2)
   );
   
-  ysyx_23060061_ImmGen imm_gen(.inst(inst[31:7]), .ImmSel(inst[14:12]), .imm(imm));
+  ysyx_23060061_ImmGen imm_gen(.inst(inst[31:7]), .ImmSel(instType), .imm(imm));
 
   // EX
-  assign imm = {{20{inst[31]}}, inst[31:20]}; // Sign extension (only for I-type)
+  
+  assign aluOpA = aluAsel == 0 ? regData1 : pc;
+  assign aluOpB = aluBsel == 0 ? regData2 : imm;
+  ysyx_23060061_ALU #(32, 32'd0) alu(.clk(clk), .a(aluOpA), .b(aluOpB), .aluOut(aluOut), .aluOp(aluOp));
+  
+  // MEM
+  assign memDataW = regData2;
+  assign memAddrW = aluOut; 
 
-  ysyx_23060061_ALU #(32, 32'd0) alu(.clk(clk), .a(regData1), .b(imm), .aluOut(aluOut));
-
+  // WB
+  ysyx_23060061_MuxKey #(3, 2, 32) wb_mux(
+	.out(regDataWB),
+	.key(WBSel),
+	.lut({
+		2'b00, memDataR,
+		2'b01, aluOut,
+		2'b10, snpc
+	})
+  );
 endmodule
 
