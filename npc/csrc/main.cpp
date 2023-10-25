@@ -106,7 +106,7 @@ int main(int argc, char **argv) {
   // cycle 1 
   top->clk = 0b0; top->rst = 0b1; step_and_dump_wave();
   top->clk = 0b1; top->rst = 0b1; step_and_dump_wave();
-  top->clk = 0b0; top->rst = 0b0; step_and_dump_wave();
+  top->clk = 0b0; top->rst = 0b1; step_and_dump_wave();
 
   // // cycle 2
   // top->clk = 0b1; top->rst = 0b0; step_and_dump_wave();
