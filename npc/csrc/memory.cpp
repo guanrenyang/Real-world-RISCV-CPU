@@ -39,8 +39,6 @@ uint32_t paddr_read(uint32_t paddr){
   // uint32_t ret = host_read(instMem+paddr - MEMBASE, 4);
   uint32_t ret = *(uint32_t*)(instMem + paddr - MEMBASE); // right
   printf("inst: %x at addr %x\n", ret, paddr);
-  int tmp;
-  scanf("%d", &tmp);
   return ret;
 }
 
