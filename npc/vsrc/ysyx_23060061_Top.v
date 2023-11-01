@@ -3,7 +3,6 @@ import "DPI-C" function void trap ();
 module ysyx_23060061_Top (
   input clk,
   input rst, 
-
   input [31 : 0] inst,
   input [31 : 0] memDataR,
   output [31 : 0] pc,
