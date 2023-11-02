@@ -49,6 +49,7 @@ run: $(BIN)
 gdb: $(BIN)
 	$(call git_commit, "sim RTL") # DO NOT REMOVE THIS LINE!!!
 	@echo "gdb $(NPC_EXEC)"
+	@echo $MAKECMDGOALS
 	gdb -s $(BIN) --args $(NPC_EXEC)
 
 wave: run
