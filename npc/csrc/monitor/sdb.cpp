@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <readline/readline.h>
 #include <readline/history.h>
+#include <npc.h>
 
 static char* rl_gets() {
 	static char *line_read = NULL;
@@ -21,7 +22,7 @@ static char* rl_gets() {
 }
 
 static int cmd_c(char *args) {
-		
+	npc_exec(-1);		
 	return -1;
 }
 static struct {
