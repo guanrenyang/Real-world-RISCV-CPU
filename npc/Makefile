@@ -12,12 +12,15 @@ BIN = $(BUILD_DIR)/$(TOPNAME)
 VSRCS = $(shell find $(abspath ./vsrc) -name "*.v")
 CSRCS = $(shell find $(abspath ./csrc) -name "*.c" -or -name "*.cc" -or -name "*.cpp")
 CSRCS += $(SRC_AUTO_BIND)
+CSRCS := $(filter-out %/main.cpp,$(filter main.cpp,$(CSRCS)) $(filter-out main.cpp,$(CSRCS)))
+
 VINCPATH = $(abspath ./vsrc) 
+INC_PATH = $(abspath ./include)
 
 # rules for verilator
 INCFLAGS = $(addprefix -I, $(INC_PATH))
 CFLAGS += $(INCFLAGS) -DTOP_NAME="\"V$(TOPNAME)\""
-LDFLAGS += -lSDL2 -lSDL2_image
+LDFLAGS += -lSDL2 -lSDL2_image -lreadline
 
 # for debugging
 ifeq ($(MAKECMDGOALS),gdb)

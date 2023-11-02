@@ -17,7 +17,9 @@ extern uint8_t *instMem;
 
 uint32_t paddr_read(uint32_t paddr);
 uint8_t* guest_to_host(uint32_t paddr);
+
 void init_mem();
+void init_monitor(int, char *[]);
 
 static int parse_args(int argc, char *argv[]) {
   const struct option table[] = {
