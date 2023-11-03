@@ -12,7 +12,7 @@ BIN = $(BUILD_DIR)/$(TOPNAME)
 VSRCS = $(shell find $(abspath ./vsrc) -name "*.v")
 CSRCS = $(shell find $(abspath ./csrc) -name "*.c" -or -name "*.cc" -or -name "*.cpp")
 CSRCS += $(SRC_AUTO_BIND)
-CSRCS := $(filter-out %/main.cpp,$(filter main.cpp,$(CSRCS)) $(filter-out main.cpp,$(CSRCS)))
+# CSRCS := $(filter-out %/main.cpp,$(filter main.cpp,$(CSRCS)) $(filter-out main.cpp,$(CSRCS))) // filter main.cpp which is the old version of main.cpp, this line is only for testing
 
 VINCPATH = $(abspath ./vsrc) 
 INC_PATH = $(abspath ./include)
