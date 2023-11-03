@@ -61,7 +61,7 @@ static int cmd_x(char *args){
     }
     
     int nr_elem = atoi(arg_0);
-	uint32_t addr = atoi(arg_1);
+	uint32_t addr = strtoul(arg_1, NULL, 16);
 
     int i;
     for (i=0;i<nr_elem;i++, addr+=4) {
