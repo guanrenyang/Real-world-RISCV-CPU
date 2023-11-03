@@ -1,8 +1,10 @@
 #include "verilated.h"
+#include "verilated_types.h"
 #include "verilated_vcd_c.h"
 #include "svdpi.h"
 #include "Vysyx_23060061_Top__Dpi.h"
 #include <Vysyx_23060061_Top.h>
+#include <Vysyx_23060061_Top___024root.h>
 
 #include <npc.h>
 #include <paddr.h>
@@ -37,6 +39,7 @@ void step_and_dump_wave(){
 	tfp->dump(contextp->time());
 }
 
+
 void reset() {
 	top->clk = 0b0; top->rst = 0b1; step_and_dump_wave();
 	top->clk = 0b1; top->rst = 0b1; step_and_dump_wave();
@@ -69,4 +72,14 @@ void npc_exec(uint64_t n) {
 	execute(n);
 	
 	// TODO: check npc state
+}
+
+void reg_display() {
+	const int num_regs = 32;
+	VlUnpacked<IData/*31:0*/, num_regs> rf = top->rootp->ysyx_23060061_Top__DOT__registerFile__DOT__rf;
+	
+	int i;
+	for (i=0; i<num_regs; i++){
+		printf("reg[%d] = %x\n", i, rf[i]);
+	}
 }

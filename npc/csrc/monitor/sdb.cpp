@@ -3,6 +3,7 @@
 #include <readline/readline.h>
 #include <readline/history.h>
 #include <npc.h>
+#include <paddr.h>
 
 static char* rl_gets() {
 	static char *line_read = NULL;
@@ -37,6 +38,39 @@ static int cmd_si(char *args) {
   return 0;
 }
 
+static int cmd_info(char *args){
+  if (args==NULL || !strcmp(args, "r"))
+    reg_display();
+  // if (args==NULL || !strcmp(args, "w"))
+  //   scan_watchpoint(true, NULL);
+  return 0;
+}
+
+static int cmd_x(char *args){
+    char *args_end = args + strlen(args);
+
+    /* extract the first token as the command */
+    char *arg_0 = strtok(args, " ");
+    if (arg_0 == NULL) {
+      printf("Error occurs\n");
+    } 
+    
+    char *arg_1 = arg_0 + strlen(arg_0) + 1;
+    if (arg_1 >= args_end) {
+      arg_1 = NULL;
+    }
+    
+    int nr_elem = atoi(arg_0);
+	uint32_t addr = strtoul(arg_1, NULL, 16);
+
+    int i;
+    for (i=0;i<nr_elem;i++, addr+=4) {
+      uint32_t elem = paddr_read(addr, 4); // read 4 bytes from addr
+      printf("dec: %u, hex: %x\n", elem, elem);
+    }
+    return 0;
+}
+
 static struct {
   const char *name;
   const char *description;
@@ -49,8 +83,8 @@ static struct {
   //
   // /* TODO: Add more commands */
   { "si", "Step Instruction", cmd_si},
-  // { "info", "Information", cmd_info}, 
-  // { "x", "Scan Memory", cmd_x},
+  { "info", "Information", cmd_info}, 
+  { "x", "Scan Memory", cmd_x},
   // { "p", "Print", cmd_p},
   // { "w", "Set watchpoint", cmd_w}, 
   // { "d", "Delete watchpoint", cmd_d},
