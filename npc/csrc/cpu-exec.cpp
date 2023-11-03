@@ -79,6 +79,6 @@ void reg_display() {
 	
 	int i;
 	for (i=0; i<num_regs; i++){
-		printf("reg[%d] = %d\n", i, rf[i]);
+		printf("reg[%d] = %x\n", i, rf[i]);
 	}
 }
