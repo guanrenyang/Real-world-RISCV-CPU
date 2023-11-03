@@ -25,6 +25,18 @@ static int cmd_c(char *args) {
 	npc_exec(-1);		
 	return -1;
 }
+
+static int cmd_si(char *args) {
+  int nr_instructions;
+  if (args==NULL)
+    nr_instructions = 1;
+  else
+    nr_instructions = atoi(args);
+  
+  npc_exec(nr_instructions);
+  return 0;
+}
+
 static struct {
   const char *name;
   const char *description;
@@ -36,7 +48,7 @@ static struct {
   // { "q", "Exit NEMU", cmd_q },
   //
   // /* TODO: Add more commands */
-  // { "si", "Step Instruction", cmd_si},
+  { "si", "Step Instruction", cmd_si},
   // { "info", "Information", cmd_info}, 
   // { "x", "Scan Memory", cmd_x},
   // { "p", "Print", cmd_p},
