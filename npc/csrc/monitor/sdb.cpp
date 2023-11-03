@@ -37,6 +37,14 @@ static int cmd_si(char *args) {
   return 0;
 }
 
+static int cmd_info(char *args){
+  if (args==NULL || !strcmp(args, "r"))
+    reg_display();
+  // if (args==NULL || !strcmp(args, "w"))
+  //   scan_watchpoint(true, NULL);
+  return 0;
+}
+
 static struct {
   const char *name;
   const char *description;
@@ -49,7 +57,7 @@ static struct {
   //
   // /* TODO: Add more commands */
   { "si", "Step Instruction", cmd_si},
-  // { "info", "Information", cmd_info}, 
+  { "info", "Information", cmd_info}, 
   // { "x", "Scan Memory", cmd_x},
   // { "p", "Print", cmd_p},
   // { "w", "Set watchpoint", cmd_w}, 
