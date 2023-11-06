@@ -1,4 +1,5 @@
 import "DPI-C" function void trap ();
+// import "DPI-C" function void itrace (uint32_t pc, uint32_t ival, int ilen);
 
 module ysyx_23060061_Top (
   input clk,
