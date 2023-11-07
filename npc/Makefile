@@ -43,8 +43,8 @@ $(BIN): $(VSRCS) $(CSRCS)
 	$(VERILATOR) $(VERILATOR_CFLAGS) $(addprefix -I, $(VINCPATH)) \
 		--top-module $(TOPNAME) $^ \
 		$(addprefix -CFLAGS , $(CFLAGS)) \
-		$(shell llvm-config --cxxflags) \
 		$(addprefix -LDFLAGS , $(LDFLAGS)) \
+		$(shell llvm-config --cxxflags) \
 		$(shell llvm-config --libs) \
 		--Mdir $(OBJ_DIR) --exe -o $(abspath $(BIN))
 
