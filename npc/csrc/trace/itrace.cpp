@@ -19,13 +19,12 @@ void itrace(uint32_t pc, uint32_t ival, int ilen /*bytes*/){
 
   void disassemble(char *str, int size, uint64_t pc, uint8_t *code, int nbyte);
   disassemble(p, logbuf + sizeof(logbuf) - p, pc, (uint8_t *)&ival, ilen);
-  
-  printf("%s\n", logbuf);
+
+  log_write("%s\n", logbuf);
 }
 
 #else
 void itrace(uint32_t pc, uint32_t ival, int ilen){}
-
 #endif
 
 
