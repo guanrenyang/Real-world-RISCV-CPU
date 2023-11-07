@@ -16,6 +16,11 @@ void itrace(uint32_t pc, uint32_t ival, int ilen /*bytes*/){
     }
     memset(p, ' ', 1);
     p += 1;
+
+  void disassemble(char *str, int size, uint64_t pc, uint8_t *code, int nbyte);
+  disassemble(p, logbuf + sizeof(logbuf) - p, pc, (uint8_t *)&ival, ilen);
+  
+  printf("%s\n", logbuf);
 }
 
 #else
