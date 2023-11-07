@@ -1,6 +1,4 @@
-#pragma once
-
-#include <inttypes.h>
+#include <macro.h>
 
 void npc_exec(uint64_t n);
 

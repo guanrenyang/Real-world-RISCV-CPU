@@ -22,6 +22,11 @@ INCFLAGS = $(addprefix -I, $(INC_PATH))
 CFLAGS += $(INCFLAGS) -DTOP_NAME="\"V$(TOPNAME)\""
 LDFLAGS += -lSDL2 -lSDL2_image -lreadline
 
+
+# for disassembly
+CFLAGS += $(shell llvm-config --cflags) -fPIE 
+LDFLAGS += $(shell llvm-config --libs)
+
 # for debugging
 ifeq ($(MAKECMDGOALS),gdb)
 	CFLAGS += -ggdb3 -DVL_DEBUG=1 -D_GLIBCXX_DEBUG -O0
@@ -37,7 +42,8 @@ $(BIN): $(VSRCS) $(CSRCS)
 	$(shell mkdir $(abspath $(BUILD_DIR)))
 	$(VERILATOR) $(VERILATOR_CFLAGS) $(addprefix -I, $(VINCPATH)) \
 		--top-module $(TOPNAME) $^ \
-		$(addprefix -CFLAGS , $(CFLAGS)) $(addprefix -LDFLAGS , $(LDFLAGS)) \
+		$(addprefix -CFLAGS , $(CFLAGS)) \
+		$(addprefix -LDFLAGS , $(LDFLAGS)) \
 		--Mdir $(OBJ_DIR) --exe -o $(abspath $(BIN))
 
 NPC_EXEC := $(BIN) $(ARGS) $(IMG)

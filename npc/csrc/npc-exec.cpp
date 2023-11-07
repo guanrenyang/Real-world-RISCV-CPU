@@ -8,6 +8,7 @@
 
 #include <npc.h>
 #include <paddr.h>
+#include <trace.h>
 
 #define TOPNAME Vysyx_23060061_Top
 
@@ -17,6 +18,7 @@ static VerilatedVcdC *tfp = nullptr;
 static VerilatedContext *contextp = nullptr;
 static TOPNAME *top = nullptr;
 
+// DPI-C function for `ebreak` instruction
 static bool Trap = false;
 void trap() { Trap = true; }
 
@@ -53,7 +55,11 @@ void sim_exit() {
 
 void exec_once() {
 	top->clk = 0b1; top->rst = 0b0; step_and_dump_wave();
-	top->clk = 0b0; top->rst = 0b0; top->inst = paddr_read(top->pc, 4); step_and_dump_wave();
+	top->clk = 0b0; top->rst = 0b0; top->inst = paddr_read(top->pc, 4); 
+#ifdef CONFIG_ITRACE
+	itrace(top->pc, top->inst, 4);
+#endif 
+	step_and_dump_wave();
 }
 
 void execute(uint64_t n) {
