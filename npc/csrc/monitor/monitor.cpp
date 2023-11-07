@@ -12,6 +12,7 @@ extern uint8_t *instMem;
 #define RESET_VECTOR 0x80000000
 
 void init_mem();
+void init_disasm(const char *triple);
 
 static long load_img(){
   if (img_file == NULL) {
@@ -64,4 +65,7 @@ void init_monitor(int argc, char *argv[]) {
 
 	/* Load the image to memory. This will overwrite the built-in image. */	
 	long img_size = load_img();
+	
+	/* Initialize disassemble module*/
+  // init_disasm("riscv32-pc-linux-gnu");
 }

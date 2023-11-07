@@ -22,6 +22,13 @@ INCFLAGS = $(addprefix -I, $(INC_PATH))
 CFLAGS += $(INCFLAGS) -DTOP_NAME="\"V$(TOPNAME)\""
 LDFLAGS += -lSDL2 -lSDL2_image -lreadline
 
+
+# for disassembly
+CFLAGS += $(shell llvm-config --cxxflags) -fPIE 
+LDFLAGS += $(shell llvm-config --libs) -pie
+# CFLAGS += $(shell llvm-config --cxxflags) -fPIE
+# LDFLAGS += $(shell llvm-config --libs) 
+
 # for debugging
 ifeq ($(MAKECMDGOALS),gdb)
 	CFLAGS += -ggdb3 -DVL_DEBUG=1 -D_GLIBCXX_DEBUG -O0
