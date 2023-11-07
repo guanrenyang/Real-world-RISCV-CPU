@@ -25,9 +25,7 @@ LDFLAGS += -lSDL2 -lSDL2_image -lreadline
 
 # for disassembly
 CFLAGS += $(shell llvm-config --cxxflags) -fPIE 
-LDFLAGS += $(shell llvm-config --libs) -pie
-# CFLAGS += $(shell llvm-config --cxxflags) -fPIE
-# LDFLAGS += $(shell llvm-config --libs) 
+LDFLAGS += $(shell llvm-config --libs)
 
 # for debugging
 ifeq ($(MAKECMDGOALS),gdb)
