@@ -24,8 +24,8 @@ LDFLAGS += -lSDL2 -lSDL2_image -lreadline
 
 
 # for disassembly
-CFLAGS += $(shell llvm-config --cxxflags) -fPIE 
-LDFLAGS += $(shell llvm-config --libs)
+# CFLAGS += $(shell llvm-config --cxxflags) -fPIE 
+# LDFLAGS += $(shell llvm-config --libs)
 
 # for debugging
 ifeq ($(MAKECMDGOALS),gdb)
@@ -42,7 +42,10 @@ $(BIN): $(VSRCS) $(CSRCS)
 	$(shell mkdir $(abspath $(BUILD_DIR)))
 	$(VERILATOR) $(VERILATOR_CFLAGS) $(addprefix -I, $(VINCPATH)) \
 		--top-module $(TOPNAME) $^ \
-		$(addprefix -CFLAGS , $(CFLAGS)) $(addprefix -LDFLAGS , $(LDFLAGS)) \
+		$(addprefix -CFLAGS , $(CFLAGS)) \
+		$(shell llvm-config --cxxflags) \
+		$(addprefix -LDFLAGS , $(LDFLAGS)) \
+		$(shell llvm-config --libs) \
 		--Mdir $(OBJ_DIR) --exe -o $(abspath $(BIN))
 
 NPC_EXEC := $(BIN) $(ARGS) $(IMG)
