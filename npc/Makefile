@@ -24,8 +24,8 @@ LDFLAGS += -lSDL2 -lSDL2_image -lreadline
 
 
 # for disassembly
-# CFLAGS += $(shell llvm-config --cxxflags) -fPIE 
-# LDFLAGS += $(shell llvm-config --libs)
+CFLAGS += $(shell llvm-config --cflags) -fPIE 
+LDFLAGS += $(shell llvm-config --libs)
 
 # for debugging
 ifeq ($(MAKECMDGOALS),gdb)
@@ -44,8 +44,6 @@ $(BIN): $(VSRCS) $(CSRCS)
 		--top-module $(TOPNAME) $^ \
 		$(addprefix -CFLAGS , $(CFLAGS)) \
 		$(addprefix -LDFLAGS , $(LDFLAGS)) \
-		$(shell llvm-config --cxxflags) \
-		$(shell llvm-config --libs) \
 		--Mdir $(OBJ_DIR) --exe -o $(abspath $(BIN))
 
 NPC_EXEC := $(BIN) $(ARGS) $(IMG)
