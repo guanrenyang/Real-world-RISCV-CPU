@@ -44,7 +44,7 @@ static int parse_args(int argc, char *argv[]) {
     {0          , 0                , NULL,  0 },
   };
   int o;
-  while ( (o = getopt_long(argc, argv, "-l:", table, NULL)) != -1) {
+  while ( (o = getopt_long(argc, argv, "-l:f:", table, NULL)) != -1) {
     switch (o) {
       case 'l': log_file = optarg; break;
       case 1: img_file = optarg; return 0;
