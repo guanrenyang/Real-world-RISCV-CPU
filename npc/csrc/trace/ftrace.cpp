@@ -120,7 +120,7 @@ void source_func_addr(uint32_t addr, uint32_t* func_addr) {
     int i;
     for (i = 0; i < symtab_size / sizeof(Elf32_Sym); i++) {
         if (ELF32_ST_TYPE(sym[i].st_info) == STT_FUNC) {
-			printf("%s", sym[i].st_value);
+			printf("%d", i);
             if (addr >= sym[i].st_value && addr < sym[i].st_value + sym[i].st_size) {
                 // return the function name
                 // Log("function name: %s", strtab + sym[i].st_name);
