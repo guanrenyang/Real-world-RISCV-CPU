@@ -128,7 +128,8 @@ void source_func_addr(uint32_t addr, uint32_t* func_addr) {
             }
         }
     }
-    printf("not in a function");
+    printf("not in a function\n");
+	assert(0);
 }
 
 enum JumpType {JAL, JALR, OTHER}; 

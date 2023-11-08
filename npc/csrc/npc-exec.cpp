@@ -59,9 +59,9 @@ void exec_once() {
 #ifdef CONFIG_ITRACE
 	itrace(top->pc, top->inst, 4);
 #endif 
-	printf("dnpc = %x\n", top->ftrace_dnpc);
+	// printf("dnpc = %x\n", top->ftrace_dnpc); // Here, dnpc equals to pc+4
 	step_and_dump_wave();
-	printf("dnpc after = %x\n", top->ftrace_dnpc);
+	// printf("dnpc after = %x\n", top->ftrace_dnpc); // Here, dnpc is the right dnpc
 
 #ifdef CONFIG_FTRACE
 	ftrace(top->inst, top->ftrace_dnpc, top->pc);
