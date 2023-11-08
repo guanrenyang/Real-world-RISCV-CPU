@@ -1,6 +1,7 @@
 #include <inttypes.h>
 
 #define CONFIG_ITRACE y
+#define CONFIG_FTRACE y
 
 #define FMT_WORD "0x%08" PRIx32
 

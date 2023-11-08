@@ -1,6 +1,5 @@
 #include <trace.h>
 
-
 #ifdef CONFIG_ITRACE
 char logbuf[128];
 char iringbuf[128][128];

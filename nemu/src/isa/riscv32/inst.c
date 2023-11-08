@@ -73,23 +73,8 @@ void ftrace(vaddr_t dnpc, vaddr_t pc, int rd, int rs1, int type){
     strcat(message, "Call %s(%x);\n");
     printf(message, func_name, dnpc);
   }
-  //Log("is_return: %d, addr: %x, func_addr: %x, func_name: %s", (type==TYPE_I && rd==0), addr, func_addr, func_name);
-  /*
-  if (type==TYPE_I && rd == 0) {
-    stack_top--;
-    Log("Ret: %s(%x)", func_name, addr);
-  }
- 
-  if(stack_top==-1){
-    stack_top++;
-    strcpy(func_name_stack[stack_top], func_name);
-    Log("Call: %s(%x)", func_name, addr);
-  }
-  
-  Log("%lu", stack_top);
-  Assert(stack_top<10000, "Function name stack overflow!");
-  */
 }
+
 static void decode_operand(Decode *s, int *rd, word_t *src1, word_t *src2, word_t *imm, int type) {
   uint32_t i = s->isa.inst.val;
   int rs1 = BITS(i, 19, 15);
@@ -124,7 +109,7 @@ static int decode_exec(Decode *s) {
   // The instruction I wrote myself
   INSTPAT("??????? ????? ????? 010 ????? 01000 11", sw     , S, Mw(src1 + imm, 4, src2));
   INSTPAT("??????? ????? ????? 000 ????? 00100 11", addi   , I, R(rd) = src1 + imm);
-#define JUMP(dnpc, npc, pc, rd, rs1, snpc, type) (dnpc) = (npc); R((rd)) = snpc; IFDEF(CONFIG_FTRACE, ftrace(dnpc, pc, rd, rs1, type))
+#define JUMP(dnpc, npc, pc, rd, rs1, snpc, type) (dnpc) = (npc); R((rd)) = snpc; IFDEF(CONFIG_FTRACE, (dnpc, pc, rd, rs1, type))
   INSTPAT("??????? ????? ????? ??? ????? 11011 11", jal    , J, JUMP(s->dnpc, s->pc + imm, s->pc, rd, BITS(s->isa.inst.val, 19, 15), s->snpc, TYPE_J));
   INSTPAT("??????? ????? ????? 000 ????? 11001 11", jalr   , I, JUMP(s->dnpc, (src1 + imm) & (~1), s->pc, rd, BITS(s->isa.inst.val, 19, 15), s->snpc, TYPE_I));
 
