@@ -181,7 +181,7 @@ void ftrace(uint32_t inst, uint32_t dnpc, uint32_t pc){
   char message[2000];
   if (type==JALR && rd==0 && rs1==1) {
     //Log("Ret: %s(%x)", func_name, addr);
-    sprintf(message, "%x: ", pc);
+    sprintf(message, "[ftrace] %x: ", pc);
     strcat(message, INDENT);
     strcat(message, "Ret to %s(%x) from %s(%x);\n");
     printf(message, func_name, dnpc, curr_func_name, pc);
@@ -191,7 +191,7 @@ void ftrace(uint32_t inst, uint32_t dnpc, uint32_t pc){
   } else if (is_func(dnpc)){
     strcat(INDENT, "  ");
 
-    sprintf(message, "%x: ", pc);
+    sprintf(message, "[ftrace] %x: ", pc);
     strcat(message, INDENT);
     strcat(message, "Call %s(%x);\n");
     printf(message, func_name, dnpc);
