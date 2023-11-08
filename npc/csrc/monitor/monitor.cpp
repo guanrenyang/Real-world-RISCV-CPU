@@ -7,12 +7,14 @@
 
 char *log_file = NULL;
 char *img_file = NULL;
+char *elf_file = NULL;
 extern uint8_t *instMem;
 
 #define RESET_VECTOR 0x80000000
 
 void init_mem();
 void init_log(const char *);
+void init_elf(const char *); 
 void init_disasm(const char *triple);
 
 static long load_img(){
@@ -38,6 +40,7 @@ static long load_img(){
 static int parse_args(int argc, char *argv[]) {
   const struct option table[] = {
     {"log"      , required_argument, NULL, 'l'},
+	{"ftrace"   , required_argument, NULL, 'f'},
     {0          , 0                , NULL,  0 },
   };
   int o;
@@ -45,6 +48,7 @@ static int parse_args(int argc, char *argv[]) {
     switch (o) {
       case 'l': log_file = optarg; break;
       case 1: img_file = optarg; return 0;
+	  case 'f': elf_file = optarg; break;
       default:
         printf("Usage: %s [OPTION...] IMAGE [args]\n\n", argv[0]);
         printf("\t-l,--log=FILE           output log to FILE\n");
@@ -61,8 +65,11 @@ void init_monitor(int argc, char *argv[]) {
 	/*Parse arguments. */
 	parse_args(argc, argv);
 
-  /* Initialize log*/
-  init_log(log_file);
+  	/* Initialize log*/
+  	init_log(log_file);
+
+	/* Initialize elf*/
+	init_elf(elf_file);
 
 	/* Initialize memory. */
 	init_mem();
@@ -71,5 +78,5 @@ void init_monitor(int argc, char *argv[]) {
 	long img_size = load_img();
 	
 	/* Initialize disassemble module*/
-  init_disasm("riscv32-pc-linux-gnu");
+  	init_disasm("riscv32-pc-linux-gnu");
 }

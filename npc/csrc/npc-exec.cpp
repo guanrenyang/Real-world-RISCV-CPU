@@ -59,7 +59,14 @@ void exec_once() {
 #ifdef CONFIG_ITRACE
 	itrace(top->pc, top->inst, 4);
 #endif 
+	printf("dnpc = %x\n", top->ftrace_dnpc);
 	step_and_dump_wave();
+	printf("dnpc after = %x\n", top->ftrace_dnpc);
+
+#ifdef CONFIG_FTRACE
+	ftrace(top->inst, top->ftrace_dnpc, top->pc);
+#endif
+
 }
 
 void execute(uint64_t n) {
