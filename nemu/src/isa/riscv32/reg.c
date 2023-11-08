@@ -30,13 +30,12 @@ void isa_reg_display() {
     word_t reg_val = gpr(i); 
 
     // bool success = true;
-
     // if (!success){
     //   /* TODO: add some error message */
     //   return;
     // }
 
-    printf("%s=%u\n", reg_name, reg_val);
+    printf("%s = %x\n", reg_name, reg_val);
 
   }
 
