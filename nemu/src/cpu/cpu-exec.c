@@ -98,7 +98,6 @@ static void display_iringbuf(Decode *_this){
 static void execute(uint64_t n) {
   Decode s;
   for (;n > 0; n --) {
-	printf("pc = " FMT_WORD "\n", cpu.pc);
     exec_once(&s, cpu.pc);
     g_nr_guest_inst ++;
     trace_and_difftest(&s, cpu.pc);
