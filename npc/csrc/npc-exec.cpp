@@ -72,9 +72,9 @@ void sim_exit() {
 }
 
 void exec_once() {
-	printf("debug: top->pc: %x", top->pc);
+	printf("debug: top->pc: %x\n", top->pc);
 	top->clk = 0b1; 
-	printf("debug: top->pc after: %x", top->pc);
+	printf("debug: top->pc after: %x\n", top->pc);
 	top->rst = 0b0; step_and_dump_wave();
 	top->clk = 0b0; top->rst = 0b0; top->inst = paddr_read(top->pc, 4); 
 #ifdef CONFIG_ITRACE
