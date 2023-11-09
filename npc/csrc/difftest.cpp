@@ -39,7 +39,7 @@ void init_difftest(char *ref_so_file, long img_size, int port) {
 	ref_difftest_regcpy(&cpu, DIFFTEST_TO_REF);
 }
 
-static bool checkregs(const CPU_State* ref_state) {
+static bool checkregs(const CPU_State* ref_state, uint32_t npc) {
 	CPU_State cpu = get_cpu_state();
 
 	for (int i=0; i<NR_GPR; i++) {
@@ -47,7 +47,7 @@ static bool checkregs(const CPU_State* ref_state) {
 			return false;
 	}	
 
-	if(ref_state->pc != cpu.pc)
+	if(ref_state->pc != npc)
 		return false;	
 
 	return true;
@@ -59,7 +59,7 @@ void difftest_step(uint32_t pc, uint32_t npc) {
 	CPU_State ref_state;
 	ref_difftest_regcpy(&ref_state, DIFFTEST_TO_DUT);
 	
-	if(!checkregs(&ref_state)){
+	if(!checkregs(&ref_state, npc)){
 		fprintf(stderr, "difftest failed at pc=0x%08x\n", pc);
 		assert(0);
 	}
