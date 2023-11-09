@@ -84,7 +84,7 @@ void init_monitor(int argc, char *argv[]) {
 	long img_size = load_img();
 	
 	/* Initialize disassemble module*/
-  	init_disasm("riscv32-pc-linux-gnu");
+  	// init_disasm("riscv32-pc-linux-gnu");
 
 	/* Initialize the top module*/	
 	CPU_State cpu = sim_init_then_reset();
