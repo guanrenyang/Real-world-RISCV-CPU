@@ -4,10 +4,13 @@
 #include <stdint.h>
 
 #include <paddr.h>
+#include <npc.h>
 
 char *log_file = NULL;
 char *img_file = NULL;
 char *elf_file = NULL;
+char *diff_so_file = NULL;
+
 extern uint8_t *instMem;
 
 #define RESET_VECTOR 0x80000000
@@ -16,6 +19,7 @@ void init_mem();
 void init_log(const char *);
 void init_elf(const char *); 
 void init_disasm(const char *triple);
+void init_difftest(char *ref_so_file, long img_size, int port);
 
 static long load_img(){
   if (img_file == NULL) {
@@ -40,15 +44,17 @@ static long load_img(){
 static int parse_args(int argc, char *argv[]) {
   const struct option table[] = {
     {"log"      , required_argument, NULL, 'l'},
+	{"diff"     , required_argument, NULL, 'd'},
 	{"ftrace"   , required_argument, NULL, 'f'},
     {0          , 0                , NULL,  0 },
   };
   int o;
-  while ( (o = getopt_long(argc, argv, "-l:f:", table, NULL)) != -1) {
+  while ( (o = getopt_long(argc, argv, "-l:d:f:", table, NULL)) != -1) {
     switch (o) {
       case 'l': log_file = optarg; break;
       case 1: img_file = optarg; return 0;
 	  case 'f': elf_file = optarg; break;
+	  case 'd': diff_so_file = optarg; break;
       default:
         printf("Usage: %s [OPTION...] IMAGE [args]\n\n", argv[0]);
         printf("\t-l,--log=FILE           output log to FILE\n");
@@ -79,4 +85,9 @@ void init_monitor(int argc, char *argv[]) {
 	
 	/* Initialize disassemble module*/
   	init_disasm("riscv32-pc-linux-gnu");
+
+	/* Initialize the top module*/	
+	CPU_State cpu = sim_init_then_reset();
+
+	init_difftest(diff_so_file, img_size, 1234);
 }

@@ -22,8 +22,13 @@ static TOPNAME *top = nullptr;
 static bool Trap = false;
 void trap() { Trap = true; }
 
-void sim_init() {
+void step_and_dump_wave(){
+	top->eval();
+	contextp->timeInc(1);
+	tfp->dump(contextp->time());
+}
 
+void sim_init() {
 	Verilated::traceEverOn(true);
 
 	top = new TOPNAME;
@@ -34,18 +39,25 @@ void sim_init() {
 	top->trace(tfp, 0);
 	tfp->open("./build/dump.vcd");
 }
-
-void step_and_dump_wave(){
-	top->eval();
-	contextp->timeInc(1);
-	tfp->dump(contextp->time());
-}
-
-
 void reset() {
 	top->clk = 0b0; top->rst = 0b1; step_and_dump_wave();
 	top->clk = 0b1; top->rst = 0b1; step_and_dump_wave();
 	top->clk = 0b0; top->rst = 0b1; step_and_dump_wave();
+}
+
+CPU_State sim_init_then_reset() {
+
+	sim_init();	
+	
+	reset();
+	
+	CPU_State cpu;
+	for (int i=0; i<NR_GPR; i++) {
+		cpu.gpr[i] = top->rootp->ysyx_23060061_Top__DOT__registerFile__DOT__rf[i];
+	}
+	cpu.pc = top->pc;
+	
+	return cpu;
 }
 
 void sim_exit() {
@@ -96,3 +108,4 @@ void reg_display() {
 		printf("reg[%d] = %x\n", i, rf[i]);
 	}
 }
+
