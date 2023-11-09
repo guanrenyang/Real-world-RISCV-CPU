@@ -71,11 +71,13 @@ void sim_exit() {
 	tfp->close();
 }
 
+static int inst_cnt = 0;
 void exec_once() {
 	top->clk = 0b1; top->rst = 0b0; step_and_dump_wave();
 
 	/*Difftest*/
-	difftest_step(top->pc, top->ftrace_dnpc);	
+	if (inst_cnt > 0)
+		difftest_step(top->pc, top->ftrace_dnpc);	
 	printf("%x\n", top->rootp->ysyx_23060061_Top__DOT__registerFile__DOT__rf[2]);
 	top->clk = 0b0; top->rst = 0b0; top->inst = paddr_read(top->pc, 4); 
 #ifdef CONFIG_ITRACE
@@ -89,6 +91,7 @@ void exec_once() {
 	ftrace(top->inst, top->ftrace_dnpc, top->pc);
 #endif
 
+	inst_cnt ++;
 }
 
 void execute(uint64_t n) {
