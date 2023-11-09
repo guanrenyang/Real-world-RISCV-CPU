@@ -37,11 +37,12 @@ __EXPORT void difftest_regcpy(void *dut, bool direction) {
 	for(int i=0;i<RISCV_GPR_NUM;i++){
 		ctx->gpr[i] = cpu.gpr[i];	
 	}	
+	printf("pc = %x\n", cpu.pc);
 	ctx->pc = cpu.pc;
+
   } else if (direction == DIFFTEST_TO_REF) {
 	struct diff_context_t* ctx = (struct diff_context_t*)dut;	
 	for (int i = 0; i < RISCV_GPR_NUM; i++) {
-		printf("renyang: %d\n", RISCV_GPR_NUM);
 		cpu.gpr[i] = ctx->gpr[i];
 	}
 	
