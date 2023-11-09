@@ -9,6 +9,7 @@
 #include <npc.h>
 #include <paddr.h>
 #include <trace.h>
+#include <difftest.h>
 
 #define TOPNAME Vysyx_23060061_Top
 
@@ -45,19 +46,24 @@ void reset() {
 	top->clk = 0b0; top->rst = 0b1; step_and_dump_wave();
 }
 
-CPU_State sim_init_then_reset() {
-
-	sim_init();	
-	
-	reset();
-	
+CPU_State get_cpu_state() {
 	CPU_State cpu;
+
 	for (int i=0; i<NR_GPR; i++) {
 		cpu.gpr[i] = top->rootp->ysyx_23060061_Top__DOT__registerFile__DOT__rf[i];
 	}
 	cpu.pc = top->pc;
 	
 	return cpu;
+}
+
+CPU_State sim_init_then_reset() {
+
+	sim_init();	
+	
+	reset();
+	
+	return get_cpu_state();	
 }
 
 void sim_exit() {
@@ -79,6 +85,8 @@ void exec_once() {
 	ftrace(top->inst, top->ftrace_dnpc, top->pc);
 #endif
 
+	/*Difftest*/
+	difftest_step(top->pc, top->ftrace_dnpc);	
 }
 
 void execute(uint64_t n) {
@@ -108,4 +116,3 @@ void reg_display() {
 		printf("reg[%d] = %x\n", i, rf[i]);
 	}
 }
-

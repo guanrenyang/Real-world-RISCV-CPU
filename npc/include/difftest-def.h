@@ -1,5 +1,4 @@
 #include <stdint.h>
-#include <dlfcn.h>
 #include <macro.h>
 
 enum {DIFFTEST_TO_DUT, DIFFTEST_TO_REF };

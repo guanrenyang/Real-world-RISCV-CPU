@@ -17,4 +17,5 @@ void npc_exec(uint64_t n);
 CPU_State sim_init_then_reset();
 void sim_exit();
 
+CPU_State get_cpu_state();
 void reg_display();
