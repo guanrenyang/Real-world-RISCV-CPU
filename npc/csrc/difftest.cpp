@@ -43,7 +43,7 @@ static bool checkregs(const CPU_State* ref_state, uint32_t npc) {
 	CPU_State cpu = get_cpu_state();
 
 	for (int i=0; i<NR_GPR; i++) {
-		printf("cpu.gpr[%d]=%x, ref_state->gpr[%d]=%x", i, cpu.gpr[i], i, ref_state->gpr[i]);
+		printf("cpu.gpr[%d]=%x, ref_state->gpr[%d]=%x\n", i, cpu.gpr[i], i, ref_state->gpr[i]);
 		if(ref_state->gpr[i] != cpu.gpr[i])
 			return false;
 	}	
