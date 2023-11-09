@@ -37,7 +37,7 @@ __EXPORT void difftest_regcpy(void *dut, bool direction) {
 	for(int i=0;i<RISCV_GPR_NUM;i++){
 		ctx->gpr[i] = cpu.gpr[i];	
 	}	
-	printf("pc = %x\n", cpu.pc);
+	Log("pc = %x\n", cpu.pc);
 	ctx->pc = cpu.pc;
 
   } else if (direction == DIFFTEST_TO_REF) {
