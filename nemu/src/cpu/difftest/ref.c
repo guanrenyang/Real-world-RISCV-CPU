@@ -40,7 +40,7 @@ __EXPORT void difftest_regcpy(void *dut, bool direction) {
 	ctx->pc = cpu.pc;
   } else if (direction == DIFFTEST_TO_REF) {
 	struct diff_context_t* ctx = (struct diff_context_t*)dut;	
-	for (int i = 0l; i < RISCV_GPR_NUM; i++) {
+	for (int i = 0; i < RISCV_GPR_NUM; i++) {
 		cpu.gpr[i] = ctx->gpr[i];
 	}
 	
