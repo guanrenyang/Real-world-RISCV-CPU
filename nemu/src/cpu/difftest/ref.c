@@ -45,7 +45,6 @@ __EXPORT void difftest_regcpy(void *dut, bool direction) {
 	}
 	
 	cpu.pc = ctx->pc;
-	printf("renyang pc = %x\n", cpu.pc);
   }
 }
 

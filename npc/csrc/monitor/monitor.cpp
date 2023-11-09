@@ -89,6 +89,6 @@ void init_monitor(int argc, char *argv[]) {
 #endif
 	/* Initialize the top module*/	
 	CPU_State cpu = sim_init_then_reset();
-
+	printf("renyang pc=%x\n", cpu.pc);
 	init_difftest(diff_so_file, img_size, 1234);
 }
