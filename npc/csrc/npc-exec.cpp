@@ -76,7 +76,7 @@ void exec_once() {
 
 	/*Difftest*/
 	// difftest_step(top->pc, top->ftrace_dnpc);	
-
+	printf("%x", top->rootp->ysyx_23060061_Top__DOT__registerFile__DOT__rf[2]);
 	top->clk = 0b0; top->rst = 0b0; top->inst = paddr_read(top->pc, 4); 
 #ifdef CONFIG_ITRACE
 	itrace(top->pc, top->inst, 4);
