@@ -31,6 +31,11 @@ __EXPORT void difftest_memcpy(paddr_t addr, void *buf, size_t n, bool direction)
   }
 }
 
+struct tmp_state {
+	uint32_t gpr[16];
+	uint32_t pc;
+};
+
 __EXPORT void difftest_regcpy(void *dut, bool direction) {
   if(direction == DIFFTEST_TO_DUT) {	
 	struct diff_context_t* ctx = (struct diff_context_t*)dut;
@@ -39,7 +44,7 @@ __EXPORT void difftest_regcpy(void *dut, bool direction) {
 	}	
 	ctx->pc = cpu.pc;
   } else if (direction == DIFFTEST_TO_REF) {
-	struct diff_context_t* ctx = (struct diff_context_t*)dut;	
+	struct tmp_state* ctx = (struct tmp_state*)dut;	
 	for (int i = 0; i < RISCV_GPR_NUM; i++) {
 		cpu.gpr[i] = ctx->gpr[i];
 	}
