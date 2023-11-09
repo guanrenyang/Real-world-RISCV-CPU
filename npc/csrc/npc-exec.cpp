@@ -86,7 +86,7 @@ void exec_once() {
 #endif
 
 	/*Difftest*/
-	difftest_step(top->pc, top->ftrace_dnpc);	
+	// difftest_step(top->pc, top->ftrace_dnpc);	
 }
 
 void execute(uint64_t n) {
