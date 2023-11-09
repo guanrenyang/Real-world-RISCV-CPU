@@ -47,9 +47,9 @@ static bool checkregs(const CPU_State* ref_state, uint32_t npc) {
 			return false;
 	}	
 
-	printf("pc = %x, npc = %x\n", ref_state->pc, npc);
-	int t;
-	std::cin >> t;
+	// printf("pc = %x, npc = %x\n", ref_state->pc, npc);
+	// int t;
+	// std::cin >> t;
 	if(ref_state->pc != npc)
 		return false;	
 
