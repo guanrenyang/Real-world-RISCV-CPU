@@ -72,7 +72,10 @@ void sim_exit() {
 }
 
 void exec_once() {
-	top->clk = 0b1; top->rst = 0b0; step_and_dump_wave();
+	printf("debug: top->pc: %x", top->pc);
+	top->clk = 0b1; 
+	printf("debug: top->pc after: %x", top->pc);
+	top->rst = 0b0; step_and_dump_wave();
 	top->clk = 0b0; top->rst = 0b0; top->inst = paddr_read(top->pc, 4); 
 #ifdef CONFIG_ITRACE
 	itrace(top->pc, top->inst, 4);
