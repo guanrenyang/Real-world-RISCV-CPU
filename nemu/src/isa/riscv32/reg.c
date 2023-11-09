@@ -24,7 +24,7 @@ const char *regs[] = {
 };
 
 void isa_reg_display() {
-  size_t nr_regs = sizeof(regs) / sizeof(regs[0]);
+  size_t nr_regs = MUXDEF(CONFIG_RVE, 16, 32);  
   for (size_t i = 0; i < nr_regs; i++){
     const char * reg_name = regs[i];
     word_t reg_val = gpr(i); 

@@ -1,9 +1,21 @@
 #include <macro.h>
+#include <stdint.h>
+
+#ifdef CONFIG_RVE
+#define NR_GPR 16
+#else
+#define NR_GPR 32
+#endif
+
+struct CPU_State {
+	uint32_t gpr[NR_GPR];
+	uint32_t pc;
+};
 
 void npc_exec(uint64_t n);
 
-void reset();
-void sim_init();
+CPU_State sim_init_then_reset();
 void sim_exit();
 
+CPU_State get_cpu_state();
 void reg_display();

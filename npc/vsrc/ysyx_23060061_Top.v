@@ -38,7 +38,7 @@ module ysyx_23060061_Top (
 
   assign snpc = pc + 4;
   assign dnpc = PCSel == 0 ? snpc : aluOut;
-  ysyx_23060061_Reg #(32, 32'h80000000-4) pc_reg(.clk(clk), .rst(rst), .din(dnpc), .dout(pc), .wen(1'b1));
+  ysyx_23060061_Reg #(32, 32'h80000000) pc_reg(.clk(clk), .rst(rst), .din(dnpc), .dout(pc), .wen(1'b1));
   assign ftrace_dnpc = dnpc;
 
   // ID: Decoder unit
