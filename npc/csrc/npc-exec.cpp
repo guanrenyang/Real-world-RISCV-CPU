@@ -23,6 +23,7 @@ static TOPNAME *top = nullptr;
 static bool Trap = false;
 void trap() { Trap = true; }
 
+void pmem_read(){}
 void step_and_dump_wave(){
 	top->eval();
 	contextp->timeInc(1);

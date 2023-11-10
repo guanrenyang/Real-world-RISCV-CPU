@@ -1,4 +1,6 @@
-import "DPI-C" function void trap ();
+import "DPI-C" function void trap();
+import "DPI-C" function void pmem_read();
+// import "DPI-C" function void pmem_write(input int waddr, output int wdata, input byte wmask);
 
 module ysyx_23060061_Top (
   input clk,
@@ -48,17 +50,18 @@ module ysyx_23060061_Top (
 
 	.instType(instType),
 	.RegWrite(RegWrite), 
+	.MemWrite(MemWrite),
 	.ebreak(ebreak),
 	.PCSel(PCSel),
 	.aluAsel(aluAsel),
 	.aluBsel(aluBsel),
-	.MemWrite(MemWrite),
 	.WBSel(WBSel),
 	.aluOp(aluOp)
   );
-  
+
   always @(*) begin
     if(ebreak) trap(); 
+	else if(MemWrite) pmem_read();
   end
 
   assign rs1 = inst[19:15];
@@ -81,7 +84,6 @@ module ysyx_23060061_Top (
   ysyx_23060061_ImmGen imm_gen(.inst(inst[31:7]), .ImmSel(instType), .imm(imm));
 
   // EX
-  
   assign aluOpA = aluAsel == 0 ? regData1 : pc;
   assign aluOpB = aluBsel == 0 ? regData2 : imm;
   ysyx_23060061_ALU #(32, 32'd0) alu(.clk(clk), .a(aluOpA), .b(aluOpB), .aluOut(aluOut), .aluOp(aluOp));

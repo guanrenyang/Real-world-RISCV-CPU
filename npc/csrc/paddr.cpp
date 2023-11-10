@@ -10,7 +10,7 @@ void init_mem() {
 
 uint8_t* guest_to_host(uint32_t paddr) { return  instMem + paddr - MEMBASE; }
 
-uint32_t host_read(void *addr, int len){
+uint32_t host_read(void *addr, int len) {
 	switch (len) {
 		case 1: return *(uint8_t  *)addr;
 		case 2: return *(uint16_t *)addr;
@@ -18,7 +18,7 @@ uint32_t host_read(void *addr, int len){
 	}
 }
 
-uint32_t paddr_read(uint32_t paddr, int len){
+uint32_t paddr_read(uint32_t paddr, int len) {
   assert(guest_to_host(paddr) < (instMem + MEMSIZE));
 
   // uint32_t ret = *(uint32_t*)(instMem + paddr - MEMBASE); // right
@@ -28,3 +28,10 @@ uint32_t paddr_read(uint32_t paddr, int len){
   return ret;
 }
 
+// void pmem_read(int raddr, int rdata) {
+// 	printf("here");
+// }
+
+void pmem_write(){
+	
+}
