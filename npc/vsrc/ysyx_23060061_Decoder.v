@@ -28,6 +28,7 @@ module ysyx_23060061_Decoder (
 		{7'b1101111, 3'b000}, {10'b1011101000}, // jal
 		{7'b1100111, 3'b000}, {10'b1010101010}, // jalr
 		{7'b0100011, 3'b010}, {10'b000011xx00}  // sw
+	
 	}));
   
   ysyx_23060061_MuxKey #(9, 7, 3) decoder_instType(.out(instType), .key(opcode), .lut({
