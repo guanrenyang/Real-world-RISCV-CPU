@@ -92,11 +92,13 @@ module ysyx_23060061_Top (
   // MEM
   assign memDataW = regData2;
   assign memAddr = aluOut; 
- //  always @(posedge clk) begin
-	// if (MemWrite) begin
-	//   pmem_write(memAddr, memDataW, 4'b1111);
-	// end else 
- //  end
+  always @(posedge clk) begin
+	if(MemRW==2'b10) begin
+		pmem_read(memAddr, memDataR);
+	end else if (MemRW==2'b01) begin
+		pmem_write(memAddr, memDataR, 8'b11111111);
+	end
+  end
   // WB
   ysyx_23060061_MuxKey #(3, 2, 32) wb_mux(
 	.out(regDataWB),
