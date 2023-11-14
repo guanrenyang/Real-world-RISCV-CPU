@@ -1,15 +1,13 @@
-import "DPI-C" function void trap ();
+import "DPI-C" function void trap();
+import "DPI-C" function void pmem_read(input int raddr, output int rdata);
+import "DPI-C" function void pmem_write(input int waddr, output int wdata, input byte wmask);
 
 module ysyx_23060061_Top (
   input clk,
   input rst, 
   input [31 : 0] inst,
-  input [31 : 0] memDataR,
   output [31 : 0] pc,
-  output [31 : 0] ftrace_dnpc, // used only for ftrace
-  output MemWrite,
-  output [31:0] memDataW,
-  output [31:0] memAddrW
+  output [31 : 0] ftrace_dnpc // used only for ftrace
 );
   // IF: reg PC and its updating rule.
   wire [31:0] snpc;
@@ -21,6 +19,12 @@ module ysyx_23060061_Top (
   wire [4:0] rs1;
   wire [31:0] regData1;
   wire [31:0] regData2;
+  
+  wire MemWrite;
+  wire [31:0] memDataW;
+  wire [31:0] memDataR;
+  wire [31:0] memAddr;
+
   wire ebreak;
   wire [2:0] instType;
 
@@ -48,17 +52,21 @@ module ysyx_23060061_Top (
 
 	.instType(instType),
 	.RegWrite(RegWrite), 
+	.MemWrite(MemWrite),
 	.ebreak(ebreak),
 	.PCSel(PCSel),
 	.aluAsel(aluAsel),
 	.aluBsel(aluBsel),
-	.MemWrite(MemWrite),
 	.WBSel(WBSel),
 	.aluOp(aluOp)
   );
-  
-  always @(*) begin
+
+  always @(posedge clk) begin
     if(ebreak) trap(); 
+	else begin
+		pmem_read(memAddr, memDataR);
+		//pmem_write(memAddr, memDataW, 8'b11111111);
+	end;
   end
 
   assign rs1 = inst[19:15];
@@ -81,14 +89,13 @@ module ysyx_23060061_Top (
   ysyx_23060061_ImmGen imm_gen(.inst(inst[31:7]), .ImmSel(instType), .imm(imm));
 
   // EX
-  
   assign aluOpA = aluAsel == 0 ? regData1 : pc;
   assign aluOpB = aluBsel == 0 ? regData2 : imm;
   ysyx_23060061_ALU #(32, 32'd0) alu(.clk(clk), .a(aluOpA), .b(aluOpB), .aluOut(aluOut), .aluOp(aluOp));
   
   // MEM
   assign memDataW = regData2;
-  assign memAddrW = aluOut; 
+  assign memAddr = aluOut; 
 
   // WB
   ysyx_23060061_MuxKey #(3, 2, 32) wb_mux(
