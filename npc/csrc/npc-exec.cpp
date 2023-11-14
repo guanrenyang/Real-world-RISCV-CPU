@@ -22,7 +22,7 @@ static TOPNAME *top = nullptr;
 // DPI-C function for `ebreak` instruction
 static bool Trap = false;
 void trap() { Trap = true; }
-// void pmem_read(int raddr, int rdata){};
+
 void step_and_dump_wave(){
 	top->eval();
 	contextp->timeInc(1);

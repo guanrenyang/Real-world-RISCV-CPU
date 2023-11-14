@@ -32,6 +32,6 @@ extern "C" void pmem_read(int raddr, int rdata) {
  printf("here is pmem_read");
 }
 
-void pmem_write(int waddr, int wdata, int wmask){
-	
+extern "C" void pmem_write(int waddr, int wdata, int wmask){
+  printf("here is pmem_write");
 }
