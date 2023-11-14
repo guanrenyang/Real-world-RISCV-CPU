@@ -29,7 +29,7 @@ uint32_t paddr_read(uint32_t paddr, int len) {
 }
 
 extern "C" void pmem_read(int raddr, int rdata) {
-
+ printf("here is pmem_read");
 }
 
 void pmem_write(int waddr, int wdata, int wmask){
