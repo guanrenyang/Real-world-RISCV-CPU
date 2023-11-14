@@ -23,7 +23,9 @@ static TOPNAME *top = nullptr;
 static bool Trap = false;
 void trap() { Trap = true; }
 
-void pmem_read(){}
+void pmem_read(){
+	printf("here is pmem_read");
+}
 void step_and_dump_wave(){
 	top->eval();
 	contextp->timeInc(1);
@@ -41,6 +43,7 @@ void sim_init() {
 	top->trace(tfp, 0);
 	tfp->open("./build/dump.vcd");
 }
+
 void reset() {
 	top->clk = 0b0; top->rst = 0b1; step_and_dump_wave();
 	top->clk = 0b1; top->rst = 0b1; step_and_dump_wave();

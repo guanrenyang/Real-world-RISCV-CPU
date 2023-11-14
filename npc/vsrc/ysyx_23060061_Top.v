@@ -9,7 +9,6 @@ module ysyx_23060061_Top (
   input [31 : 0] memDataR,
   output [31 : 0] pc,
   output [31 : 0] ftrace_dnpc, // used only for ftrace
-  output MemWrite,
   output [31:0] memDataW,
   output [31:0] memAddrW
 );
@@ -23,6 +22,11 @@ module ysyx_23060061_Top (
   wire [4:0] rs1;
   wire [31:0] regData1;
   wire [31:0] regData2;
+  
+  wire MemWrite;
+  wire [31:0] memData;
+  wire [31:0] memAddr;
+
   wire ebreak;
   wire [2:0] instType;
 
