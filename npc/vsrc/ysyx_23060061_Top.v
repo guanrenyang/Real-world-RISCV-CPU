@@ -65,7 +65,7 @@ module ysyx_23060061_Top (
 
   always @(*) begin
     if(ebreak) trap(); 
-	else if(MemWrite) pmem_read();
+	else pmem_read();
   end
 
   assign rs1 = inst[19:15];
