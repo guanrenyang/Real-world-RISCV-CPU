@@ -43,7 +43,7 @@ void paddr_write(uint32_t paddr, int len, uint32_t data) {
 
   host_write(guest_to_host(paddr), len, data);
   
-  printf("\n[pmem_write]: %x at addr %x\n", data, paddr);
+  printf("\n[pmem_write]: write data %x at addr %x\n", data, paddr);
 }
 
 extern "C" void pmem_read(int raddr, int rdata) {
