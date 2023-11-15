@@ -107,6 +107,7 @@ void execute(uint64_t n) {
 		}
 	}
 	sim_exit();
+	exit(0);
 }
 
 void npc_exec(uint64_t n) {
