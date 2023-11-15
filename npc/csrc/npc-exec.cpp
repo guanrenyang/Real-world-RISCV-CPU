@@ -106,13 +106,14 @@ void execute(uint64_t n) {
 			break; 
 		}
 	}
+	sim_exit();
 }
 
 void npc_exec(uint64_t n) {
 	// TODO: set npc state
 	
 	execute(n);
-	sim_exit();
+
 	// TODO: check npc state
 }
 
