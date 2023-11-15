@@ -96,7 +96,7 @@ module ysyx_23060061_Top (
 	if(MemRW==2'b10) begin
 		pmem_read(memAddr, memDataR);
 	end else if (MemRW==2'b01) begin
-		pmem_write(memAddr, memDataR, 8'b11111111);
+		pmem_write(memAddr, memDataW, 8'b11111111);
 	end
   end
 

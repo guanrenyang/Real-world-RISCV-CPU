@@ -52,6 +52,5 @@ extern "C" void pmem_read(int raddr, int rdata) {
 
 extern "C" void pmem_write(int waddr, int wdata, int wmask){
   int bitMask = ((wmask & 1) * 0xFF) | ((((wmask & 2) >> 1)* 0xFF) << 8) | ((((wmask & 4) >> 2 ) * 0xFF) << 16) | ((((wmask & 8) >> 3 ) * 0xFF) << 24);
-  printf("bitMask = %x\n", bitMask);
   paddr_write(waddr, 4, wdata & bitMask);	
 }
