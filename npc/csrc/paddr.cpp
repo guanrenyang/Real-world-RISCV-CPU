@@ -18,6 +18,14 @@ uint32_t host_read(void *addr, int len) {
 	}
 }
 
+void host_write(void *addr, int len, uint32_t data) {
+  switch (len) {
+    case 1: *(uint8_t  *)addr = data; return;
+    case 2: *(uint16_t *)addr = data; return;
+    case 4: *(uint32_t *)addr = data; return;
+  }
+}
+
 uint32_t paddr_read(uint32_t paddr, int len) {
   assert(guest_to_host(paddr) < (instMem + MEMSIZE));
 
@@ -28,10 +36,21 @@ uint32_t paddr_read(uint32_t paddr, int len) {
   return ret;
 }
 
+
+
+void pmem_write(uint32_t paddr, int len, uint32_t data) {
+  assert(guest_to_host(paddr) < (instMem + MEMSIZE));
+
+  host_write(guest_to_host(paddr), len, data);
+  
+  printf("[pmem_write] data: %x at addr %x\n", data, paddr);
+}
+
 extern "C" void pmem_read(int raddr, int rdata) {
- printf("here is pmem_read");
+  rdata = paddr_read(raddr, 4);
 }
 
 extern "C" void pmem_write(int waddr, int wdata, int wmask){
-  printf("here is pmem_write");
+  int bitMask = ((wmask & 1) * 0xFF) | ((((wmask & 2) >> 1)* 0xFF) << 8) | ((((wmask & 4) >> 2 ) * 0xFF) << 16) | ((((wmask & 8) >> 3 ) * 0xFF) << 24);
+  host_write(guest_to_host(waddr), 4, wdata & bitMask);	
 }

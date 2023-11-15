@@ -99,6 +99,7 @@ module ysyx_23060061_Top (
 		pmem_write(memAddr, memDataR, 8'b11111111);
 	end
   end
+
   // WB
   ysyx_23060061_MuxKey #(3, 2, 32) wb_mux(
 	.out(regDataWB),
