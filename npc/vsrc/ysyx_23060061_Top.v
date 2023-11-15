@@ -20,7 +20,7 @@ module ysyx_23060061_Top (
   wire [31:0] regData1;
   wire [31:0] regData2;
   
-  wire MemWrite;
+  wire [1:0] MemRW;
   wire [31:0] memDataW;
   wire [31:0] memDataR;
   wire [31:0] memAddr;
@@ -52,7 +52,7 @@ module ysyx_23060061_Top (
 
 	.instType(instType),
 	.RegWrite(RegWrite), 
-	.MemWrite(MemWrite),
+	.MemRW(MemRW),
 	.ebreak(ebreak),
 	.PCSel(PCSel),
 	.aluAsel(aluAsel),
@@ -61,12 +61,8 @@ module ysyx_23060061_Top (
 	.aluOp(aluOp)
   );
 
-  always @(posedge clk) begin
+  always @(*) begin
     if(ebreak) trap(); 
-	else begin
-		pmem_read(memAddr, memDataR);
-		//pmem_write(memAddr, memDataW, 8'b11111111);
-	end;
   end
 
   assign rs1 = inst[19:15];
@@ -96,7 +92,13 @@ module ysyx_23060061_Top (
   // MEM
   assign memDataW = regData2;
   assign memAddr = aluOut; 
-
+  always @(posedge clk) begin
+	if(MemRW==2'b10) begin
+		pmem_read(memAddr, memDataR);
+	end else if (MemRW==2'b01) begin
+		pmem_write(memAddr, memDataR, 8'b11111111);
+	end
+  end
   // WB
   ysyx_23060061_MuxKey #(3, 2, 32) wb_mux(
 	.out(regDataWB),
