@@ -79,7 +79,7 @@ void exec_once() {
 	/*Difftest*/
 	if (inst_cnt > 0)
 		difftest_step(top->pc, top->ftrace_dnpc);	
-	printf("%x\n", top->rootp->ysyx_23060061_Top__DOT__registerFile__DOT__rf[2]);
+	// printf("%x\n", top->rootp->ysyx_23060061_Top__DOT__registerFile__DOT__rf[2]);
 	top->clk = 0b0; top->rst = 0b0; top->inst = paddr_read(top->pc, 4); 
 
 #ifdef CONFIG_ITRACE
@@ -88,7 +88,7 @@ void exec_once() {
 	// printf("dnpc = %x\n", top->ftrace_dnpc); // Here, dnpc equals to pc+4
 	step_and_dump_wave();
 	// printf("dnpc after = %x\n", top->ftrace_dnpc); // Here, dnpc is the right dnpc
-	printf("%x\n", top->rootp->ysyx_23060061_Top__DOT__registerFile__DOT__rf[2]);
+	// printf("%x\n", top->rootp->ysyx_23060061_Top__DOT__registerFile__DOT__rf[2]);
 
 #ifdef CONFIG_FTRACE
 	ftrace(top->inst, top->ftrace_dnpc, top->pc);
