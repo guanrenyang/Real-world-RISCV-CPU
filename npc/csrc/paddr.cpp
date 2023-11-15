@@ -32,7 +32,7 @@ uint32_t paddr_read(uint32_t paddr, int len) {
   // uint32_t ret = *(uint32_t*)(instMem + paddr - MEMBASE); // right
   uint32_t ret = host_read(guest_to_host(paddr), len);
 
-  printf("[paddr_read] inst: %x at addr %x\n", ret, paddr);
+  printf("[paddr_read]: %x at addr %x\n", ret, paddr);
   return ret;
 }
 
@@ -43,7 +43,7 @@ void pmem_write(uint32_t paddr, int len, uint32_t data) {
 
   host_write(guest_to_host(paddr), len, data);
   
-  printf("[pmem_write] data: %x at addr %x\n", data, paddr);
+  printf("[pmem_write]: %x at addr %x\n", data, paddr);
 }
 
 extern "C" void pmem_read(int raddr, int rdata) {
