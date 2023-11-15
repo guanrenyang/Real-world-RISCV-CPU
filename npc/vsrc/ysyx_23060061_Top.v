@@ -1,6 +1,6 @@
 import "DPI-C" function void trap();
 import "DPI-C" function void pmem_read(input int raddr, output int rdata);
-import "DPI-C" function void pmem_write(input int waddr, output int wdata, input byte wmask);
+import "DPI-C" function void pmem_write(input int waddr, input int wdata, input byte wmask);
 
 module ysyx_23060061_Top (
   input clk,
