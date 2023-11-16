@@ -49,7 +49,8 @@ module ysyx_23060061_Top (
   ysyx_23060061_Decoder decoder(
 	.opcode(inst[6:0]), 
 	.funct3(inst[14:12]), 
-
+	.funct7(inst[31:25]),
+	
 	.instType(instType),
 	.RegWrite(RegWrite), 
 	.MemRW(MemRW),
