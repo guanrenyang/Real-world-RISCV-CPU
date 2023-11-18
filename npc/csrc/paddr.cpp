@@ -11,6 +11,7 @@ void init_mem() {
 uint8_t* guest_to_host(uint32_t paddr) { return  instMem + paddr - MEMBASE; }
 
 uint32_t host_read(void *addr, int len) {
+	printf("host_read addr: %p, len: %d", addr, len);
 	switch (len) {
 		case 1: return *(uint8_t  *)addr;
 		case 2: return *(uint16_t *)addr;
