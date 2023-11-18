@@ -32,7 +32,7 @@ module ysyx_23060061_Top (
   wire [31:0] aluOpB;
   wire [31:0] aluOut;
 
-  wire [1:0] aluOp;
+  wire [3:0] aluOp;
   wire [1:0] WBSel;
   wire PCSel;
   wire aluAsel;
@@ -49,7 +49,8 @@ module ysyx_23060061_Top (
   ysyx_23060061_Decoder decoder(
 	.opcode(inst[6:0]), 
 	.funct3(inst[14:12]), 
-
+	.funct7(inst[31:25]),
+	
 	.instType(instType),
 	.RegWrite(RegWrite), 
 	.MemRW(MemRW),
@@ -92,7 +93,7 @@ module ysyx_23060061_Top (
   // MEM
   assign memDataW = regData2;
   assign memAddr = aluOut; 
-  always @(posedge clk) begin
+  always @(MemRW, memAddr, memDataW) begin
 	if(MemRW==2'b10) begin
 		pmem_read(memAddr, memDataR);
 	end else if (MemRW==2'b01) begin
