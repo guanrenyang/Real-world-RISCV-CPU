@@ -47,9 +47,9 @@ void paddr_write(uint32_t paddr, int len, uint32_t data) {
   printf("\n[pmem_write]: write data %x at addr %x\n", data, paddr);
 }
 
-extern "C" void pmem_read(int raddr, int rdata) {
-  rdata = paddr_read(raddr, 4);
-  printf("renyang: %x\n", rdata);
+extern "C" void pmem_read(int raddr, int *rdata) {
+  (*rdata) = paddr_read(raddr, 4);
+  printf("renyang: %x\n", *rdata);
 }
 
 extern "C" void pmem_write(int waddr, int wdata, char wmask){
