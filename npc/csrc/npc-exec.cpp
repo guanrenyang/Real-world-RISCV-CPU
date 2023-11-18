@@ -78,7 +78,7 @@ void exec_once() {
 
 	/*Difftest*/
 	if (inst_cnt > 0){
-		// difftest_step(top->pc, top->ftrace_dnpc);	
+		difftest_step(top->pc, top->ftrace_dnpc);	
 	}
 	// printf("%x\n", top->rootp->ysyx_23060061_Top__DOT__registerFile__DOT__rf[2]);
 	top->clk = 0b0; top->rst = 0b0; top->inst = paddr_read(top->pc, 4); 
