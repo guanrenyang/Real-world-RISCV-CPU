@@ -1,3 +1,10 @@
 #include <stdint.h>
-int32_t fun1(int32_t a, int32_t b) { return a + b; }
-uint32_t fun2(uint32_t a, uint32_t b) { return a + b; }
+#include <stdlib.h>
+#include <stdio.h>
+int main(){
+	int wmask = 0x0A;
+	int bitMask = ((wmask & 1) * 0xFF) | ((((wmask & 2) >> 1)* 0xFF) << 8) | ((((wmask & 4) >> 2 ) * 0xFF) << 16) | ((((wmask & 8) >> 3 ) * 0xFF) << 24);
+	printf("%x\n", bitMask);
+	return 0;
+}
+ 

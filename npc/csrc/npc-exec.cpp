@@ -76,11 +76,14 @@ static int inst_cnt = 0;
 void exec_once() {
 	top->clk = 0b1; top->rst = 0b0; step_and_dump_wave();
 
+	printf("pc = %x\n", top->pc);
+
 	/*Difftest*/
 	if (inst_cnt > 0){
-		// difftest_step(top->pc, top->ftrace_dnpc);	
+		difftest_step(top->pc, top->ftrace_dnpc);	
 	}
 	// printf("%x\n", top->rootp->ysyx_23060061_Top__DOT__registerFile__DOT__rf[2]);
+
 	top->clk = 0b0; top->rst = 0b0; top->inst = paddr_read(top->pc, 4); 
 
 #ifdef CONFIG_ITRACE
@@ -106,8 +109,8 @@ void execute(uint64_t n) {
 			break; 
 		}
 	}
-	sim_exit();
-	exit(0);
+	// sim_exit();
+	// exit(0);
 }
 
 void npc_exec(uint64_t n) {
