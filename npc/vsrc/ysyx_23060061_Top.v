@@ -32,7 +32,7 @@ module ysyx_23060061_Top (
   wire [31:0] aluOpB;
   wire [31:0] aluOut;
 
-  wire [1:0] aluOp;
+  wire [3:0] aluOp;
   wire [1:0] WBSel;
   wire PCSel;
   wire aluAsel;
