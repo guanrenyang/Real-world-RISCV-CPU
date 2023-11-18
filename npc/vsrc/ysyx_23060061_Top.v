@@ -93,7 +93,7 @@ module ysyx_23060061_Top (
   // MEM
   assign memDataW = regData2;
   assign memAddr = aluOut; 
-  always @(posedge clk) begin
+  always @(MemRW, memAddr, memDataW) begin
 	if(MemRW==2'b10) begin
 		pmem_read(memAddr, memDataR);
 	end else if (MemRW==2'b01) begin
