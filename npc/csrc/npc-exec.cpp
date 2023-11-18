@@ -80,7 +80,7 @@ void exec_once() {
 
 	/*Difftest*/
 	if (inst_cnt > 0){
-		// difftest_step(top->pc, top->ftrace_dnpc);	
+		difftest_step(top->pc, top->ftrace_dnpc);	
 	}
 	// printf("%x\n", top->rootp->ysyx_23060061_Top__DOT__registerFile__DOT__rf[2]);
 
@@ -109,8 +109,8 @@ void execute(uint64_t n) {
 			break; 
 		}
 	}
-	sim_exit();
-	exit(0);
+	// sim_exit();
+	// exit(0);
 }
 
 void npc_exec(uint64_t n) {
