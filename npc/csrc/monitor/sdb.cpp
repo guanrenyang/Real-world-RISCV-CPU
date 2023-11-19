@@ -71,6 +71,11 @@ static int cmd_x(char *args){
     return 0;
 }
 
+static int cmd_q(char *args){
+	sim_exit();
+	exit(0);
+	return -1;
+}
 static struct {
   const char *name;
   const char *description;
@@ -79,7 +84,7 @@ static struct {
   // { "test", "Test command used when debugging.", cmd_test},
   // { "help", "Display information about all supported commands", cmd_help },
   { "c", "Continue the execution of the program", cmd_c },
-  // { "q", "Exit NEMU", cmd_q },
+  { "q", "Exit NPC", cmd_q },
   //
   // /* TODO: Add more commands */
   { "si", "Step Instruction", cmd_si},
