@@ -11,7 +11,6 @@ void init_mem() {
 uint8_t* guest_to_host(uint32_t paddr) { return  instMem + paddr - MEMBASE; }
 
 uint32_t host_read(void *addr, int len) {
-	printf("host_read addr: %p, len: %d", (void*)((uint64_t)addr-(uint64_t)instMem), len);
 	switch (len) {
 		case 1: return *(uint8_t  *)addr;
 		case 2: return *(uint16_t *)addr;
@@ -49,7 +48,7 @@ void paddr_write(uint32_t paddr, int len, uint32_t data) {
 
 extern "C" void pmem_read(int raddr, int *rdata) {
   (*rdata) = paddr_read(raddr, 4);
-  printf("renyang: %x\n", *rdata);
+  // printf("renyang: %x\n", *rdata);
 }
 
 extern "C" void pmem_write(int waddr, int wdata, char wmask){
