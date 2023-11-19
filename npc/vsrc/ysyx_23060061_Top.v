@@ -7,9 +7,7 @@ module ysyx_23060061_Top (
   input rst, 
   input [31 : 0] inst,
   output [31 : 0] pc,
-  output aluAsel,
   output [31 : 0] ftrace_dnpc // used only for ftrace
-
 );
   // IF: reg PC and its updating rule.
   wire [31:0] snpc;
@@ -37,7 +35,7 @@ module ysyx_23060061_Top (
   wire [3:0] aluOp;
   wire [1:0] WBSel;
   wire PCSel;
-  // wire aluAsel;
+  wire aluAsel;
   wire aluBsel;
   
   wire [31:0] regDataWB;
