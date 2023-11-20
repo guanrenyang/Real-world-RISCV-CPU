@@ -74,6 +74,12 @@ void sim_exit() {
 
 static int inst_cnt = 0;
 void exec_once() {
+	
+	// printf("MemRW before the next clock: %x\n", top->rootp->ysyx_23060061_Top__DOT__MemRW);
+	// printf("memAddr before the next clock: %x\n", top->rootp->ysyx_23060061_Top__DOT__aluOut);
+	printf("aluOpA before the current clock: %x\n", top->rootp->ysyx_23060061_Top__DOT__aluOpA);
+	printf("aluOpB before the current clock: %x\n", top->rootp->ysyx_23060061_Top__DOT__aluOpB);
+	printf("aluOp before the current clock: %x\n", top->rootp->ysyx_23060061_Top__DOT__aluOp);
 	top->clk = 0b1; top->rst = 0b0; step_and_dump_wave();
 
 	printf("pc = %x\n", top->pc);
@@ -82,7 +88,6 @@ void exec_once() {
 	if (inst_cnt > 0){
 		difftest_step(top->pc, top->ftrace_dnpc);	
 	}
-	// printf("%x\n", top->rootp->ysyx_23060061_Top__DOT__registerFile__DOT__rf[2]);
 
 	top->clk = 0b0; top->rst = 0b0; top->inst = paddr_read(top->pc, 4); 
 
@@ -91,8 +96,12 @@ void exec_once() {
 #endif 
 	// printf("dnpc = %x\n", top->ftrace_dnpc); // Here, dnpc equals to pc+4
 	step_and_dump_wave();
+	// printf("MemRW after the current clock: %x\n", top->rootp->ysyx_23060061_Top__DOT__MemRW);
+	// printf("memAddr after the current clock: %x\n", top->rootp->ysyx_23060061_Top__DOT__aluOut);
+	printf("aluOpA after the current clock: %x\n", top->rootp->ysyx_23060061_Top__DOT__aluOpA);
+	printf("aluOpB after the current clock: %x\n", top->rootp->ysyx_23060061_Top__DOT__aluOpB);
+	printf("aluOp after the current clock: %x\n", top->rootp->ysyx_23060061_Top__DOT__aluOp);
 	// printf("dnpc after = %x\n", top->ftrace_dnpc); // Here, dnpc is the right dnpc
-	// printf("%x\n", top->rootp->ysyx_23060061_Top__DOT__registerFile__DOT__rf[2]);
 
 #ifdef CONFIG_FTRACE
 	ftrace(top->inst, top->ftrace_dnpc, top->pc);
