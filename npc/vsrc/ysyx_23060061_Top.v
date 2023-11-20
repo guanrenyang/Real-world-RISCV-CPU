@@ -94,12 +94,9 @@ module ysyx_23060061_Top (
   assign memDataW = regData2;
   assign memAddr = aluOut; 
 
-  // store the pc of the last clock cycle. used for the situation where the rd and rs1 of lw are the same.
-  wire [31:0] pre_pc;
-  ysyx_23060061_Reg #(32, 32'h80000000) pre_pc_reg(.clk(clk), .rst(rst), .din(pc), .dout(pre_pc), .wen(1'b1));
 
   always @(MemRW, memAddr, memDataW) begin
-	if(pre_pc!=pc) begin
+	if(!clk) begin
     	if(MemRW==2'b10) begin
     		pmem_read(memAddr, memDataR);
     	end else if (MemRW==2'b01) begin
