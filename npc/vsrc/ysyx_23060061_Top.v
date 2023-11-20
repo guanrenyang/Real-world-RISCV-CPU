@@ -7,7 +7,6 @@ module ysyx_23060061_Top (
   input rst, 
   input [31 : 0] inst,
   output [31 : 0] pc,
-  output aluAsel,
   output [31 : 0] ftrace_dnpc // used only for ftrace
 );
   // IF: reg PC and its updating rule.
@@ -36,7 +35,7 @@ module ysyx_23060061_Top (
   wire [3:0] aluOp;
   wire [1:0] WBSel;
   wire PCSel;
-  // wire aluAsel;
+  wire aluAsel;
   wire aluBsel;
   
   wire [31:0] regDataWB;
@@ -95,11 +94,17 @@ module ysyx_23060061_Top (
   assign memDataW = regData2;
   assign memAddr = aluOut; 
 
+  // store the pc of the last clock cycle. used for the situation where the rd and rs1 of lw are the same.
+  wire [31:0] pre_pc;
+  ysyx_23060061_Reg #(32, 32'h80000000) pre_pc_reg(.clk(clk), .rst(rst), .din(pc), .dout(pre_pc), .wen(1'b1));
+
   always @(MemRW, memAddr, memDataW) begin
-	if(MemRW==2'b10) begin
-		pmem_read(memAddr, memDataR);
-	end else if (MemRW==2'b01) begin
-		pmem_write(memAddr, memDataW, 8'b00001111);
+	if(pre_pc!=pc) begin
+    	if(MemRW==2'b10) begin
+    		pmem_read(memAddr, memDataR);
+    	end else if (MemRW==2'b01) begin
+    		pmem_write(memAddr, memDataW, 8'b00001111);
+    	end
 	end
   end
 

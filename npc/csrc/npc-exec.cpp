@@ -101,7 +101,6 @@ void exec_once() {
 	printf("aluOpA after the current clock: %x\n", top->rootp->ysyx_23060061_Top__DOT__aluOpA);
 	printf("aluOpB after the current clock: %x\n", top->rootp->ysyx_23060061_Top__DOT__aluOpB);
 	printf("aluOp after the current clock: %x\n", top->rootp->ysyx_23060061_Top__DOT__aluOp);
-	printf("aluAsel: %x\n", top->rootp->aluAsel);
 	// printf("dnpc after = %x\n", top->ftrace_dnpc); // Here, dnpc is the right dnpc
 
 #ifdef CONFIG_FTRACE
