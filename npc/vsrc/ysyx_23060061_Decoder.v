@@ -17,7 +17,7 @@ module ysyx_23060061_Decoder (
   output aluAsel,
   output aluBsel,
   output [1:0] WBSel,
-  output [3:0] aluOp, // 0000: add, 0001:output_B, 0010: add and clear lowest bit, 0011: sub, 0100: 
+  output [3:0] aluOp, // 0000: add, 0001:output_B, 0010: add and clear lowest bit, 0011: sub, 0100: sltu, 0101: slt, 0110: xor
   output BrUn // branch unsigned
 );
  //  ysyx_23060061_MuxKeyWithDefault #(8, 10, 11) decoder(
@@ -98,13 +98,14 @@ module ysyx_23060061_Decoder (
 	})
   );
 
-  ysyx_23060061_MuxKeyWithDefault #(2, 17, 13) decoder_from_opcode_funct3_funct7(
+  ysyx_23060061_MuxKeyWithDefault #(3, 17, 13) decoder_from_opcode_funct3_funct7(
 	.out({RegWrite_2, MemRW_2, ebreak_2, PCSel_2, aluAsel_2, aluBsel_2, WBSel_2, aluOp_2}),
 	.key({opcode, funct3, funct7}),
 	.default_out({13'b00000000000}),
 	.lut({
 		{7'b0110011, 3'b000, 7'b0000000}, {1'b1, 2'b00, 1'b0, 1'b0, 1'b0, 1'b0, 2'b01, 4'b0000}, // add
-		{7'b0110011, 3'b000, 7'b0100000}, {1'b1, 2'b00, 1'b0, 1'b0, 1'b0, 1'b0, 2'b01, 4'b0011} // sub
+		{7'b0110011, 3'b000, 7'b0100000}, {1'b1, 2'b00, 1'b0, 1'b0, 1'b0, 1'b0, 2'b01, 4'b0011}, // sub
+		{7'b0110011, 3'b100, 7'b0000000}, {/*RegWrite*/ 1'b1,  /*MemRW*/ 2'b00, /*ebreak*/ 1'b0, /*PCSel*/ 1'b0, /*aluAsel*/ 1'b0, /*aluBsel*/ 1'b0, /*WBSel*/ 2'b01, /*aluOp*/ 4'b0000} // xor
 	})
   );
 
