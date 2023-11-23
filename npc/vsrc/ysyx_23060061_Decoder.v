@@ -105,7 +105,7 @@ module ysyx_23060061_Decoder (
 	.lut({
 		{7'b0110011, 3'b000, 7'b0000000}, {1'b1, 2'b00, 1'b0, 1'b0, 1'b0, 1'b0, 2'b01, 4'b0000}, // add
 		{7'b0110011, 3'b000, 7'b0100000}, {1'b1, 2'b00, 1'b0, 1'b0, 1'b0, 1'b0, 2'b01, 4'b0011}, // sub
-		{7'b0110011, 3'b100, 7'b0000000}, {/*RegWrite*/ 1'b1,  /*MemRW*/ 2'b00, /*ebreak*/ 1'b0, /*PCSel*/ 1'b0, /*aluAsel*/ 1'b0, /*aluBsel*/ 1'b0, /*WBSel*/ 2'b01, /*aluOp*/ 4'b0000} // xor
+		{7'b0110011, 3'b100, 7'b0000000}, {/*RegWrite*/ 1'b1,  /*MemRW*/ 2'b00, /*ebreak*/ 1'b0, /*PCSel*/ 1'b0, /*aluAsel*/ 1'b0, /*aluBsel*/ 1'b0, /*WBSel*/ 2'b01, /*aluOp*/ 4'b0110} // xor
 	})
   );
 
