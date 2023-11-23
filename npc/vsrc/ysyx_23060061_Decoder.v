@@ -84,7 +84,8 @@ module ysyx_23060061_Decoder (
 	.lut({
     	{7'b0010011, 3'b000}, {14'b10000010100000}, // addi
     	{7'b1110011, 3'b000}, {14'bxxx1xxxxxxxxx0}, // ebreak
-		{7'b1100111, 3'b000}, {14'b10001011000100}, // jalr
+		// {7'b1100111, 3'b000}, {14'b10110001000}, // jalr
+		{7'b1100111, 3'b000}, {/*RegWrite*/ 1'b0,  /*MemRW*/ 2'b00, /*ebreak*/ 1'b0, /*PCSel*/ 1'b1, /*aluAsel*/ 1'b0, /*aluBsel*/ 1'b1, /*WBSel*/ 2'b10, /*aluOp*/ 4'b0010, /*BrUn*/ 1'b0}, // jalr
 		{7'b0100011, 3'b010}, {1'b0, 2'b01, 1'b0, 1'b0, 1'b0, 1'b1, 2'bxx, 4'b0000, 1'b0}, // sw
 		{7'b0000011, 3'b010}, {1'b1, 2'b10, 1'b0, 1'b0, 1'b0, 1'b1, 2'b00, 4'b0000, 1'b0}, // lw
 		{7'b0010011, 3'b011}, {/*RegWrite*/ 1'b1,  /*MemRW*/ 2'b00, /*ebreak*/ 1'b0, /*PCSel*/ 1'b0, /*aluAsel*/ 1'b0, /*aluBsel*/ 1'b1, /*WBSel*/ 2'b01, /*aluOp*/ 4'b0100, /*BrUn*/ 1'b0}, // sltiu
