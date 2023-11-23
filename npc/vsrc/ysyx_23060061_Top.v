@@ -40,6 +40,11 @@ module ysyx_23060061_Top (
   
   wire [31:0] regDataWB;
 
+  /* For Branch */
+  wire BrUn;
+  wire BrEq;
+  wire BrLt;
+
   assign snpc = pc + 4;
   assign dnpc = PCSel == 0 ? snpc : aluOut;
   ysyx_23060061_Reg #(32, 32'h80000000) pc_reg(.clk(clk), .rst(rst), .din(dnpc), .dout(pc), .wen(1'b1));
@@ -50,6 +55,8 @@ module ysyx_23060061_Top (
 	.opcode(inst[6:0]), 
 	.funct3(inst[14:12]), 
 	.funct7(inst[31:25]),
+	.BrEq(BrEq),
+	.BrLt(BrLt),
 	
 	.instType(instType),
 	.RegWrite(RegWrite), 
@@ -59,7 +66,8 @@ module ysyx_23060061_Top (
 	.aluAsel(aluAsel),
 	.aluBsel(aluBsel),
 	.WBSel(WBSel),
-	.aluOp(aluOp)
+	.aluOp(aluOp),
+	.BrUn(BrUn)
   );
 
   always @(*) begin
@@ -90,6 +98,15 @@ module ysyx_23060061_Top (
   assign aluOpB = aluBsel == 0 ? regData2 : imm;
   ysyx_23060061_ALU #(32, 32'd0) alu(.clk(clk), .a(aluOpA), .b(aluOpB), .aluOut(aluOut), .aluOp(aluOp));
   
+  // Branch
+  ysyx_23060061_BranchComp branchComp(
+	.rdata1(regData1), 
+	.rdata2(regData2), 
+	.BrUn(BrUn), 
+	.BrEq(BrEq), 
+	.BrLt(BrLt)
+  );
+
   // MEM
   assign memDataW = regData2;
   assign memAddr = aluOut; 

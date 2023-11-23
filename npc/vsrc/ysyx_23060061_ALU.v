@@ -6,7 +6,7 @@ module ysyx_23060061_ALU #(WIDTH = 1, RESET_VAL = 0) (
   output [WIDTH-1:0] aluOut
 );
 
-  ysyx_23060061_MuxKey #(5, 4, WIDTH) alu_mux(
+  ysyx_23060061_MuxKey #(7, 4, WIDTH) alu_mux(
 	.out(aluOut),
 	.key(aluOp),
 	.lut({
@@ -14,7 +14,9 @@ module ysyx_23060061_ALU #(WIDTH = 1, RESET_VAL = 0) (
 	  4'b0001, b,   // output_B
 	  4'b0010, (a+b)&~1, // add and clear lowest bit
 	  4'b0011, a-b, // subtraction
-	  4'b0100, a<b ? {{(WIDTH-1){1'b0}}, 1'b1} : {WIDTH{1'b0}}     // sltu
+	  4'b0100, a<b ? {{(WIDTH-1){1'b0}}, 1'b1} : {WIDTH{1'b0}},     // sltu
+	  4'b0101, $signed(a)<$signed(b) ? {{(WIDTH-1){1'b0}}, 1'b1} : {WIDTH{1'b0}},     // slt
+	  4'b0110, a^b // xor
 	})
   );
 endmodule
