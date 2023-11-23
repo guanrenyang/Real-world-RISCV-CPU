@@ -88,7 +88,7 @@ module ysyx_23060061_Decoder (
 		{7'b0100011, 3'b010}, {1'b0, 2'b01, 1'b0, 1'b0, 1'b0, 1'b1, 2'bxx, 4'b0000, 1'b0}, // sw
 		{7'b0000011, 3'b010}, {1'b1, 2'b10, 1'b0, 1'b0, 1'b0, 1'b1, 2'b00, 4'b0000, 1'b0}, // lw
 		{7'b0010011, 3'b011}, {/*RegWrite*/ 1'b1,  /*MemRW*/ 2'b00, /*ebreak*/ 1'b0, /*PCSel*/ 1'b0, /*aluAsel*/ 1'b0, /*aluBsel*/ 1'b1, /*WBSel*/ 2'b01, /*aluOp*/ 4'b0100, /*BrUn*/ 1'b0}, // sltiu
-
+			
 		{7'b1100011, 3'b000}, {/*RegWrite*/ 1'b0,  /*MemRW*/ 2'b00, /*ebreak*/ 1'b0, /*PCSel*/ 1'b0, /*aluAsel*/ 1'b1, /*aluBsel*/ 1'b1, /*WBSel*/ 2'b00, /*aluOp*/ 4'b0000, /*BrUn*/ 1'b0}, // beq
 		{7'b1100011, 3'b001}, {/*RegWrite*/ 1'b0,  /*MemRW*/ 2'b00, /*ebreak*/ 1'b0, /*PCSel*/ 1'b0, /*aluAsel*/ 1'b1, /*aluBsel*/ 1'b1, /*WBSel*/ 2'b00, /*aluOp*/ 4'b0000, /*BrUn*/ 1'b0}, // bne
 		{7'b1100011, 3'b100}, {/*RegWrite*/ 1'b0,  /*MemRW*/ 2'b00, /*ebreak*/ 1'b0, /*PCSel*/ 1'b0, /*aluAsel*/ 1'b1, /*aluBsel*/ 1'b1, /*WBSel*/ 2'b00, /*aluOp*/ 4'b0000, /*BrUn*/ 1'b0}, // blt
@@ -98,14 +98,16 @@ module ysyx_23060061_Decoder (
 	})
   );
 
-  ysyx_23060061_MuxKeyWithDefault #(3, 17, 13) decoder_from_opcode_funct3_funct7(
+  ysyx_23060061_MuxKeyWithDefault #(4, 17, 13) decoder_from_opcode_funct3_funct7(
 	.out({RegWrite_2, MemRW_2, ebreak_2, PCSel_2, aluAsel_2, aluBsel_2, WBSel_2, aluOp_2}),
 	.key({opcode, funct3, funct7}),
 	.default_out({13'b00000000000}),
 	.lut({
 		{7'b0110011, 3'b000, 7'b0000000}, {1'b1, 2'b00, 1'b0, 1'b0, 1'b0, 1'b0, 2'b01, 4'b0000}, // add
 		{7'b0110011, 3'b000, 7'b0100000}, {1'b1, 2'b00, 1'b0, 1'b0, 1'b0, 1'b0, 2'b01, 4'b0011}, // sub
-		{7'b0110011, 3'b100, 7'b0000000}, {/*RegWrite*/ 1'b1,  /*MemRW*/ 2'b00, /*ebreak*/ 1'b0, /*PCSel*/ 1'b0, /*aluAsel*/ 1'b0, /*aluBsel*/ 1'b0, /*WBSel*/ 2'b01, /*aluOp*/ 4'b0110} // xor
+		{7'b0110011, 3'b100, 7'b0000000}, {/*RegWrite*/ 1'b1,  /*MemRW*/ 2'b00, /*ebreak*/ 1'b0, /*PCSel*/ 1'b0, /*aluAsel*/ 1'b0, /*aluBsel*/ 1'b0, /*WBSel*/ 2'b01, /*aluOp*/ 4'b0110}, // xor
+
+		{7'b0110011, 3'b011, 7'b0000000}, {/*RegWrite*/ 1'b1,  /*MemRW*/ 2'b00, /*ebreak*/ 1'b0, /*PCSel*/ 1'b0, /*aluAsel*/ 1'b0, /*aluBsel*/ 1'b0, /*WBSel*/ 2'b01, /*aluOp*/ 4'b0100} //sltu
 	})
   );
 
