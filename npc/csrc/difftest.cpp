@@ -65,7 +65,7 @@ void difftest_step(uint32_t pc, uint32_t npc) {
 	
 	if(!checkregs(&ref_state, pc)){
 		sim_exit();
-		fprintf(stderr, "difftest failed with npc=%x, ref_state->pc=%x\n", npc, ref_state.pc);
+		fprintf(stderr, "difftest failed with executed pc=%x, cpu_npc=%x, ref_state->pc=%x\n", pc, npc, ref_state.pc);
 		assert(0);
 	}
 }
