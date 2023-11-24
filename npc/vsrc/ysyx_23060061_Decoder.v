@@ -8,6 +8,8 @@ module ysyx_23060061_Decoder (
   input BrEq,
   input BrLt,
 
+  output [3:0] rmask,
+  output [3:0] wmask,
   output [2:0] instType,
 
   output RegWrite,
@@ -62,24 +64,28 @@ module ysyx_23060061_Decoder (
 	})
   );
   
-  ysyx_23060061_MuxKeyWithDefault #(12, 10, 14) decoder_from_opcode_funct3(
-	.out({RegWrite_1, MemRW_1, ebreak_1, PCSel_1, aluAsel_1, aluBsel_1, WBSel_1, aluOp_1, BrUn}),
+  ysyx_23060061_MuxKeyWithDefault #(13, 10, 22) decoder_from_opcode_funct3(
+	.out({RegWrite_1, MemRW_1, ebreak_1, PCSel_1, aluAsel_1, aluBsel_1, WBSel_1, aluOp_1, BrUn, rmask, wmask}),
 	.key({opcode, funct3}),
-	.default_out({/*RegWrite*/ 1'b0,  /*MemRW*/ 2'b00, /*ebreak*/ 1'b0, /*PCSel*/ 1'b0, /*aluAsel*/ 1'b0, /*aluBsel*/ 1'b0, /*WBSel*/ 2'b00, /*aluOp*/ 4'b0000, /*BrUn*/ 1'b0}),
+	.default_out({/*RegWrite*/ 1'b0,  /*MemRW*/ 2'b00, /*ebreak*/ 1'b0, /*PCSel*/ 1'b0, /*aluAsel*/ 1'b0, /*aluBsel*/ 1'b0, /*WBSel*/ 2'b00, /*aluOp*/ 4'b0000, /*BrUn*/ 1'b0, /*rmask*/ 4'b0000, /*wmask*/ 4'b0000}),
 	.lut({
-    	{7'b0010011, 3'b000}, {14'b10000010100000}, // addi
-    	{7'b1110011, 3'b000}, {14'bxxx1xxxxxxxxx0}, // ebreak
-		{7'b1100111, 3'b000}, {14'b10001011000100}, // jalr
-		{7'b0100011, 3'b010}, {1'b0, 2'b01, 1'b0, 1'b0, 1'b0, 1'b1, 2'bxx, 4'b0000, 1'b0}, // sw
-		{7'b0000011, 3'b010}, {1'b1, 2'b10, 1'b0, 1'b0, 1'b0, 1'b1, 2'b00, 4'b0000, 1'b0}, // lw
-		{7'b0010011, 3'b011}, {/*RegWrite*/ 1'b1,  /*MemRW*/ 2'b00, /*ebreak*/ 1'b0, /*PCSel*/ 1'b0, /*aluAsel*/ 1'b0, /*aluBsel*/ 1'b1, /*WBSel*/ 2'b01, /*aluOp*/ 4'b0100, /*BrUn*/ 1'b0}, // sltiu
-			
-		{7'b1100011, 3'b000}, {/*RegWrite*/ 1'b0,  /*MemRW*/ 2'b00, /*ebreak*/ 1'b0, /*PCSel*/ 1'b0, /*aluAsel*/ 1'b1, /*aluBsel*/ 1'b1, /*WBSel*/ 2'b00, /*aluOp*/ 4'b0000, /*BrUn*/ 1'b0}, // beq
-		{7'b1100011, 3'b001}, {/*RegWrite*/ 1'b0,  /*MemRW*/ 2'b00, /*ebreak*/ 1'b0, /*PCSel*/ 1'b0, /*aluAsel*/ 1'b1, /*aluBsel*/ 1'b1, /*WBSel*/ 2'b00, /*aluOp*/ 4'b0000, /*BrUn*/ 1'b0}, // bne
-		{7'b1100011, 3'b100}, {/*RegWrite*/ 1'b0,  /*MemRW*/ 2'b00, /*ebreak*/ 1'b0, /*PCSel*/ 1'b0, /*aluAsel*/ 1'b1, /*aluBsel*/ 1'b1, /*WBSel*/ 2'b00, /*aluOp*/ 4'b0000, /*BrUn*/ 1'b0}, // blt
-		{7'b1100011, 3'b101}, {/*RegWrite*/ 1'b0,  /*MemRW*/ 2'b00, /*ebreak*/ 1'b0, /*PCSel*/ 1'b0, /*aluAsel*/ 1'b1, /*aluBsel*/ 1'b1, /*WBSel*/ 2'b00, /*aluOp*/ 4'b0000, /*BrUn*/ 1'b0}, // bge
-		{7'b1100011, 3'b110}, {/*RegWrite*/ 1'b0,  /*MemRW*/ 2'b00, /*ebreak*/ 1'b0, /*PCSel*/ 1'b0, /*aluAsel*/ 1'b1, /*aluBsel*/ 1'b1, /*WBSel*/ 2'b00, /*aluOp*/ 4'b0000, /*BrUn*/ 1'b1}, // bltu
-		{7'b1100011, 3'b111}, {/*RegWrite*/ 1'b0,  /*MemRW*/ 2'b00, /*ebreak*/ 1'b0, /*PCSel*/ 1'b0, /*aluAsel*/ 1'b1, /*aluBsel*/ 1'b1, /*WBSel*/ 2'b00, /*aluOp*/ 4'b0000, /*BrUn*/ 1'b1} // bgeu
+    	{7'b0010011, 3'b000}, {22'b1000001010000000000000}, // addi
+    	{7'b1110011, 3'b000}, {22'bxxx1xxxxxxxxx000000000}, // ebreak
+		{7'b1100111, 3'b000}, {22'b1000101100010000000000}, // jalr
+		{7'b0100011, 3'b010}, {1'b0, 2'b01, 1'b0, 1'b0, 1'b0, 1'b1, 2'bxx, 4'b0000, 1'b0, 4'b0000, 4'b1111}, // sw
+		/* Load */
+		{7'b0000011, 3'b010}, {/*RegWrite*/ 1'b1,  /*MemRW*/ 2'b10, /*ebreak*/ 1'b0, /*PCSel*/ 1'b0, /*aluAsel*/ 1'b0, /*aluBsel*/ 1'b1, /*WBSel*/ 2'b00, /*aluOp*/ 4'b0000, /*BrUn*/ 1'b0, /*rmask*/ 4'b1111, /*wmask*/ 4'b0000}, // lw
+		{7'b0000011, 3'b000}, {/*RegWrite*/ 1'b1,  /*MemRW*/ 2'b00, /*ebreak*/ 1'b0, /*PCSel*/ 1'b0, /*aluAsel*/ 1'b0, /*aluBsel*/ 1'b1, /*WBSel*/ 2'b01, /*aluOp*/ 4'b0100, /*BrUn*/ 1'b0, /*rmask*/ 4'b0001, /*wmask*/ 4'b0000}, // lb
+		
+		{7'b0010011, 3'b011}, {/*RegWrite*/ 1'b1,  /*MemRW*/ 2'b00, /*ebreak*/ 1'b0, /*PCSel*/ 1'b0, /*aluAsel*/ 1'b0, /*aluBsel*/ 1'b1, /*WBSel*/ 2'b01, /*aluOp*/ 4'b0100, /*BrUn*/ 1'b0, /*rmask*/ 4'b0000, /*wmask*/ 4'b0000}, // sltiu
+		
+		/* Branch */
+		{7'b1100011, 3'b000}, {/*RegWrite*/ 1'b0,  /*MemRW*/ 2'b00, /*ebreak*/ 1'b0, /*PCSel*/ 1'b0, /*aluAsel*/ 1'b1, /*aluBsel*/ 1'b1, /*WBSel*/ 2'b00, /*aluOp*/ 4'b0000, /*BrUn*/ 1'b0, /*rmask*/ 4'b0000, /*wmask*/ 4'b0000}, // beq
+		{7'b1100011, 3'b001}, {/*RegWrite*/ 1'b0,  /*MemRW*/ 2'b00, /*ebreak*/ 1'b0, /*PCSel*/ 1'b0, /*aluAsel*/ 1'b1, /*aluBsel*/ 1'b1, /*WBSel*/ 2'b00, /*aluOp*/ 4'b0000, /*BrUn*/ 1'b0, /*rmask*/ 4'b0000, /*wmask*/ 4'b0000}, // bne
+		{7'b1100011, 3'b100}, {/*RegWrite*/ 1'b0,  /*MemRW*/ 2'b00, /*ebreak*/ 1'b0, /*PCSel*/ 1'b0, /*aluAsel*/ 1'b1, /*aluBsel*/ 1'b1, /*WBSel*/ 2'b00, /*aluOp*/ 4'b0000, /*BrUn*/ 1'b0, /*rmask*/ 4'b0000, /*wmask*/ 4'b0000}, // blt
+		{7'b1100011, 3'b101}, {/*RegWrite*/ 1'b0,  /*MemRW*/ 2'b00, /*ebreak*/ 1'b0, /*PCSel*/ 1'b0, /*aluAsel*/ 1'b1, /*aluBsel*/ 1'b1, /*WBSel*/ 2'b00, /*aluOp*/ 4'b0000, /*BrUn*/ 1'b0, /*rmask*/ 4'b0000, /*wmask*/ 4'b0000}, // bge
+		{7'b1100011, 3'b110}, {/*RegWrite*/ 1'b0,  /*MemRW*/ 2'b00, /*ebreak*/ 1'b0, /*PCSel*/ 1'b0, /*aluAsel*/ 1'b1, /*aluBsel*/ 1'b1, /*WBSel*/ 2'b00, /*aluOp*/ 4'b0000, /*BrUn*/ 1'b1, /*rmask*/ 4'b0000, /*wmask*/ 4'b0000}, // bltu
+		{7'b1100011, 3'b111}, {/*RegWrite*/ 1'b0,  /*MemRW*/ 2'b00, /*ebreak*/ 1'b0, /*PCSel*/ 1'b0, /*aluAsel*/ 1'b1, /*aluBsel*/ 1'b1, /*WBSel*/ 2'b00, /*aluOp*/ 4'b0000, /*BrUn*/ 1'b1, /*rmask*/ 4'b0000, /*wmask*/ 4'b0000} // bgeu
 	})
   );
 

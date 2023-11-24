@@ -1,5 +1,5 @@
 import "DPI-C" function void trap();
-import "DPI-C" function void pmem_read(input int raddr, output int rdata);
+import "DPI-C" function void pmem_read(input int raddr, output int rdata, input byte rmask);
 import "DPI-C" function void pmem_write(input int waddr, input int wdata, input byte wmask);
 
 module ysyx_23060061_Top (
@@ -24,6 +24,8 @@ module ysyx_23060061_Top (
   wire [31:0] memDataW;
   wire [31:0] memDataR;
   wire [31:0] memAddr;
+  wire [3:0] wmask;
+  wire [3:0] rmask; 
 
   wire ebreak;
   wire [2:0] instType;
@@ -57,7 +59,10 @@ module ysyx_23060061_Top (
 	.funct7(inst[31:25]),
 	.BrEq(BrEq),
 	.BrLt(BrLt),
-	
+
+	.wmask(wmask),
+	.rmask(rmask),
+
 	.instType(instType),
 	.RegWrite(RegWrite), 
 	.MemRW(MemRW),
@@ -115,9 +120,9 @@ module ysyx_23060061_Top (
   always @(MemRW, memAddr, memDataW) begin
 	if(!clk) begin
     	if(MemRW==2'b10) begin
-    		pmem_read(memAddr, memDataR);
+    		pmem_read(memAddr, memDataR, {4'b0000, rmask});
     	end else if (MemRW==2'b01) begin
-    		pmem_write(memAddr, memDataW, 8'b00001111);
+    		pmem_write(memAddr, memDataW, {4'b0000, wmask});
     	end
 	end
   end
