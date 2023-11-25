@@ -1,5 +1,5 @@
 import "DPI-C" function void trap();
-import "DPI-C" function void pmem_read(input int raddr, output int rdata, input byte rmask);
+import "DPI-C" function void pmem_read(input int raddr, output int rdata);
 import "DPI-C" function void pmem_write(input int waddr, input int wdata, input byte wmask);
 
 module ysyx_23060061_Top (
@@ -22,10 +22,11 @@ module ysyx_23060061_Top (
   
   wire [1:0] MemRW;
   wire [31:0] memDataW;
+  wire [31:0] unextMemDataR;
   wire [31:0] memDataR;
   wire [31:0] memAddr;
   wire [3:0] wmask;
-  wire [3:0] rmask; 
+  wire [2:0] memExt;
 
   wire ebreak;
   wire [2:0] instType;
@@ -61,7 +62,7 @@ module ysyx_23060061_Top (
 	.BrLt(BrLt),
 
 	.wmask(wmask),
-	.rmask(rmask),
+	.memExt(memExt),
 
 	.instType(instType),
 	.RegWrite(RegWrite), 
@@ -115,17 +116,28 @@ module ysyx_23060061_Top (
   // MEM
   assign memDataW = regData2;
   assign memAddr = aluOut; 
-
+  ysyx_23060061_MuxKey #(5, 3, 32) memDataR_ext(
+	.out(memDataR),
+	.key(memExt),
+	.lut({
+		3'b000, unextMemDataR,
+		3'b001, {{24{unextMemDataR[7]}}, unextMemDataR[7:0]},
+		3'b010, {{16{unextMemDataR[15]}}, unextMemDataR[15:0]},
+		3'b011, {24'd0, unextMemDataR[7:0]},
+		3'b100, {16'd0, unextMemDataR[15:0]}
+	})
+  );
 
   always @(MemRW, memAddr, memDataW) begin
 	if(!clk) begin
     	if(MemRW==2'b10) begin
-    		pmem_read(memAddr, memDataR, {4'b0000, rmask});
+    		pmem_read(memAddr, unextMemDataR);
     	end else if (MemRW==2'b01) begin
     		pmem_write(memAddr, memDataW, {4'b0000, wmask});
     	end
 	end
   end
+
 
   // WB
   ysyx_23060061_MuxKey #(3, 2, 32) wb_mux(
