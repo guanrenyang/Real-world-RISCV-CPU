@@ -64,7 +64,7 @@ module ysyx_23060061_Decoder (
 	})
   );
   
-  ysyx_23060061_MuxKeyWithDefault #(16, 10, 21) decoder_from_opcode_funct3(
+  ysyx_23060061_MuxKeyWithDefault #(18, 10, 21) decoder_from_opcode_funct3(
 	.out({RegWrite_1, MemRW_1, ebreak_1, PCSel_1, aluAsel_1, aluBsel_1, WBSel_1, aluOp_1, BrUn, memExt, wmask}),
 	.key({opcode, funct3}),
 	.default_out({/*RegWrite*/ 1'b0,  /*MemRW*/ 2'b00, /*ebreak*/ 1'b0, /*PCSel*/ 1'b0, /*aluAsel*/ 1'b0, /*aluBsel*/ 1'b0, /*WBSel*/ 2'b00, /*aluOp*/ 4'b0000, /*BrUn*/ 1'b0, /*memExt*/ 3'b000, /*wmask*/ 4'b0000}),
@@ -75,8 +75,12 @@ module ysyx_23060061_Decoder (
 		{7'b1110011, 3'b000}, {/*RegWrite*/ 1'b0,  /*MemRW*/ 2'b00, /*ebreak*/ 1'b1, /*PCSel*/ 1'b0, /*aluAsel*/ 1'b0, /*aluBsel*/ 1'b0, /*WBSel*/ 2'b00, /*aluOp*/ 4'b0000, /*BrUn*/ 1'b0, /*memExt*/ 3'b000, /*wmask*/ 4'b0000}, // ebreak 
 		// {7'b1100111, 3'b000}, {22'b10001011000100000}, // jalr
         {7'b1100111, 3'b000}, {/*RegWrite*/ 1'b1,  /*MemRW*/ 2'b00, /*ebreak*/ 1'b0, /*PCSel*/ 1'b1, /*aluAsel*/ 1'b0, /*aluBsel*/ 1'b1, /*WBSel*/ 2'b10, /*aluOp*/ 4'b0010, /*BrUn*/ 1'b0, /*memExt*/ 3'b000, /*wmask*/ 4'b0000}, // jalr
+		/* Store */
 		// {7'b0100011, 3'b010}, {1'b0, 2'b01, 1'b0, 1'b0, 1'b0, 1'b1, 2'bxx, 4'b0000, 1'b0, 4'b1111}, // sw
+		{7'b0100011, 3'b000}, {/*RegWrite*/ 1'b0,  /*MemRW*/ 2'b01, /*ebreak*/ 1'b0, /*PCSel*/ 1'b0, /*aluAsel*/ 1'b0, /*aluBsel*/ 1'b1, /*WBSel*/ 2'b00, /*aluOp*/ 4'b0000, /*BrUn*/ 1'b0, /*memExt*/ 3'b000, /*wmask*/ 4'b0001}, // sb
+		{7'b0100011, 3'b001}, {/*RegWrite*/ 1'b0,  /*MemRW*/ 2'b01, /*ebreak*/ 1'b0, /*PCSel*/ 1'b0, /*aluAsel*/ 1'b0, /*aluBsel*/ 1'b1, /*WBSel*/ 2'b00, /*aluOp*/ 4'b0000, /*BrUn*/ 1'b0, /*memExt*/ 3'b000, /*wmask*/ 4'b0011}, // sh
 		{7'b0100011, 3'b010}, {/*RegWrite*/ 1'b0,  /*MemRW*/ 2'b01, /*ebreak*/ 1'b0, /*PCSel*/ 1'b0, /*aluAsel*/ 1'b0, /*aluBsel*/ 1'b1, /*WBSel*/ 2'b00, /*aluOp*/ 4'b0000, /*BrUn*/ 1'b0, /*memExt*/ 3'b000, /*wmask*/ 4'b1111}, // sw
+
 		/* Load */
 		{7'b0000011, 3'b010}, {/*RegWrite*/ 1'b1,  /*MemRW*/ 2'b10, /*ebreak*/ 1'b0, /*PCSel*/ 1'b0, /*aluAsel*/ 1'b0, /*aluBsel*/ 1'b1, /*WBSel*/ 2'b00, /*aluOp*/ 4'b0000, /*BrUn*/ 1'b0, /*memExt*/ 3'b000, /*wmask*/ 4'b0000}, // lw
 		{7'b0000011, 3'b000}, {/*RegWrite*/ 1'b1,  /*MemRW*/ 2'b10, /*ebreak*/ 1'b0, /*PCSel*/ 1'b0, /*aluAsel*/ 1'b0, /*aluBsel*/ 1'b1, /*WBSel*/ 2'b00, /*aluOp*/ 4'b0000, /*BrUn*/ 1'b0, /*memExt*/ 3'b001, /*wmask*/ 4'b0000}, // lb
