@@ -6,7 +6,7 @@ module ysyx_23060061_ALU #(WIDTH = 1, RESET_VAL = 0) (
   output [WIDTH-1:0] aluOut
 );
 
-  ysyx_23060061_MuxKey #(10, 4, WIDTH) alu_mux(
+  ysyx_23060061_MuxKey #(12, 4, WIDTH) alu_mux(
 	.out(aluOut),
 	.key(aluOp),
 	.lut({
@@ -19,7 +19,9 @@ module ysyx_23060061_ALU #(WIDTH = 1, RESET_VAL = 0) (
 	  4'b0110, a^b, // xor
 	  4'b0111, a>>>(b & 32'h0000001f), // srai 
 	  4'b1000, a|b, // or
-	  4'b1001, a&b  // and
+	  4'b1001, a&b,  // and
+	  4'b1010, a<<(b & 32'h0000001f), // sll
+	  4'b1011, a>>(b & 32'h0000001f) // srl
 	})
   );
 endmodule
