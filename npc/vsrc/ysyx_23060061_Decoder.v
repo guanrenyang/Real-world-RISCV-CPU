@@ -72,7 +72,7 @@ module ysyx_23060061_Decoder (
     	// {7'b0010011, 3'b000}, {22'b10000010100000000}, // addi
 		{7'b0010011, 3'b000}, {/*RegWrite*/ 1'b1,  /*MemRW*/ 2'b00, /*ebreak*/ 1'b0, /*PCSel*/ 1'b0, /*aluAsel*/ 1'b0, /*aluBsel*/ 1'b1, /*WBSel*/ 2'b01, /*aluOp*/ 4'b0000, /*BrUn*/ 1'b0, /*memExt*/ 3'b000, /*wmask*/ 4'b0000}, // addi
     	// {7'b1110011, 3'b000}, {22'bxxx1xxxxxxxxx0000}, // ebreak
-		{7'b0010011, 3'b000}, {/*RegWrite*/ 1'b0,  /*MemRW*/ 2'b00, /*ebreak*/ 1'b1, /*PCSel*/ 1'b0, /*aluAsel*/ 1'b0, /*aluBsel*/ 1'b0, /*WBSel*/ 2'b00, /*aluOp*/ 4'b0000, /*BrUn*/ 1'b0, /*memExt*/ 3'b000, /*wmask*/ 4'b0000}, // ebreak 
+		{7'b1110011, 3'b000}, {/*RegWrite*/ 1'b0,  /*MemRW*/ 2'b00, /*ebreak*/ 1'b1, /*PCSel*/ 1'b0, /*aluAsel*/ 1'b0, /*aluBsel*/ 1'b0, /*WBSel*/ 2'b00, /*aluOp*/ 4'b0000, /*BrUn*/ 1'b0, /*memExt*/ 3'b000, /*wmask*/ 4'b0000}, // ebreak 
 		// {7'b1100111, 3'b000}, {22'b10001011000100000}, // jalr
         {7'b1100111, 3'b000}, {/*RegWrite*/ 1'b1,  /*MemRW*/ 2'b00, /*ebreak*/ 1'b0, /*PCSel*/ 1'b1, /*aluAsel*/ 1'b0, /*aluBsel*/ 1'b1, /*WBSel*/ 2'b10, /*aluOp*/ 4'b0010, /*BrUn*/ 1'b0, /*memExt*/ 3'b000, /*wmask*/ 4'b0000}, // jalr
 		// {7'b0100011, 3'b010}, {1'b0, 2'b01, 1'b0, 1'b0, 1'b0, 1'b1, 2'bxx, 4'b0000, 1'b0, 4'b1111}, // sw
