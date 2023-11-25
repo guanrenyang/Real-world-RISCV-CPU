@@ -122,6 +122,7 @@ void execute(uint64_t n) {
 		exec_once();
 		if (Trap) { 
 			printf("HIT TRAP\n");
+			sim_exit();
 			break; 
 		}
 	}
