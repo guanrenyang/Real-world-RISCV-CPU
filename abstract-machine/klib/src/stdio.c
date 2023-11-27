@@ -41,9 +41,10 @@ int vsprintf(char *out, const char *fmt, va_list ap) {
   int d;
   char *s;
 
+  char out_tmp[10000];
   bool to_stdout = false;
   if(out==NULL) {
-	  out = malloc(1000);
+	  out = out_tmp; 
 	  to_stdout = true;
   }
 
