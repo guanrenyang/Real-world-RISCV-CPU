@@ -5,15 +5,7 @@
 
 #if !defined(__ISA_NATIVE__) || defined(__NATIVE_USE_KLIB__)
 
-int printf(const char *fmt, ...) {
-  panic("Not implemented");
-}
-
-int vsprintf(char *out, const char *fmt, va_list ap) {
-  panic("Not implemented");
-}
-
-char* itoa(int n, char* str) {
+static char* itoa(int n, char* str) {
   // digit parsing
   bool is_negative = (n<0);
   long long_n;
@@ -43,13 +35,18 @@ char* itoa(int n, char* str) {
   return str; 
 }
 
-int sprintf(char *out, const char *fmt, ...) {
-  va_list ap;
-  va_start(ap, fmt);
 
+
+int vsprintf(char *out, const char *fmt, va_list ap) {
   int d;
   char *s;
-  
+
+  bool to_stdout = false;
+  if(out==NULL) {
+	  out = malloc(1000);
+	  to_stdout = true;
+  }
+
   size_t i;
   size_t out_i = 0;
   for ( i = 0; fmt[i] != '\0'; i++) {
@@ -78,9 +75,36 @@ int sprintf(char *out, const char *fmt, ...) {
     }  
   }
   out[out_i] = '\0';
-  va_end(ap);
+  if(to_stdout) {
+	  size_t j;
+	  for(j=0; j<out_i; j++)
+		  putch(out[j]);
+	  free(out);
+  }
 
   return (out_i + 1);
+}
+
+int printf(const char *fmt, ...) {
+  va_list ap;
+  va_start(ap, fmt);
+
+  int ret = vsprintf(NULL, fmt, ap);
+
+  va_end(ap);
+
+  return ret;
+}
+
+int sprintf(char *out, const char *fmt, ...) {
+  va_list ap;
+  va_start(ap, fmt);
+
+  int ret = vsprintf(out, fmt, ap);
+
+  va_end(ap);
+
+  return ret;
 }
 
 int snprintf(char *out, size_t n, const char *fmt, ...) {
