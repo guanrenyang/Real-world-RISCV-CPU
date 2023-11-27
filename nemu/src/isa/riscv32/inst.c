@@ -157,7 +157,7 @@ static int decode_exec(Decode *s) {
   INSTPAT("0000001 ????? ????? 000 ????? 01100 11", mul    , R, R(rd) = src1 * src2);
   INSTPAT("0000001 ????? ????? 001 ????? 01100 11", mulh   , R, R(rd) = (((int64_t) SEXT(src1, 8*sizeof(word_t))) * ((int64_t) SEXT(src2, 8*sizeof(word_t))) >> (8*sizeof(word_t))));
   INSTPAT("0000001 ????? ????? 010 ????? 01100 11", mulhsu , R, R(rd) = (((int64_t) SEXT(src1, 8*sizeof(word_t))) * ((word_t) src2) >> (8*sizeof(word_t))));
-  INSTPAT("0000001 ????? ????? 011 ????? 01100 11", mulhu  , R, R(rd) = (word_t)((((uint64_t) src1) * ((uint64_t) src2) >> (8*sizeof(word_t)))));
+  INSTPAT("0000001 ????? ????? 011 ????? 01100 11", mulhu  , R, R(rd) = (((uint64_t) src1 * (uint64_t) src2 >> 8*sizeof(word_t))));
   INSTPAT("0000001 ????? ????? 100 ????? 01100 11", div    , R, R(rd) = (((int64_t) SEXT(src1, 8*sizeof(word_t))) / ((int64_t) SEXT(src2, 8*sizeof(word_t)))));
   INSTPAT("0000001 ????? ????? 101 ????? 01100 11", divu   , R, R(rd) = (((uint64_t) src1) / ((uint64_t) src2)));
   INSTPAT("0000001 ????? ????? 110 ????? 01100 11", rem    , R, R(rd) = (((int64_t) SEXT(src1, 8*sizeof(uint64_t))) % ((int64_t) SEXT(src2, 8*sizeof(uint64_t)))));
