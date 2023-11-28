@@ -91,7 +91,6 @@ void *memcpy(void *out, const void *in, size_t n) {
 	
 	size_t i;
 	for (i = 0; i < n; ++i) {
-		Log("%u\n", i);
 		out_[i] = in_[i];
 	}
 
