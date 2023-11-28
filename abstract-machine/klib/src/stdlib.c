@@ -34,9 +34,19 @@ void *malloc(size_t size) {
   // Therefore do not call panic() here, else it will yield a dead recursion:
   //   panic() -> putchar() -> (glibc) -> malloc() -> panic()
 #if !(defined(__ISA_NATIVE__) && defined(__NATIVE_USE_KLIB__))
-  panic("Not implemented");
+  static char *available_heap = NULL;
+  if (available_heap == NULL) {
+	available_heap = (char *)heap.start;
+  }
+
+  if (available_heap + size < (char *)heap.end) {
+	char *ret = available_heap;
+	available_heap += size;
+	return ret;
+  } 
+	printf("klib malloc failed\n");
 #endif
-  return NULL;
+	return NULL;
 }
 
 void free(void *ptr) {
