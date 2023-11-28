@@ -79,7 +79,6 @@ void *memmove(void *dst, const void *src, size_t n) {
   // memcpy(tmp, src, n);
   // memcpy(dst, tmp, n);
 
-  printf("memmove: dst = %p, src = %p, n = %d\n", dst, src, n);
   memcpy(dst, src, n);
   // free(tmp);
    
