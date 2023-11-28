@@ -16,9 +16,12 @@ void __am_gpu_init() {
 }
 
 void __am_gpu_config(AM_GPU_CONFIG_T *cfg) {
+  uint32_t screen_wh = inl(VGACTL_ADDR);
+  uint32_t h = screen_wh & 0xffff;
+  uint32_t w = screen_wh >> 16;
   *cfg = (AM_GPU_CONFIG_T) {
     .present = true, .has_accel = false,
-    .width = W, .height = H,
+    .width = w, .height = h,
     .vmemsz = 0
   };
 }
@@ -27,11 +30,15 @@ void __am_gpu_fbdraw(AM_GPU_FBDRAW_T *ctl) {
   int w = ctl->w, h = ctl->h;
   int x = ctl->x, y = ctl->y;
   printf("x=%d, y=%d, w=%d, h=%d\n", x, y, w, h);
-  // uint32_t *pixels = ctl->pixels;
+
+  uint32_t *pixels = ctl->pixels;
   uint32_t *fb = (uint32_t *)(uintptr_t)FB_ADDR;
-  int i;
-  for (i = 0; i < w * h; i ++) 
-    fb[x*w+y] = 0;
+  uint32_t screen_w = inl(VGACTL_ADDR) >> 16;
+  for (int i = y; i < y+h; i++) {
+    for (int j = x; j < x+w; j++) {
+      fb[screen_w*i+j] = pixels[w*(i-y)+(j-x)];
+    }
+  }
 
   if (ctl->sync) {
     outl(SYNC_ADDR, 1);
