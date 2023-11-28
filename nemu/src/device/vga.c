@@ -32,7 +32,10 @@ static uint32_t screen_size() {
 }
 
 static void *vmem = NULL;
-static uint32_t *vgactl_port_base = NULL;
+// the higher and lower 16-bits of vgactl_port_base[0] are width and height respectively
+// vgactl_port_base[1] is the sync register
+static uint32_t *vgactl_port_base = NULL; 
+
 
 #ifdef CONFIG_VGA_SHOW_SCREEN
 #ifndef CONFIG_TARGET_AM
@@ -78,9 +81,7 @@ void vga_update_screen() {
 	update_screen();
 	vgactl_port_base[1] = 0;
   }
- //  if (sync)
-	// update_screen();
- //  io_write(AM_GPU_STATUS, 0);
+
 }
 
 void init_vga() {
