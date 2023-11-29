@@ -59,10 +59,10 @@ int vsprintf(char *out, const char *fmt, va_list ap) {
 	      case 'd':
 	        d = va_arg(ap, int);
 			putch((char)d);
-			putch((char)(d>>8));
-			putch((char)(d>>16));
-			putch((char)(d>>24));
-
+			// putch((char)(d>>8));
+			// putch((char)(d>>16));
+			// putch((char)(d>>24));
+			//
 	        char str_d[20];
 	        itoa(d, str_d);
 	        strcpy(out+out_i, str_d);
