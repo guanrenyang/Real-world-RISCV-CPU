@@ -85,9 +85,11 @@ void exec_once() {
 	printf("pc = %x\n", top->pc);
 
 	/*Difftest*/
+#ifdef CONFIG_DIFFTEST
 	if (inst_cnt > 0){
 		difftest_step(top->pc, top->ftrace_dnpc);	
 	}
+#endif
 
 	/*Exit when encountering dead loop*/
 	if (top->pc == top->ftrace_dnpc){

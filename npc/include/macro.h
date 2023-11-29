@@ -3,6 +3,8 @@
 // #define CONFIG_ITRACE y
 // #define CONFIG_FTRACE y
 
+// #define CONFIG_DIFFTEST y
+
 #define CONFIG_RVE y
 
 #define FMT_WORD "0x%08" PRIx32
