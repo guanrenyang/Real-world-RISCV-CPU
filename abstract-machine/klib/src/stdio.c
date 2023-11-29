@@ -66,7 +66,10 @@ int vsprintf(char *out, const char *fmt, va_list ap) {
 	        char str_d[20];
 			size_t k;
 			for (k=0;k<20;k++)	
+			{
+				putch('-');
 				putch(str_d[k]);
+			}
 
 	        itoa(d, str_d);
 	        strcpy(out+out_i, str_d);
