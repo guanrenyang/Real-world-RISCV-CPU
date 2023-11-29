@@ -14,6 +14,12 @@ static char* itoa(int n, char* str) {
   else
     long_n = n;
 
+  if (long_n==0) {
+	str[0] = '0';
+	str[1] = '\0';
+	return str;
+  }
+
   size_t i = 0;
   while (long_n!=0) {
     str[i++] = long_n%10 + '0';
@@ -58,7 +64,19 @@ int vsprintf(char *out, const char *fmt, va_list ap) {
       switch (fmt[++i]) {
 	      case 'd':
 	        d = va_arg(ap, int);
+			// putch((char)d);
+			// putch((unsigned int)d>>8);
+			// putch((char)(d>>16));
+			// putch((char)(d>>24));
+			//
 	        char str_d[20];
+			// size_t k;
+			// for (k=0;k<20;k++)	
+			// {
+			// 	putch('-');
+			// 	putch(str_d[k]);
+			// }
+			//
 	        itoa(d, str_d);
 	        strcpy(out+out_i, str_d);
 	        out_i += strlen(str_d);
@@ -85,7 +103,6 @@ int vsprintf(char *out, const char *fmt, va_list ap) {
 	  size_t j;
 	  for(j=0; j<out_i; j++)
 		  putch(out[j]);
-	  free(out);
   }
 
   return (out_i + 1);
