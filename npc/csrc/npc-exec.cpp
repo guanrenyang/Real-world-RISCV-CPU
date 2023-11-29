@@ -91,14 +91,7 @@ void exec_once() {
 	}
 #endif
 
-	// /*Exit when encountering dead loop*/
-	// if (top->pc == top->ftrace_dnpc){
-	// 	printf("HIT GOOD TRAP\n");
-	// 	sim_exit();
-	// 	exit(0);
-	// }
-
-	top->clk = 0b0; top->rst = 0b0; top->inst = paddr_read(top->pc, 4); 
+	top->clk = 0b0; top->rst = 0b0; top->inst = pmem_read(top->pc, 4); 
 
 #ifdef CONFIG_ITRACE
 	itrace(top->pc, top->inst, 4);
