@@ -73,8 +73,6 @@ void paddr_write(paddr_t addr, int len, word_t data) {
     pmem_write(addr, len, data); 
     return; 
   }
-  // fprintf(stderr, "\npaddr_write: addr = %x, len = %d, data = %c\n", addr, len, data);
-
   IFDEF(CONFIG_DEVICE, mmio_write(addr, len, data); return);
   out_of_bound(addr);
 }
