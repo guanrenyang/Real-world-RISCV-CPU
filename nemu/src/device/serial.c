@@ -25,7 +25,7 @@ static uint8_t *serial_base = NULL;
 
 
 static void serial_putc(char ch) {
-	printf("serial_putc: %x;  ", ch);
+	fprintf(stderr, "serial_putc: %x;  ", ch);
   MUXDEF(CONFIG_TARGET_AM, putch(ch), putc(ch, stderr));
 }
 
