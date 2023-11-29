@@ -90,5 +90,7 @@ void init_monitor(int argc, char *argv[]) {
 	/* Initialize the top module*/	
 	CPU_State cpu = sim_init_then_reset();
 
+#ifdef CONFIG_DIFFTEST
 	init_difftest(diff_so_file, img_size, 1234);
+#endif
 }

@@ -85,16 +85,18 @@ void exec_once() {
 	printf("pc = %x\n", top->pc);
 
 	/*Difftest*/
+#ifdef CONFIG_DIFFTEST
 	if (inst_cnt > 0){
 		difftest_step(top->pc, top->ftrace_dnpc);	
 	}
+#endif
 
-	/*Exit when encountering dead loop*/
-	if (top->pc == top->ftrace_dnpc){
-		printf("HIT GOOD TRAP\n");
-		sim_exit();
-		exit(0);
-	}
+	// /*Exit when encountering dead loop*/
+	// if (top->pc == top->ftrace_dnpc){
+	// 	printf("HIT GOOD TRAP\n");
+	// 	sim_exit();
+	// 	exit(0);
+	// }
 
 	top->clk = 0b0; top->rst = 0b0; top->inst = paddr_read(top->pc, 4); 
 
