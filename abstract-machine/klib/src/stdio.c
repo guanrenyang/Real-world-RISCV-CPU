@@ -59,7 +59,7 @@ int vsprintf(char *out, const char *fmt, va_list ap) {
 	      case 'd':
 	        d = va_arg(ap, int);
 			// putch((char)d);
-			putch((unsigned int)d>>8);
+			// putch((unsigned int)d>>8);
 			// putch((char)(d>>16));
 			// putch((char)(d>>24));
 			//
@@ -90,7 +90,6 @@ int vsprintf(char *out, const char *fmt, va_list ap) {
 	  size_t j;
 	  for(j=0; j<out_i; j++)
 		  putch(out[j]);
-	  free(out);
   }
 
   return (out_i + 1);
