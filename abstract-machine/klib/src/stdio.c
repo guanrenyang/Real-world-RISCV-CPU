@@ -58,6 +58,7 @@ int vsprintf(char *out, const char *fmt, va_list ap) {
       switch (fmt[++i]) {
 	      case 'd':
 	        d = va_arg(ap, int);
+			
 	        char str_d[20];
 	        itoa(d, str_d);
 	        strcpy(out+out_i, str_d);
