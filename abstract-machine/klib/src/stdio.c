@@ -38,7 +38,7 @@ static char* itoa(int n, char* str) {
 
 
 int vsprintf(char *out, const char *fmt, va_list ap) {
-  long long d;
+  int d;
   char *s;
   char c;
 
@@ -57,9 +57,9 @@ int vsprintf(char *out, const char *fmt, va_list ap) {
     else {
       switch (fmt[++i]) {
 	      case 'd':
-	        d = va_arg(ap, long long);
-			putch((char)d);
-			// putch((char)(d>>8));
+	        d = va_arg(ap, int);
+			// putch((char)d);
+			putch((unsigned int)d>>8);
 			// putch((char)(d>>16));
 			// putch((char)(d>>24));
 			//
