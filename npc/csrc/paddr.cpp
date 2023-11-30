@@ -48,22 +48,41 @@ static bool in_pmem(uint32_t paddr) {
   return MEMBASE <= paddr && paddr < MEMBASE + MEMSIZE;
 }
 
+static uint32_t htime = 0;
+static bool ltime_valid = false;
 extern "C" void paddr_read(int raddr, int *rdata) {
   if (in_pmem(raddr)) {
 	(*rdata) = pmem_read(raddr, 4);
 	return;
   } 
 
-  assert(raddr == RTC_MMIO || raddr == (RTC_MMIO + 4));
   if (raddr == RTC_MMIO) {
-		
-	(*rdata) = 0;
+	assert(!ltime_valid);
+
+	uint64_t us = get_time();	
+	(*rdata) = (uint32_t)us;
+	htime = (uint32_t)(us >> 32);
+	
+	ltime_valid = true;
+  } else if (raddr == (RTC_MMIO + 4)) {
+	assert(ltime_valid);
+
+	(*rdata) = htime;
+	
+	ltime_valid = false;
+  } else {
+	printf("Bad timer IO: %08x\n", raddr);
+	assert(NULL);
   }
-  // printf("pmem_read: %x\n", *rdata);
 }
 
 extern "C" void paddr_write(int waddr, int wdata, char wmask){
-  // printf("pmem_read: %x\n", wdata);
-  int bitMask = ((wmask & 1) * 0xFF) | ((((wmask & 2) >> 1)* 0xFF) << 8) | ((((wmask & 4) >> 2 ) * 0xFF) << 16) | ((((wmask & 8) >> 3 ) * 0xFF) << 24);
-  pmem_write(waddr, 4, wdata & bitMask);	
+
+  if (in_pmem(waddr)) {
+    int bitMask = ((wmask & 1) * 0xFF) | ((((wmask & 2) >> 1)* 0xFF) << 8) | ((((wmask & 4) >> 2 ) * 0xFF) << 16) | ((((wmask & 8) >> 3 ) * 0xFF) << 24);
+	pmem_write(waddr, 4, wdata & bitMask);	
+  } 
+  
+  assert(waddr == SERIAL_MMIO && wmask == 1);
+  putc((char)wdata, stderr);
 }
