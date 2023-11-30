@@ -1,4 +1,5 @@
 #include <paddr.h>
+#include <utils.h>
 
 static uint8_t *instMem = NULL;
 
@@ -36,8 +37,6 @@ uint32_t pmem_read(uint32_t paddr, int len) {
   return ret;
 }
 
-
-
 void pmem_write(uint32_t paddr, int len, uint32_t data) {
   assert(guest_to_host(paddr) < (instMem + MEMSIZE));
 
@@ -45,9 +44,21 @@ void pmem_write(uint32_t paddr, int len, uint32_t data) {
   
   printf("\n[paddr_write]: write data %x at addr %x\n", data, paddr);
 }
+static bool in_pmem(uint32_t paddr) {
+  return MEMBASE <= paddr && paddr < MEMBASE + MEMSIZE;
+}
 
 extern "C" void paddr_read(int raddr, int *rdata) {
-  (*rdata) = pmem_read(raddr, 4);
+  if (in_pmem(raddr)) {
+	(*rdata) = pmem_read(raddr, 4);
+	return;
+  } 
+
+  assert(raddr == RTC_MMIO || raddr == (RTC_MMIO + 4));
+  if (raddr == RTC_MMIO) {
+		
+	(*rdata) = 0;
+  }
   // printf("pmem_read: %x\n", *rdata);
 }
 
