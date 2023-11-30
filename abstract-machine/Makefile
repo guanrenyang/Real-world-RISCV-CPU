@@ -9,9 +9,12 @@ html:
 
 ### Default to create a bare-metal kernel image
 ifeq ($(MAKECMDGOALS),)
-  MAKECMDGOALS  = image
-  .DEFAULT_GOAL = image
+	MAKECMDGOALS  = image
+	.DEFAULT_GOAL = image
+else
+	$(info MAKECMDGOALS: $(MAKECMDGOALS))
 endif
+
 
 ### Override checks when `make clean/clean-all/html`
 ifeq ($(findstring $(MAKECMDGOALS),clean|clean-all|html),)
