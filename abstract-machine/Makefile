@@ -11,6 +11,7 @@ html:
 ifeq ($(MAKECMDGOALS),)
 	MAKECMDGOALS  = image
 	.DEFAULT_GOAL = image
+	$(info MAKECMDGOALS: NONE)
 else
 	$(info MAKECMDGOALS: $(MAKECMDGOALS))
 endif
