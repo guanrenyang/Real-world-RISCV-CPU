@@ -29,11 +29,11 @@ static char* itoa(int n, char* str) {
     str[i++] = '-';
   str[i] = '\0';
 
-  for (size_t i = 0; i < 4; i++)
-  {
-	putch(str[i]);
-	putch(' ');
-  }
+ //  for (size_t i = 0; i < 4; i++)
+ //  {
+	// putch(str[i]);
+	// putch(' ');
+ //  }
   
   // in-place reversion
   char swap_tmp;
@@ -43,7 +43,11 @@ static char* itoa(int n, char* str) {
     str[i] = str[num_bit-1-i];
     str[num_bit-1-i] = swap_tmp;
   }
-  
+   for (size_t i = 0; i < 4; i++)
+  {
+	putch(str[i]);
+	putch(' ');
+  } 
   return str; 
 }
 
