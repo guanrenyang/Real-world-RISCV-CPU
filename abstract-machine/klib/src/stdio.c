@@ -70,7 +70,7 @@ int vsprintf(char *out, const char *fmt, va_list ap) {
 		putch(' ');
 		n/=10;
 	}
-	putch('\n');
+	// putch('\n');
 
 	        char str_d[20];
 	        itoa(d, str_d);
