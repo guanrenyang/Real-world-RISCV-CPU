@@ -82,7 +82,7 @@ void exec_once() {
 	// printf("aluOp before the current clock: %x\n", top->rootp->ysyx_23060061_Top__DOT__aluOp);
 	top->clk = 0b1; top->rst = 0b0; step_and_dump_wave();
 
-	printf("pc = %x\n", top->pc);
+	// printf("pc = %x\n", top->pc);
 
 	/*Difftest*/
 #ifdef CONFIG_DIFFTEST
