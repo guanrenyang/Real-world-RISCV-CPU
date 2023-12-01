@@ -38,16 +38,13 @@ static char* itoa(int n, char* str) {
   // in-place reversion
   char swap_tmp;
   size_t num_bit = i;
+  putch(num_bit+'0');
   for ( i = 0; i < num_bit / 2; i++) {
     swap_tmp = str[i];
     str[i] = str[num_bit-1-i];
     str[num_bit-1-i] = swap_tmp;
   }
-   for (size_t i = 0; i < 4; i++)
-  {
-	putch(str[i]);
-	putch(' ');
-  } 
+  
   return str; 
 }
 
