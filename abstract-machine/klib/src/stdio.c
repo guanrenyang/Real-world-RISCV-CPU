@@ -51,8 +51,6 @@ int vsprintf(char *out, const char *fmt, va_list ap) {
   char out_tmp[10000];
   bool to_stdout = false;
   if(out==NULL) {
-	  putch('!');
-	  putch('\n');
 	  out = out_tmp; 
 	  to_stdout = true;
   }
@@ -66,6 +64,14 @@ int vsprintf(char *out, const char *fmt, va_list ap) {
       switch (fmt[++i]) {
 	      case 'd':
 	        d = va_arg(ap, int);
+			int n = d;
+	while (n!=0) {
+		putch(n%10+'0');
+		putch(' ');
+		n/=10;
+	}
+	putch('\n');
+
 	        char str_d[20];
 	        itoa(d, str_d);
 	        strcpy(out+out_i, str_d);
