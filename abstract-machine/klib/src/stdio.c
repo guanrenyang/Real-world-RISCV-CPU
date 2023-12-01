@@ -41,6 +41,7 @@ static char* itoa(int n, char* str) {
   for ( i = 0; i < num_bit / 2; i++) {
 	// putch(str[i]); putch(str[num_bit-1-i]); putch('\n');
 	putch(i+'0');
+	putch('\n');
     swap_tmp = str[i];
     str[i] = str[num_bit-1-i];
     str[num_bit-1-i] = swap_tmp;
