@@ -66,11 +66,6 @@ int vsprintf(char *out, const char *fmt, va_list ap) {
 	        d = va_arg(ap, int);
 	        char str_d[20];
 	        itoa(d, str_d);
-			for (size_t i=0;str_d[i]!='\n';i++){
-				putch(str_d[i]);
-				putch(' ');
-			}
-
 	        strcpy(out+out_i, str_d);
 	        out_i += strlen(str_d);
 	        break;
