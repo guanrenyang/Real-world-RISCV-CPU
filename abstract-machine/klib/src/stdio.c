@@ -64,16 +64,12 @@ int vsprintf(char *out, const char *fmt, va_list ap) {
       switch (fmt[++i]) {
 	      case 'd':
 	        d = va_arg(ap, int);
-			int n = d;
-			while (n!=0) {
-		putch(n%10+'0');
-		putch(' ');
-		n/=10;
-	}
-	// putch('\n');
-
 	        char str_d[20];
 	        itoa(d, str_d);
+			for(int i=0;str_d[i]!='\0';i++) {
+				putch(str_d[i]);
+				putch(' ');
+			}
 	        strcpy(out+out_i, str_d);
 	        out_i += strlen(str_d);
 	        break;
