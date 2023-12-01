@@ -81,11 +81,12 @@ extern "C" void paddr_write(int waddr, int wdata, char wmask){
   if (in_pmem(waddr)) {
     int bitMask = ((wmask & 1) * 0xFF) | ((((wmask & 2) >> 1)* 0xFF) << 8) | ((((wmask & 4) >> 2 ) * 0xFF) << 16) | ((((wmask & 8) >> 3 ) * 0xFF) << 24);
 	pmem_write(waddr, 4, wdata & bitMask);	
+	return;
   } 
   
-  fprintf(stderr, "MBASE: %x, MBASE+MSIZE: %x\n", MEMBASE, MEMBASE+MEMSIZE);
-  fprintf(stderr, "in_pmem: %d", in_pmem(waddr));
-  fprintf(stderr, "waddr: %x, wmask: %x\n", waddr, wmask);
+  // fprintf(stderr, "MBASE: %x, MBASE+MSIZE: %x\n", MEMBASE, MEMBASE+MEMSIZE);
+  // fprintf(stderr, "in_pmem: %d", in_pmem(waddr));
+  // fprintf(stderr, "waddr: %x, wmask: %x\n", waddr, wmask);
   assert(waddr == SERIAL_MMIO && wmask == 1);
   putc((char)wdata, stderr);
 }
