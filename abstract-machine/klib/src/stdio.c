@@ -23,6 +23,7 @@ static char* itoa(int n, char* str) {
   while (t!=0) {
 	putch(t%10 + '0');
 	putch(' ');
+	t/=10;
   }
   
   size_t i = 0;
