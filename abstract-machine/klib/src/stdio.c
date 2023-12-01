@@ -64,12 +64,12 @@ int vsprintf(char *out, const char *fmt, va_list ap) {
       switch (fmt[++i]) {
 	      case 'd':
 	        d = va_arg(ap, int);
-			// int n = d;
-	// while (n!=0) {
-	// 	putch(n%10+'0');
-	// 	putch(' ');
-	// 	n/=10;
-	// }
+			int n = d;
+			while (n!=0) {
+		putch(n%10+'0');
+		putch(' ');
+		n/=10;
+	}
 	putch('\n');
 
 	        char str_d[20];
