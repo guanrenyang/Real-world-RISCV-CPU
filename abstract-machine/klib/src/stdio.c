@@ -101,7 +101,7 @@ int printf(const char *fmt, ...) {
   va_start(ap, fmt);
 
   int ret = vsprintf(NULL, fmt, ap);
-
+  
   va_end(ap);
 
   return ret;
