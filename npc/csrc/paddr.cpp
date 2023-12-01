@@ -56,7 +56,6 @@ extern "C" void paddr_read(int raddr, int *rdata) {
 	return;
   } 
 
-  printf("timer\n");
   if (raddr == RTC_MMIO) {
 	assert(!ltime_valid);
 
