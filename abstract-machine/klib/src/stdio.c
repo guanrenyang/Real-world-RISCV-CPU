@@ -19,18 +19,18 @@ static char* itoa(int n, char* str) {
 	str[1] = '\0';
 	return str;
   }
-  long t = long_n;
-  while (t!=0) {
-	putch(t%10 + '0');
-	putch(' ');
-	t/=10;
-  }
-  
+
   size_t i = 0;
   while (long_n!=0) {
     str[i++] = long_n%10 + '0';
     long_n = long_n/10;
   }
+  for (size_t i = 0; i < 4; i++)
+  {
+	putch(str[i]);
+  }
+  putch('\n');
+  
   if (is_negative)
     str[i++] = '-';
   str[i] = '\0';
