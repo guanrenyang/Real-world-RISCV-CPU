@@ -25,16 +25,16 @@ static char* itoa(int n, char* str) {
     str[i++] = long_n%10 + '0';
     long_n = long_n/10;
   }
-  for (size_t i = 0; i < 4; i++)
-  {
-	putch(str[i]);
-  }
-  putch('\n');
-  
   if (is_negative)
     str[i++] = '-';
   str[i] = '\0';
 
+  for (size_t i = 0; i < 4; i++)
+  {
+	putch(str[i]);
+	putch(' ');
+  }
+  
   // in-place reversion
   char swap_tmp;
   size_t num_bit = i;
@@ -72,10 +72,6 @@ int vsprintf(char *out, const char *fmt, va_list ap) {
 	        d = va_arg(ap, int);
 	        char str_d[20];
 	        itoa(d, str_d);
-			for(int i=0;str_d[i]!='\0';i++) {
-				putch(str_d[i]);
-				putch(' ');
-			}
 	        strcpy(out+out_i, str_d);
 	        out_i += strlen(str_d);
 	        break;
