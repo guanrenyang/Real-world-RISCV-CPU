@@ -33,7 +33,7 @@ uint32_t pmem_read(uint32_t paddr, int len) {
   // uint32_t ret = *(uint32_t*)(instMem + paddr - MEMBASE); // right
   uint32_t ret = host_read(guest_to_host(paddr), len);
 
-  printf("\n[pmem_read]: %x at addr %x\n", ret, paddr);
+  // printf("\n[pmem_read]: %x at addr %x\n", ret, paddr);
   return ret;
 }
 
@@ -42,7 +42,7 @@ void pmem_write(uint32_t paddr, int len, uint32_t data) {
 
   host_write(guest_to_host(paddr), len, data);
   
-  printf("\n[paddr_write]: write data %x at addr %x\n", data, paddr);
+  // printf("\n[paddr_write]: write data %x at addr %x\n", data, paddr);
 }
 static bool in_pmem(uint32_t paddr) {
   return MEMBASE <= paddr && paddr < MEMBASE + MEMSIZE;
@@ -56,6 +56,7 @@ extern "C" void paddr_read(int raddr, int *rdata) {
 	return;
   } 
 
+  printf("timer\n");
   if (raddr == RTC_MMIO) {
 	assert(!ltime_valid);
 
