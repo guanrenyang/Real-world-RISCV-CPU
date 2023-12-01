@@ -5,6 +5,9 @@
 
 #if !defined(__ISA_NATIVE__) || defined(__NATIVE_USE_KLIB__)
 
+static __attribute_noinline__ void swap_inplace(char *str) {
+	str[0] = str[3];
+}
 static char* itoa(int n, char* str) {
   // digit parsing
   bool is_negative = (n<0);
@@ -48,7 +51,7 @@ static char* itoa(int n, char* str) {
 	// putch(str[i]); putch(' ');
  //  }
   putch('?'); putch(' ');
-  str[0] = str[3];
+  swap_inplace(str);
   putch('!'); putch(' '); putch('\n');
  //  for (size_t i = 0; i < 4; i++)
  //  {
