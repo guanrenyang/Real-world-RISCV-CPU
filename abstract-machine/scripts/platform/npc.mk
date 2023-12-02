@@ -19,7 +19,6 @@ NPCFLAGS += -f $(IMAGE).elf
 NPCFLAGS += -d $(NEMU_HOME)/build/riscv32-nemu-interpreter-so
 
 CFLAGS += -DMAINARGS=\"$(mainargs)\"
-CFLAGS += -I$(AM_HOME)/am/src/riscv/npc/include
 .PHONY: $(AM_HOME)/am/src/riscv/npc/trm.c
 
 image: $(IMAGE).elf
