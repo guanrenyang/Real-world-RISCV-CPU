@@ -87,9 +87,6 @@ extern "C" void paddr_write(int waddr, int wdata, char wmask){
 	return;
   } 
   
-  // fprintf(stderr, "MBASE: %x, MBASE+MSIZE: %x\n", MEMBASE, MEMBASE+MEMSIZE);
-  // fprintf(stderr, "in_pmem: %d", in_pmem(waddr));
-  // fprintf(stderr, "waddr: %x, wmask: %x\n", waddr, wmask);
   assert(waddr == SERIAL_MMIO && wmask == 1);
   putc((char)wdata, stderr);
 }
