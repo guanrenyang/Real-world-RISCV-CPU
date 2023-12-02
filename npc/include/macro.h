@@ -3,7 +3,7 @@
 // #define CONFIG_ITRACE y
 // #define CONFIG_FTRACE y
 
-#define CONFIG_DIFFTEST y
+// #define CONFIG_DIFFTEST y
 
 #define CONFIG_TIMER_GETTIMEOFDAY y
 
