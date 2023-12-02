@@ -15,7 +15,9 @@
 
 #define MAX_INST_TO_PRINT 10
 
+#ifdef CONFIG_WAVETRACE
 static VerilatedVcdC *tfp = nullptr;
+#endif
 static VerilatedContext *contextp = nullptr;
 static TOPNAME *top = nullptr;
 
@@ -26,7 +28,9 @@ void trap() { Trap = true; }
 void step_and_dump_wave(){
 	top->eval();
 	contextp->timeInc(1);
+#ifdef CONFIG_WAVETRACE
 	tfp->dump(contextp->time());
+#endif
 }
 
 void sim_init() {
@@ -34,11 +38,15 @@ void sim_init() {
 
 	top = new TOPNAME;
 	contextp = new VerilatedContext;
+#ifdef CONFIG_WAVETRACE
 	tfp = new VerilatedVcdC;
+#endif
 
 	contextp->traceEverOn(true);
+#ifdef CONFIG_WAVETRACE
 	top->trace(tfp, 0);
 	tfp->open("./build/dump.vcd");
+#endif
 }
 
 void reset() {
@@ -69,7 +77,9 @@ CPU_State sim_init_then_reset() {
 
 void sim_exit() {
 	step_and_dump_wave();
+#ifdef CONFIG_WAVETRACE
 	tfp->close();
+#endif
 }
 
 static int inst_cnt = 0;
@@ -82,7 +92,7 @@ void exec_once() {
 	// printf("aluOp before the current clock: %x\n", top->rootp->ysyx_23060061_Top__DOT__aluOp);
 	top->clk = 0b1; top->rst = 0b0; step_and_dump_wave();
 
-	printf("pc = %x\n", top->pc);
+	// printf("pc = %x\n", top->pc);
 
 	/*Difftest*/
 #ifdef CONFIG_DIFFTEST
