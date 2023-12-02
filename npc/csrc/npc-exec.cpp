@@ -93,16 +93,16 @@ void exec_once() {
 #endif
 
 	top->clk = 0b0; top->rst = 0b0; top->inst = pmem_read(top->pc, 4); 
-	if (top->pc == 0x80001470) {
-		debug_cnt++;
-		if (debug_cnt == 1){
-			printf("here");
-			step_and_dump_wave();
-			top->clk = 0b1; top->rst = 0b0; step_and_dump_wave();
-			sim_exit();
-			exit(0);
-		}
-	}
+	// if (top->pc == 0x80001470) {
+	// 	debug_cnt++;
+	// 	if (debug_cnt == 1){
+	// 		printf("here\n");
+	// 		step_and_dump_wave();
+	// 		top->clk = 0b1; top->rst = 0b0; step_and_dump_wave();
+	// 		sim_exit();
+	// 		exit(0);
+	// 	}
+	// }
 #ifdef CONFIG_ITRACE
 	itrace(top->pc, top->inst, 4);
 #endif 

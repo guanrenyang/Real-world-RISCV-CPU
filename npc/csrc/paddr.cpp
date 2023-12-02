@@ -79,8 +79,11 @@ extern "C" void paddr_read(int raddr, int *rdata) {
 extern "C" void paddr_write(int waddr, int wdata, char wmask){
 
   if (in_pmem(waddr)) {
-    int bitMask = ((wmask & 1) * 0xFF) | ((((wmask & 2) >> 1)* 0xFF) << 8) | ((((wmask & 4) >> 2 ) * 0xFF) << 16) | ((((wmask & 8) >> 3 ) * 0xFF) << 24);
-	pmem_write(waddr, 4, wdata & bitMask);	
+	wdata &= ((wmask & 1) * 0xFF) | ((((wmask & 2) >> 1)* 0xFF) << 8) | ((((wmask & 4) >> 2 ) * 0xFF) << 16) | ((((wmask & 8) >> 3 ) * 0xFF) << 24);
+    // int bitMask = ((wmask & 1) * 0xFF) | ((((wmask & 2) >> 1)* 0xFF) << 8) | ((((wmask & 4) >> 2 ) * 0xFF) << 16) | ((((wmask & 8) >> 3 ) * 0xFF) << 24);
+	int len = wmask == 1 ? 1 : (wmask == 3 ? 2 : (wmask == 15 ? 4 : -1));
+	assert(len!=-1);
+	pmem_write(waddr, len, wdata);	
 	return;
   } 
   
