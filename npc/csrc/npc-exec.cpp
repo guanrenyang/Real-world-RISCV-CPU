@@ -95,7 +95,7 @@ void exec_once() {
 	top->clk = 0b0; top->rst = 0b0; top->inst = pmem_read(top->pc, 4); 
 	if (top->pc == 0x80001470) {
 		debug_cnt++;
-		if (debug_cnt == 4){
+		if (debug_cnt == 1){
 			printf("here");
 			step_and_dump_wave();
 			top->clk = 0b1; top->rst = 0b0; step_and_dump_wave();

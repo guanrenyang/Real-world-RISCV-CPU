@@ -7,6 +7,7 @@
 
 static __attribute_noinline__ void swap_inplace(char *str) {
 	str[0] = str[3];
+	
 }
 static char* itoa(int n, char* str) {
   // digit parsing
