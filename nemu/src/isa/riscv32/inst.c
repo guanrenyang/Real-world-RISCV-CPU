@@ -51,7 +51,7 @@ void ftrace(vaddr_t dnpc, vaddr_t pc, int rd, int rs1, int type, bool is_ecall){
   char curr_func_name[30];
   char func_name[30];
   vaddr_t func_addr;
-
+  Log("dnpc: %x", dnpc);
   source_func_name(pc, curr_func_name);
   source_func_name(dnpc, func_name);
   source_func_addr(dnpc, &func_addr);
