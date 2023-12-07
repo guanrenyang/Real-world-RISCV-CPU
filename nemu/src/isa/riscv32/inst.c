@@ -43,7 +43,7 @@ enum {
 // vaddr_t func_addr_stack[10000];
 
 char INDENT[1000] = "";
-void ftrace(vaddr_t dnpc, vaddr_t pc, int rd, int rs1, int type){
+void ftrace(vaddr_t dnpc, vaddr_t pc, int rd, int rs1, int type, bool is_ecall){
   void source_func_name(vaddr_t addr, char* func_name);
   void source_func_addr(vaddr_t addr, vaddr_t* func_addr);
   bool is_func(vaddr_t addr);
@@ -57,7 +57,7 @@ void ftrace(vaddr_t dnpc, vaddr_t pc, int rd, int rs1, int type){
   source_func_addr(dnpc, &func_addr);
 
   char message[2000];
-  if (type==TYPE_I && rd==0 && rs1==1) {
+  if (type==TYPE_I && rd==0 && rs1==1 && !(is_ecall)) {
     //Log("Ret: %s(%x)", func_name, addr);
     sprintf(message, "%x: ", pc);
     strcat(message, INDENT);
@@ -110,7 +110,7 @@ static int decode_exec(Decode *s) {
   // The instruction I wrote myself
   INSTPAT("??????? ????? ????? 010 ????? 01000 11", sw     , S, Mw(src1 + imm, 4, src2));
   INSTPAT("??????? ????? ????? 000 ????? 00100 11", addi   , I, R(rd) = src1 + imm);
-#define JUMP(dnpc, npc, pc, rd, rs1, snpc, type) (dnpc) = (npc); R((rd)) = snpc; IFDEF(CONFIG_FTRACE, ftrace(dnpc, pc, rd, rs1, type))
+#define JUMP(dnpc, npc, pc, rd, rs1, snpc, type) (dnpc) = (npc); R((rd)) = snpc; IFDEF(CONFIG_FTRACE, ftrace(dnpc, pc, rd, rs1, type, false))
   INSTPAT("??????? ????? ????? ??? ????? 11011 11", jal    , J, JUMP(s->dnpc, s->pc + imm, s->pc, rd, BITS(s->isa.inst.val, 19, 15), s->snpc, TYPE_J));
   INSTPAT("??????? ????? ????? 000 ????? 11001 11", jalr   , I, JUMP(s->dnpc, (src1 + imm) & (~1), s->pc, rd, BITS(s->isa.inst.val, 19, 15), s->snpc, TYPE_I));
 
@@ -163,7 +163,8 @@ static int decode_exec(Decode *s) {
   // INSTPAT("0000001 ????? ????? 110 ????? 01100 11", rem    , R, R(rd) = (((int64_t) SEXT(src1, 8*sizeof(uint64_t))) % ((int64_t) SEXT(src2, 8*sizeof(uint64_t)))));
   // INSTPAT("0000001 ????? ????? 111 ????? 01100 11", remu   , R, R(rd) = (((uint64_t) src1) % ((uint64_t) src2)));
 
-  INSTPAT("0000000 00000 00000 000 00000 11100 11", ecall  , N, s->dnpc = isa_raise_intr(0, s->pc));
+  // INSTPAT("0000000 00000 00000 000 00000 11100 11", ecall  , N, s->dnpc = isa_raise_intr(0, s->pc));
+  INSTPAT("0000000 00000 00000 000 00000 11100 11", ecall  , N, s->dnpc = isa_raise_intr(0, s->pc); IFDEF(CONFIG_FTRACE, ftrace(s->dnpc, s->pc, 0, 0, TYPE_I, true)));
   INSTPAT("0000000 00001 00000 000 00000 11100 11", ebreak , N, NEMUTRAP(s->pc, R(10))); // R(10) is $a0
   INSTPAT("??????? ????? ????? 001 ????? 11100 11", csrrw  , I, R(rd) = CSR(imm); CSR(imm) = src1);
   INSTPAT("??????? ????? ????? 010 ????? 11100 11", csrrs  , I, R(rd) = CSR(imm); CSR(imm) = CSR(imm) | src1);
