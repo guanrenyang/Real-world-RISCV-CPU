@@ -40,7 +40,6 @@ static char* itoa(int n, char* str) {
 int vsprintf(char *out, const char *fmt, va_list ap) {
   int d;
   char *s;
-  char c;
 
   char out_tmp[10000];
   bool to_stdout = false;
@@ -68,15 +67,11 @@ int vsprintf(char *out, const char *fmt, va_list ap) {
 	        strcpy(out+out_i, s);
 	        out_i += strlen(s);
 	        break;
-		  case 'c':
-		  	c = va_arg(ap, int);
-			out[out_i++] = c;	
-			break;
 	      case '%':
 	        out[out_i++] = '%';
-            break;
+          break;
 	      default:
-            break;
+          break;
       }
     }  
   }

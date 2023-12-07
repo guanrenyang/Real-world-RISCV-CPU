@@ -29,39 +29,14 @@ int atoi(const char* nptr) {
   return x;
 }
 
-static char *hbrk = NULL;
 void *malloc(size_t size) {
   // On native, malloc() will be called during initializaion of C runtime.
   // Therefore do not call panic() here, else it will yield a dead recursion:
   //   panic() -> putchar() -> (glibc) -> malloc() -> panic()
 #if !(defined(__ISA_NATIVE__) && defined(__NATIVE_USE_KLIB__))
-  if (hbrk == NULL) {
-	hbrk = (void *)ROUNDUP(heap.start, 8);
-  }
-
-  size  = (size_t)ROUNDUP(size, 8);
-  char *old = hbrk;
-  hbrk += size;
-  assert((uintptr_t)heap.start <= (uintptr_t)hbrk && (uintptr_t)hbrk < (uintptr_t)heap.end);
-  for (uint64_t *p = (uint64_t *)old; p != (uint64_t *)hbrk; p ++) {
-    *p = 0;
-  }
-
-  return old;
-
- //  static char *available_heap = NULL;
- //  if (available_heap == NULL) {
-	// available_heap = (char *)heap.start;
- //  }
-	//
- //  if (available_heap + size < (char *)heap.end) {
-	// char *ret = available_heap;
-	// available_heap += size;
-	// return ret;
- //  } 
-	// printf("klib malloc failed\n");
+  panic("Not implemented");
 #endif
-	return NULL;
+  return NULL;
 }
 
 void free(void *ptr) {
