@@ -21,6 +21,7 @@
 
 
 #define R(i) gpr(i)
+#define CSR(i) csr(i)
 #define Mr vaddr_read
 #define Mw vaddr_write
 
@@ -162,6 +163,10 @@ static int decode_exec(Decode *s) {
   // INSTPAT("0000001 ????? ????? 101 ????? 01100 11", divu   , R, R(rd) = (((uint64_t) src1) / ((uint64_t) src2)));
   // INSTPAT("0000001 ????? ????? 110 ????? 01100 11", rem    , R, R(rd) = (((int64_t) SEXT(src1, 8*sizeof(uint64_t))) % ((int64_t) SEXT(src2, 8*sizeof(uint64_t)))));
   // INSTPAT("0000001 ????? ????? 111 ????? 01100 11", remu   , R, R(rd) = (((uint64_t) src1) % ((uint64_t) src2)));
+  
+  // Privileged instructions
+  INSTPAT("??????? ????? ????? 001 ????? 11100 11", csrrw  , I, R(rd) = CSR(imm); CSR(imm) = src1);
+
   INSTPAT_END();
 
   R(0) = 0; // reset $zero to 0
