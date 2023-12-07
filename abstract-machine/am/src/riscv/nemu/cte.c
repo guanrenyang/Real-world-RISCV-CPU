@@ -8,10 +8,10 @@ Context* __am_irq_handle(Context *c) {
   if (user_handler) {
     Event ev = {0};
     switch (c->mcause) {
+	  case 0x00000008: ev.event = EVENT_YIELD; break;
       default: ev.event = EVENT_ERROR; break;
     }
-	printf("mcause: %d", c->mcause);
-	printf("mstatus: %d", 0);
+
     c = user_handler(ev, c);
     assert(c != NULL);
   }
