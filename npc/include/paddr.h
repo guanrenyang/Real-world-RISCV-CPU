@@ -6,4 +6,4 @@
 #include <macro.h>
 
 uint8_t* guest_to_host(uint32_t paddr);
-uint32_t pmem_read(uint32_t paddr, int len); 
+uint32_t paddr_read(uint32_t paddr, int len); 

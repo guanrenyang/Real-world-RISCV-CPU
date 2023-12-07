@@ -14,12 +14,6 @@ static char* itoa(int n, char* str) {
   else
     long_n = n;
 
-  if (long_n==0) {
-	str[0] = '0';
-	str[1] = '\0';
-	return str;
-  }
-
   size_t i = 0;
   while (long_n!=0) {
     str[i++] = long_n%10 + '0';
@@ -91,6 +85,7 @@ int vsprintf(char *out, const char *fmt, va_list ap) {
 	  size_t j;
 	  for(j=0; j<out_i; j++)
 		  putch(out[j]);
+	  free(out);
   }
 
   return (out_i + 1);

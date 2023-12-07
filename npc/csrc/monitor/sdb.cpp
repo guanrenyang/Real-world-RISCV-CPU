@@ -65,7 +65,7 @@ static int cmd_x(char *args){
 
     int i;
     for (i=0;i<nr_elem;i++, addr+=4) {
-      uint32_t elem = pmem_read(addr, 4); // read 4 bytes from addr
+      uint32_t elem = paddr_read(addr, 4); // read 4 bytes from addr
       printf("dec: %u, hex: %x\n", elem, elem);
     }
     return 0;

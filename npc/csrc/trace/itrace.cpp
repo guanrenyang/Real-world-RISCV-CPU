@@ -1,5 +1,4 @@
 #include <trace.h>
-#include <utils.h>
 
 #ifdef CONFIG_ITRACE
 char logbuf[128];
