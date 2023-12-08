@@ -7,7 +7,6 @@ struct Context {
   void *pdir;
 };
 
-
 #ifdef __riscv_e
 #define GPR1 gpr[15] // a5
 #else
