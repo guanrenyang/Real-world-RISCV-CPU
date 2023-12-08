@@ -34,6 +34,7 @@ bool cte_init(Context*(*handler)(Event, Context*)) {
 #define CONTEXT_SIZE (32+3+1)*32/8
 Context *kcontext(Area kstack, void (*entry)(void *), void *arg) {
   // Context *ctx = (Context *)((uint8_t *)kstack.end - CONTEXT_SIZE);
+  // ctx->
   return NULL;
 }
 
