@@ -31,8 +31,12 @@ bool cte_init(Context*(*handler)(Event, Context*)) {
   return true;
 }
 
+#define CONTEXT_SIZE (32+3+1)*32/8
 Context *kcontext(Area kstack, void (*entry)(void *), void *arg) {
-  return NULL;
+  Context *ctx = (Context *)((uint8_t *)kstack.end - CONTEXT_SIZE);
+  ctx->gpr[10] = (uintptr_t) arg;
+  ctx->mepc = (uintptr_t) entry;
+  return ctx;
 }
 
 void yield() {
