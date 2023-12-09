@@ -110,7 +110,7 @@ void exec_once() {
 	if(top->pc == 0x80001304){
 		top->clk = 0b1; top->rst = 0b0; step_and_dump_wave();	
 		
-		// print("aluOut: %x", top->rootp->ysyx)
+		printf("aluOut: %x", top->rootp->ysyx_23060061_Top__DOT__aluOut);
 		top->clk = 0b0; top->rst = 0b0; top->inst = pmem_read(top->pc, 4);  step_and_dump_wave();
 		printf("mcause: %x\n", top->rootp->ysyx_23060061_Top__DOT__CSRs__DOT__rf[3]);
 		printf("pc: %x\n", top->pc);
