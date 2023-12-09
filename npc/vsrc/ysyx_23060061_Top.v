@@ -50,7 +50,8 @@ module ysyx_23060061_Top (
 
   /* For CSR */
   wire csrEn;
-
+  wire [31:0] csr_rdata;
+  
   assign snpc = pc + 4;
   assign dnpc = PCSel == 0 ? snpc : aluOut;
   ysyx_23060061_Reg #(32, 32'h80000000) pc_reg(.clk(clk), .rst(rst), .din(dnpc), .dout(pc), .wen(1'b1));
@@ -102,14 +103,14 @@ module ysyx_23060061_Top (
     .rdata2(regData2)
   );
   // CSRs
-  // ysyx_23060061_CSRs #(32) CSRs(
-  //   .clk(clk),
-  //   .rst(rst),
-  //   .csrEn(),
-  //   .csrId(imm),
-  //   .wdata(aluOut),
-  // )
-  
+  ysyx_23060061_CSRs #(32) CSRs(
+    .clk(clk),
+    .rst(rst),
+    .csrEn(csrEn),
+    .csrId(inst[31:20]),
+    .wdata(aluOut),
+    .rdata(csr_rdata)
+  );
   
   ysyx_23060061_ImmGen imm_gen(.inst(inst[31:7]), .ImmSel(instType), .imm(imm));
 
@@ -154,13 +155,14 @@ module ysyx_23060061_Top (
 
 
   // WB
-  ysyx_23060061_MuxKey #(3, 2, 32) wb_mux(
+  ysyx_23060061_MuxKey #(4, 2, 32) wb_mux(
 	.out(regDataWB),
 	.key(WBSel),
 	.lut({
 		2'b00, memDataR,
 		2'b01, aluOut,
-		2'b10, snpc
+		2'b10, snpc,
+    2'b11, csr_rdata
 	})
   );
   

@@ -65,7 +65,7 @@ module ysyx_23060061_Decoder (
 	})
   );
   
-  ysyx_23060061_MuxKeyWithDefault #(22, 10, 23) decoder_from_opcode_funct3(
+  ysyx_23060061_MuxKeyWithDefault #(24, 10, 23) decoder_from_opcode_funct3(
 	.out({RegWrite_1, MemRW_1, ebreak_1, csrEn, PCSel_1, aluAsel_1, aluBsel_1, WBSel_1, aluOp_1, BrUn, memExt, wmask}),
 	.key({opcode, funct3}),
 	.default_out({/*RegWrite*/ 1'b0,  /*MemRW*/ 2'b00, /*ebreak*/ 1'b0, /*csrEn*/ 1'b0, /*PCSel*/ 1'b0, /*aluAsel*/ 1'b0, /*aluBsel*/ 2'b0, /*WBSel*/ 2'b00, /*aluOp*/ 4'b0000, /*BrUn*/ 1'b0, /*memExt*/ 3'b000, /*wmask*/ 4'b0000}),
@@ -96,9 +96,10 @@ module ysyx_23060061_Decoder (
 		{7'b1100011, 3'b100}, {/*RegWrite*/ 1'b0,  /*MemRW*/ 2'b00, /*ebreak*/ 1'b0, /*csrEn*/ 1'b0, /*PCSel*/ 1'b0, /*aluAsel*/ 1'b1, /*aluBsel*/ 2'b01, /*WBSel*/ 2'b00, /*aluOp*/ 4'b0000, /*BrUn*/ 1'b0, /*memExt*/ 3'b000, /*wmask*/ 4'b0000}, // blt
 		{7'b1100011, 3'b101}, {/*RegWrite*/ 1'b0,  /*MemRW*/ 2'b00, /*ebreak*/ 1'b0, /*csrEn*/ 1'b0, /*PCSel*/ 1'b0, /*aluAsel*/ 1'b1, /*aluBsel*/ 2'b01, /*WBSel*/ 2'b00, /*aluOp*/ 4'b0000, /*BrUn*/ 1'b0, /*memExt*/ 3'b000, /*wmask*/ 4'b0000}, // bge
 		{7'b1100011, 3'b110}, {/*RegWrite*/ 1'b0,  /*MemRW*/ 2'b00, /*ebreak*/ 1'b0, /*csrEn*/ 1'b0, /*PCSel*/ 1'b0, /*aluAsel*/ 1'b1, /*aluBsel*/ 2'b01, /*WBSel*/ 2'b00, /*aluOp*/ 4'b0000, /*BrUn*/ 1'b1, /*memExt*/ 3'b000, /*wmask*/ 4'b0000}, // bltu
-		{7'b1100011, 3'b111}, {/*RegWrite*/ 1'b0,  /*MemRW*/ 2'b00, /*ebreak*/ 1'b0, /*csrEn*/ 1'b0, /*PCSel*/ 1'b0, /*aluAsel*/ 1'b1, /*aluBsel*/ 2'b01, /*WBSel*/ 2'b00, /*aluOp*/ 4'b0000, /*BrUn*/ 1'b1, /*memExt*/ 3'b000, /*wmask*/ 4'b0000} // bgeu
+		{7'b1100011, 3'b111}, {/*RegWrite*/ 1'b0,  /*MemRW*/ 2'b00, /*ebreak*/ 1'b0, /*csrEn*/ 1'b0, /*PCSel*/ 1'b0, /*aluAsel*/ 1'b1, /*aluBsel*/ 2'b01, /*WBSel*/ 2'b00, /*aluOp*/ 4'b0000, /*BrUn*/ 1'b1, /*memExt*/ 3'b000, /*wmask*/ 4'b0000}, // bgeu
 		/* CSR Instructioins */
-		// {7'b1110011, 3'b001}, {/*RegWrite*/ 1'b1,  /*MemRW*/ 2'b00, /*ebreak*/ 1'b0, /*csrEn*/ 1'b1, /*PCSel*/ 1'b0, /*aluAsel*/ 1'b0, /*aluBsel*/ 2'b, /*WBSel*/ 2'b00, /*aluOp*/ 4'b0000, /*BrUn*/ 1'b1, /*memExt*/ 3'b000, /*wmask*/ 4'b0000} // csrrw
+		{7'b1110011, 3'b001}, {/*RegWrite*/ 1'b1,  /*MemRW*/ 2'b00, /*ebreak*/ 1'b0, /*csrEn*/ 1'b1, /*PCSel*/ 1'b0, /*aluAsel*/ 1'b0, /*aluBsel*/ 2'b10, /*WBSel*/ 2'b00, /*aluOp*/ 4'b0000, /*BrUn*/ 1'b1, /*memExt*/ 3'b000, /*wmask*/ 4'b0000}, // csrrw
+		{7'b1110011, 3'b010}, {/*RegWrite*/ 1'b1,  /*MemRW*/ 2'b00, /*ebreak*/ 1'b0, /*csrEn*/ 1'b1, /*PCSel*/ 1'b0, /*aluAsel*/ 1'b0, /*aluBsel*/ 2'b10, /*WBSel*/ 2'b00, /*aluOp*/ 4'b0000, /*BrUn*/ 1'b1, /*memExt*/ 3'b000, /*wmask*/ 4'b0000} // csrrs
 	})
   );
 

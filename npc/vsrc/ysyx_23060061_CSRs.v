@@ -26,7 +26,7 @@ module ysyx_23060061_CSRs #(DATA_WIDTH = 1) (
   integer i;
   always @(posedge clk) begin 
     if (rst) begin
-      for (i = 0; i < (2**ADDR_WIDTH); i = i + 1) begin
+      for (i = 0; i < (2**INTERNAL_ADDR_WIDTH); i = i + 1) begin
         rf[i] <= 0;  // Set each csr to zero
       end
     end
