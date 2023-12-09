@@ -59,7 +59,7 @@ CPU_State get_cpu_state() {
 	CPU_State cpu;
 
 	for (int i=0; i<NR_GPR; i++) {
-		cpu.gpr[i] = top->rootp->ysyx_23060061_Top__DOT__registerFile__DOT__rf[i];
+		cpu.gpr[i] = top->rootp->ysyx_23060061_Top__DOT__GPRs__DOT__rf[i];
 	}
 	cpu.pc = top->pc;
 	
@@ -126,7 +126,10 @@ void execute(uint64_t n) {
 	for ( ;n > 0; n --) {
 		exec_once();
 		if (Trap) { 
-			printf("HIT TRAP\n");
+			if (top->rootp->ysyx_23060061_Top__DOT__GPRs__DOT__rf[10]==0)
+				printf("HIT GOOD TRAP\n");
+			else
+				printf("HIT BAD TRAP\n");
 			sim_exit();
 			break; 
 		}
@@ -145,7 +148,7 @@ void npc_exec(uint64_t n) {
 
 void reg_display() {
 	const int num_regs = 32;
-	VlUnpacked<IData/*31:0*/, num_regs> rf = top->rootp->ysyx_23060061_Top__DOT__registerFile__DOT__rf;
+	VlUnpacked<IData/*31:0*/, num_regs> rf = top->rootp->ysyx_23060061_Top__DOT__GPRs__DOT__rf;
 	
 	int i;
 	for (i=0; i<num_regs; i++){
