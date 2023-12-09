@@ -107,11 +107,11 @@ void exec_once() {
 	// printf("dnpc = %x\n", top->ftrace_dnpc); // Here, dnpc equals to pc+4
 	step_and_dump_wave();
 	
-	if(top->inst == 0x00000073){
+	if(top->pc == 0x80001304){
 		top->clk = 0b1; top->rst = 0b0; step_and_dump_wave();	
 		
 		top->clk = 0b0; top->rst = 0b0; top->inst = pmem_read(top->pc, 4);  step_and_dump_wave();
-		printf("mtvec: %x\n", top->rootp->ysyx_23060061_Top__DOT__CSRs__DOT__rf[1]);
+		printf("mcause: %x\n", top->rootp->ysyx_23060061_Top__DOT__CSRs__DOT__rf[3]);
 		printf("pc: %x\n", top->pc);
 		exit(0);
 	}
