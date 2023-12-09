@@ -41,7 +41,7 @@ module ysyx_23060061_CSRs #(DATA_WIDTH = 1) (
   always @(posedge clk) begin
     if (ecall) begin
       rf[2'b10] <= pc;
-      rf[2'b11] <= 32'h00000010;
+      rf[2'b11] <= 32'h00000008;
     end
   end
 
