@@ -111,8 +111,8 @@ void exec_once() {
 		top->clk = 0b1; top->rst = 0b0; step_and_dump_wave();	
 		
 		printf("aluOut: %x\n", top->rootp->ysyx_23060061_Top__DOT__aluOut);
-		printf("src1: %x\n", top->rootp->ysyx_23060061_Top__DOT__regData1);
-		printf("src2: %x\n", top->rootp->ysyx_23060061_Top__DOT__regData2);
+		printf("aluOpA: %x\n", top->rootp->ysyx_23060061_Top__DOT__aluOpA);
+		printf("aluOpB: %x\n", top->rootp->ysyx_23060061_Top__DOT__aluOpB);
 		top->clk = 0b0; top->rst = 0b0; top->inst = pmem_read(top->pc, 4);  step_and_dump_wave();
 		printf("mcause: %x\n", top->rootp->ysyx_23060061_Top__DOT__CSRs__DOT__rf[3]);
 		printf("pc: %x\n", top->pc);
