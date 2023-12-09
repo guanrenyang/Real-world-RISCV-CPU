@@ -9,7 +9,7 @@ module ysyx_23060061_ALU #(WIDTH = 1, RESET_VAL = 0) (
   wire [4:0] shamt;
   assign shamt = b[4:0];
 
-  ysyx_23060061_MuxKey #(12, 4, WIDTH) alu_mux(
+  ysyx_23060061_MuxKey #(13, 4, WIDTH) alu_mux(
 	.out(aluOut),
 	.key(aluOp),
 	.lut({
@@ -24,7 +24,8 @@ module ysyx_23060061_ALU #(WIDTH = 1, RESET_VAL = 0) (
 	  4'b1000, a|b, // or
 	  4'b1001, a&b,  // and
 	  4'b1010, a<<shamt, // sll
-	  4'b1011, a>>shamt// srl
+	  4'b1011, a>>shamt, // srl
+	  4'b1100, a // output_A
 	})
   );
 endmodule

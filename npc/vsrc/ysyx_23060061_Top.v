@@ -27,8 +27,7 @@ module ysyx_23060061_Top (
   wire [31:0] memAddr;
   wire [3:0] wmask;
   wire [2:0] memExt;
-
-  wire ebreak;
+  
   wire [2:0] instType;
 
   wire [31:0] aluOpA;
@@ -39,7 +38,7 @@ module ysyx_23060061_Top (
   wire [1:0] WBSel;
   wire PCSel;
   wire aluAsel;
-  wire aluBsel;
+  wire [1:0] aluBsel;
   
   wire [31:0] regDataWB;
 
@@ -48,26 +47,39 @@ module ysyx_23060061_Top (
   wire BrEq;
   wire BrLt;
 
+  /* For CSR */
+  wire csrEn;
+  wire [31:0] csr_rdata;
+ 
+  wire ebreak;
+  wire ecall;
+  wire mret;
+ 
+  wire [31:0] mtvec;
+  wire [31:0] mepc;
+
   assign snpc = pc + 4;
-  assign dnpc = PCSel == 0 ? snpc : aluOut;
+  assign dnpc = mret == 1 ? mepc : (ecall == 1 ? mtvec : (PCSel == 0 ? snpc : aluOut));
   ysyx_23060061_Reg #(32, 32'h80000000) pc_reg(.clk(clk), .rst(rst), .din(dnpc), .dout(pc), .wen(1'b1));
   assign ftrace_dnpc = dnpc;
 
   // ID: Decoder unit
   ysyx_23060061_Decoder decoder(
-	.opcode(inst[6:0]), 
-	.funct3(inst[14:12]), 
-	.funct7(inst[31:25]),
+  .inst(inst),
 	.BrEq(BrEq),
 	.BrLt(BrLt),
 
 	.wmask(wmask),
 	.memExt(memExt),
 
+	.ebreak(ebreak),
+  .ecall(ecall),
+  .mret(mret),
+  
 	.instType(instType),
 	.RegWrite(RegWrite), 
 	.MemRW(MemRW),
-	.ebreak(ebreak),
+  .csrEn(csrEn),
 	.PCSel(PCSel),
 	.aluAsel(aluAsel),
 	.aluBsel(aluBsel),
@@ -84,8 +96,9 @@ module ysyx_23060061_Top (
   assign rs2 = inst[24:20];
   assign rd = inst[11:7];
   
-  // Register File
-  ysyx_23060061_RegisterFile #(5, 32) registerFile(
+  /* Register File */
+  // GPRs 
+  ysyx_23060061_GPRs #(5, 32) GPRs(
     .clk(clk),
     .rst(rst),
     .wdata(regDataWB),
@@ -96,12 +109,33 @@ module ysyx_23060061_Top (
     .rdata1(regData1),
     .rdata2(regData2)
   );
+  // CSRs
+  ysyx_23060061_CSRs #(32) CSRs(
+    .clk(clk),
+    .rst(rst),
+    .csrEn(csrEn),
+    .csrId(inst[31:20]),
+    .wdata(aluOut),
+    .rdata(csr_rdata),
+    .ecall(ecall),
+    .pc(pc),
+    .mtvec(mtvec),
+    .mepc(mepc)
+  );
   
   ysyx_23060061_ImmGen imm_gen(.inst(inst[31:7]), .ImmSel(instType), .imm(imm));
 
   // EX
   assign aluOpA = aluAsel == 0 ? regData1 : pc;
-  assign aluOpB = aluBsel == 0 ? regData2 : imm;
+  ysyx_23060061_MuxKey #(3, 2, 32) aluOpBselect(
+	.out(aluOpB),
+	.key(aluBsel),
+	.lut({
+		2'b00, regData2,
+		2'b01, imm,
+		2'b10, csr_rdata
+	})
+  );
   ysyx_23060061_ALU #(32, 32'd0) alu(.clk(clk), .a(aluOpA), .b(aluOpB), .aluOut(aluOut), .aluOp(aluOp));
   
   // Branch
@@ -140,14 +174,17 @@ module ysyx_23060061_Top (
 
 
   // WB
-  ysyx_23060061_MuxKey #(3, 2, 32) wb_mux(
+  ysyx_23060061_MuxKey #(4, 2, 32) wb_mux(
 	.out(regDataWB),
 	.key(WBSel),
 	.lut({
 		2'b00, memDataR,
 		2'b01, aluOut,
-		2'b10, snpc
+		2'b10, snpc,
+    	2'b11, csr_rdata
 	})
   );
+  
+  
 endmodule
 
