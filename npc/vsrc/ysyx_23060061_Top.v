@@ -86,7 +86,7 @@ module ysyx_23060061_Top (
   
   /* Register File */
   // GPRs 
-  ysyx_23060061_RegisterFile #(5, 32) registerFile(
+  ysyx_23060061_GPRs #(5, 32) GPRs(
     .clk(clk),
     .rst(rst),
     .wdata(regDataWB),
@@ -98,7 +98,15 @@ module ysyx_23060061_Top (
     .rdata2(regData2)
   );
   // CSRs
-  // ysyx_23060061_RegisterFile #(12, 32)
+  // ysyx_23060061_RegisterFile #(2, 32) CSRs(
+  //   .clk(clk),
+  //   .rst(rst),
+  //   .wdata(regDataWB),
+  //   .waddr(),
+  //   .wen(RegWrite),
+  //   .raddr1()
+  //   
+  // )
   
   
   ysyx_23060061_ImmGen imm_gen(.inst(inst[31:7]), .ImmSel(instType), .imm(imm));
