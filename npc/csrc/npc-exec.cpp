@@ -126,7 +126,10 @@ void execute(uint64_t n) {
 	for ( ;n > 0; n --) {
 		exec_once();
 		if (Trap) { 
-			printf("HIT TRAP\n");
+			if (top->rootp->ysyx_23060061_Top__DOT__GPRs__DOT__rf[10]==0)
+				printf("HIT GOOD TRAP\n");
+			else
+				printf("HIT BAD TRAP\n");
 			sim_exit();
 			break; 
 		}
