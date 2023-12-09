@@ -96,11 +96,9 @@ void exec_once() {
 
 	/*Difftest*/
 #ifdef CONFIG_DIFFTEST
-	if (inst_cnt > 0){
-		difftest_step(top->pc, top->ftrace_dnpc);	
-	}
+	if (inst_cnt > 0){ difftest_step(top->pc, top->ftrace_dnpc); }
 #endif
-
+	
 	top->clk = 0b0; top->rst = 0b0; top->inst = pmem_read(top->pc, 4); 
 
 #ifdef CONFIG_ITRACE
@@ -108,12 +106,14 @@ void exec_once() {
 #endif 
 	// printf("dnpc = %x\n", top->ftrace_dnpc); // Here, dnpc equals to pc+4
 	step_and_dump_wave();
-	// printf("MemRW after the current clock: %x\n", top->rootp->ysyx_23060061_Top__DOT__MemRW);
-	// printf("memAddr after the current clock: %x\n", top->rootp->ysyx_23060061_Top__DOT__aluOut);
-	// printf("aluOpA after the current clock: %x\n", top->rootp->ysyx_23060061_Top__DOT__aluOpA);
-	// printf("aluOpB after the current clock: %x\n", top->rootp->ysyx_23060061_Top__DOT__aluOpB);
-	// printf("aluOp after the current clock: %x\n", top->rootp->ysyx_23060061_Top__DOT__aluOp);
-	// printf("dnpc after = %x\n", top->ftrace_dnpc); // Here, dnpc is the right dnpc
+	
+	if(top->inst == 0x00000073){
+		top->clk = 0b1; top->rst = 0b0; step_and_dump_wave();	
+		top->clk = 0b0; top->rst = 0b0; top->inst = pmem_read(top->pc, 4);  step_and_dump_wave();
+		sim_exit();
+		exit(0);
+	}
+
 
 #ifdef CONFIG_FTRACE
 	ftrace(top->inst, top->ftrace_dnpc, top->pc);
