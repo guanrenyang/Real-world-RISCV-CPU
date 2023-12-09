@@ -107,7 +107,7 @@ void exec_once() {
 	// printf("dnpc = %x\n", top->ftrace_dnpc); // Here, dnpc equals to pc+4
 	step_and_dump_wave();
 
-// #ifdef CONFIG_DEBUG	
+#ifdef CONFIG_DEBUG	
 	if(top->pc == 0x80001320){
 		top->clk = 0b1; top->rst = 0b0; step_and_dump_wave();	
 		
@@ -120,7 +120,7 @@ void exec_once() {
 		printf("mcause: %x\n", top->rootp->ysyx_23060061_Top__DOT__CSRs__DOT__rf[3]);
 		exit(0);
 	}
-// #endif
+#endif
 
 #ifdef CONFIG_FTRACE
 	ftrace(top->inst, top->ftrace_dnpc, top->pc);
