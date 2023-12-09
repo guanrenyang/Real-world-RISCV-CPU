@@ -127,7 +127,15 @@ module ysyx_23060061_Top (
 
   // EX
   assign aluOpA = aluAsel == 0 ? regData1 : pc;
-  assign aluOpB = aluBsel == 2'b00 ? regData2 : imm;
+  ysyx_23060061_MuxKey #(3, 2, 32) aluOpBselect(
+	.out(aluOpB),
+	.key(aluBsel),
+	.lut({
+		2'b00, regData2,
+		2'b01, imm,
+		2'b10, csr_rdata
+	})
+  );
   ysyx_23060061_ALU #(32, 32'd0) alu(.clk(clk), .a(aluOpA), .b(aluOpB), .aluOut(aluOut), .aluOp(aluOp));
   
   // Branch
