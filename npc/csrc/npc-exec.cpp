@@ -109,6 +109,7 @@ void exec_once() {
 	
 	if(top->inst == 0x00000073){
 		top->clk = 0b1; top->rst = 0b0; step_and_dump_wave();	
+		
 		top->clk = 0b0; top->rst = 0b0; top->inst = pmem_read(top->pc, 4);  step_and_dump_wave();
 		sim_exit();
 		exit(0);
