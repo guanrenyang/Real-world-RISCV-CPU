@@ -111,7 +111,7 @@ void exec_once() {
 		top->clk = 0b1; top->rst = 0b0; step_and_dump_wave();	
 		
 		top->clk = 0b0; top->rst = 0b0; top->inst = pmem_read(top->pc, 4);  step_and_dump_wave();
-		sim_exit();
+		printf("mtvec: %x\n", top->rootp->ysyx_23060061_Top__DOT__CSRs__DOT__rf[1]);
 		exit(0);
 	}
 
