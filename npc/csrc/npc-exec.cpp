@@ -108,12 +108,13 @@ void exec_once() {
 	step_and_dump_wave();
 
 #ifdef CONFIG_DEBUG	
-	if(top->pc == 0x80001304){
+	if(top->pc == 0x80001310){
 		top->clk = 0b1; top->rst = 0b0; step_and_dump_wave();	
 		
-		printf("aluOut: %x\n", top->rootp->ysyx_23060061_Top__DOT__aluOut);
-		printf("aluOpA: %x\n", top->rootp->ysyx_23060061_Top__DOT__aluOpA);
-		printf("aluOpB: %x\n", top->rootp->ysyx_23060061_Top__DOT__aluOpB);
+		// printf("aluOut: %x\n", top->rootp->ysyx_23060061_Top__DOT__aluOut);
+		// printf("aluOpA: %x\n", top->rootp->ysyx_23060061_Top__DOT__aluOpA);
+		// printf("aluOpB: %x\n", top->rootp->ysyx_23060061_Top__DOT__aluOpB);
+		// printf("mtvec: %x\nmepc: %x\nmcause: %x\n", top->rootp")
 		top->clk = 0b0; top->rst = 0b0; top->inst = pmem_read(top->pc, 4);  step_and_dump_wave();
 		printf("mcause: %x\n", top->rootp->ysyx_23060061_Top__DOT__CSRs__DOT__rf[3]);
 		printf("pc: %x\n", top->pc);
