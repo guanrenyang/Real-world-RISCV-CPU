@@ -27,10 +27,6 @@ module ysyx_23060061_Top (
   wire [31:0] memAddr;
   wire [3:0] wmask;
   wire [2:0] memExt;
-
-  wire ebreak;
-  wire ecall;
-  wire mret;
   
   wire [2:0] instType;
 
@@ -54,9 +50,16 @@ module ysyx_23060061_Top (
   /* For CSR */
   wire csrEn;
   wire [31:0] csr_rdata;
-  
+ 
+  wire ebreak;
+  wire ecall;
+  wire mret;
+ 
+  wire [31:0] mtvec;
+  wire [31:0] mepc;
+
   assign snpc = pc + 4;
-  assign dnpc = PCSel == 0 ? snpc : aluOut;
+  assign dnpc = mret == 1 ? mepc : (ecall == 1 ? mtvec : (PCSel == 0 ? snpc : aluOut));
   ysyx_23060061_Reg #(32, 32'h80000000) pc_reg(.clk(clk), .rst(rst), .din(dnpc), .dout(pc), .wen(1'b1));
   assign ftrace_dnpc = dnpc;
 
@@ -113,7 +116,11 @@ module ysyx_23060061_Top (
     .csrEn(csrEn),
     .csrId(inst[31:20]),
     .wdata(aluOut),
-    .rdata(csr_rdata)
+    .rdata(csr_rdata),
+    .ecall(ecall),
+    .pc(pc),
+    .mtvec(mtvec),
+    .mepc(mepc)
   );
   
   ysyx_23060061_ImmGen imm_gen(.inst(inst[31:7]), .ImmSel(instType), .imm(imm));
