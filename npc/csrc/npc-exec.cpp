@@ -106,7 +106,8 @@ void exec_once() {
 #endif 
 	// printf("dnpc = %x\n", top->ftrace_dnpc); // Here, dnpc equals to pc+4
 	step_and_dump_wave();
-	
+
+#ifdef CONFIG_DEBUG	
 	if(top->pc == 0x80001304){
 		top->clk = 0b1; top->rst = 0b0; step_and_dump_wave();	
 		
@@ -118,7 +119,7 @@ void exec_once() {
 		printf("pc: %x\n", top->pc);
 		exit(0);
 	}
-
+#endif
 
 #ifdef CONFIG_FTRACE
 	ftrace(top->inst, top->ftrace_dnpc, top->pc);

@@ -181,7 +181,7 @@ module ysyx_23060061_Top (
 		2'b00, memDataR,
 		2'b01, aluOut,
 		2'b10, snpc,
-    2'b11, csr_rdata
+    	2'b11, csr_rdata
 	})
   );
   
