@@ -108,7 +108,7 @@ void exec_once() {
 	step_and_dump_wave();
 
 // #ifdef CONFIG_DEBUG
-	if(top->pc == 0x80001258){
+	if(top->pc == 0x8000123c){
 		top->clk = 0b1; top->rst = 0b0; step_and_dump_wave();	
 		
 		// printf("aluOut: %x\n", top->rootp->ysyx_23060061_Top__DOT__aluOut);
