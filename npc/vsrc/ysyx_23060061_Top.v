@@ -29,6 +29,9 @@ module ysyx_23060061_Top (
   wire [2:0] memExt;
 
   wire ebreak;
+  wire ecall;
+  wire mret;
+  
   wire [2:0] instType;
 
   wire [31:0] aluOpA;
@@ -59,19 +62,20 @@ module ysyx_23060061_Top (
 
   // ID: Decoder unit
   ysyx_23060061_Decoder decoder(
-	.opcode(inst[6:0]), 
-	.funct3(inst[14:12]), 
-	.funct7(inst[31:25]),
+  .inst(inst),
 	.BrEq(BrEq),
 	.BrLt(BrLt),
 
 	.wmask(wmask),
 	.memExt(memExt),
 
+	.ebreak(ebreak),
+  .ecall(ecall),
+  .mret(mret),
+  
 	.instType(instType),
 	.RegWrite(RegWrite), 
 	.MemRW(MemRW),
-	.ebreak(ebreak),
   .csrEn(csrEn),
 	.PCSel(PCSel),
 	.aluAsel(aluAsel),
