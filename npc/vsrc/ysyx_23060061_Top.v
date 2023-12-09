@@ -84,7 +84,8 @@ module ysyx_23060061_Top (
   assign rs2 = inst[24:20];
   assign rd = inst[11:7];
   
-  // Register File
+  /* Register File */
+  // GPRs 
   ysyx_23060061_RegisterFile #(5, 32) registerFile(
     .clk(clk),
     .rst(rst),
@@ -96,6 +97,9 @@ module ysyx_23060061_Top (
     .rdata1(regData1),
     .rdata2(regData2)
   );
+  // CSRs
+  // ysyx_23060061_RegisterFile #(12, 32)
+  
   
   ysyx_23060061_ImmGen imm_gen(.inst(inst[31:7]), .ImmSel(instType), .imm(imm));
 
@@ -149,5 +153,7 @@ module ysyx_23060061_Top (
 		2'b10, snpc
 	})
   );
+  
+  
 endmodule
 
