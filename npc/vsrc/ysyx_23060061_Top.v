@@ -39,7 +39,7 @@ module ysyx_23060061_Top (
   wire [1:0] WBSel;
   wire PCSel;
   wire aluAsel;
-  wire aluBsel;
+  wire [1:0] aluBsel;
   
   wire [31:0] regDataWB;
 
@@ -47,6 +47,9 @@ module ysyx_23060061_Top (
   wire BrUn;
   wire BrEq;
   wire BrLt;
+
+  /* For CSR */
+  wire csrEn;
 
   assign snpc = pc + 4;
   assign dnpc = PCSel == 0 ? snpc : aluOut;
@@ -68,6 +71,7 @@ module ysyx_23060061_Top (
 	.RegWrite(RegWrite), 
 	.MemRW(MemRW),
 	.ebreak(ebreak),
+  .csrEn(csrEn),
 	.PCSel(PCSel),
 	.aluAsel(aluAsel),
 	.aluBsel(aluBsel),
@@ -98,14 +102,12 @@ module ysyx_23060061_Top (
     .rdata2(regData2)
   );
   // CSRs
-  // ysyx_23060061_RegisterFile #(2, 32) CSRs(
+  // ysyx_23060061_CSRs #(32) CSRs(
   //   .clk(clk),
   //   .rst(rst),
-  //   .wdata(regDataWB),
-  //   .waddr(),
-  //   .wen(RegWrite),
-  //   .raddr1()
-  //   
+  //   .csrEn(),
+  //   .csrId(imm),
+  //   .wdata(aluOut),
   // )
   
   
@@ -113,7 +115,7 @@ module ysyx_23060061_Top (
 
   // EX
   assign aluOpA = aluAsel == 0 ? regData1 : pc;
-  assign aluOpB = aluBsel == 0 ? regData2 : imm;
+  assign aluOpB = aluBsel == 2'b00 ? regData2 : imm;
   ysyx_23060061_ALU #(32, 32'd0) alu(.clk(clk), .a(aluOpA), .b(aluOpB), .aluOut(aluOut), .aluOp(aluOp));
   
   // Branch
