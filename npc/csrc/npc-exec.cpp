@@ -21,6 +21,8 @@ static VerilatedVcdC *tfp = nullptr;
 static VerilatedContext *contextp = nullptr;
 static TOPNAME *top = nullptr;
 
+static int inst_cnt = 0;
+
 // DPI-C function for `ebreak` instruction
 static bool Trap = false;
 void trap() { Trap = true; }
@@ -77,12 +79,12 @@ CPU_State sim_init_then_reset() {
 
 void sim_exit() {
 	step_and_dump_wave();
+	printf("Total instructions executed: %d\n", inst_cnt);
 #ifdef CONFIG_WAVETRACE
 	tfp->close();
 #endif
 }
 
-static int inst_cnt = 0;
 void exec_once() {
 	
 	// printf("MemRW before the next clock: %x\n", top->rootp->ysyx_23060061_Top__DOT__MemRW);
