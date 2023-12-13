@@ -63,7 +63,7 @@ CPU_State get_cpu_state() {
 	for (int i=0; i<NR_GPR; i++) {
 		cpu.gpr[i] = top->rootp->ysyx_23060061_Top__DOT__GPRs__DOT__rf[i];
 	}
-	// cpu.pc = top->pc;
+	cpu.pc = top->rootp->ysyx_23060061_Top__DOT__pc;
 	
 	return cpu;
 }
