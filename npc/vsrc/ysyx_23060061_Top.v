@@ -66,9 +66,9 @@ module ysyx_23060061_Top (
 
   assign ftrace_dnpc = dnpc; // for ftrace
   always @(pc) begin
-	// if (!rst) begin
+	if (!rst) begin
 		paddr_read(pc, inst);
-	// end
+	end
   end
 
   // ID: Decoder unit
