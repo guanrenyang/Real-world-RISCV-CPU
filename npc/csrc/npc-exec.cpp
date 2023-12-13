@@ -92,7 +92,7 @@ void exec_once() {
 	// printf("aluOpA before the current clock: %x\n", top->rootp->ysyx_23060061_Top__DOT__aluOpA);
 	// printf("aluOpB before the current clock: %x\n", top->rootp->ysyx_23060061_Top__DOT__aluOpB);
 	// printf("aluOp before the current clock: %x\n", top->rootp->ysyx_23060061_Top__DOT__aluOp);
-	printf("pc: %x\n", top->rootp->ysyx_23060061_Top__DOT__pc);
+	printf("pc: %x, ra: %x\n", top->rootp->ysyx_23060061_Top__DOT__pc, top->rootp->ysyx_23060061_Top__DOT__CSRs__DOT__rf[1]);
 	top->clk = 0b1; top->rst = 0b0; step_and_dump_wave();
 
 	// printf("pc = %x\n", top->pc);
