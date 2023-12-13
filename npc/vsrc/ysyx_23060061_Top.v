@@ -66,9 +66,7 @@ module ysyx_23060061_Top (
 
   assign ftrace_dnpc = dnpc; // for ftrace
   always @(pc) begin
-	if (!rst) begin
-		paddr_read(pc, inst);
-	end
+	paddr_read(pc, inst);
   end
 
   // ID: Decoder unit
@@ -171,13 +169,13 @@ module ysyx_23060061_Top (
   );
 
   always @(MemRW, memAddr, memDataW) begin
-	// if(!clk) begin
+	if(!clk) begin
     	if(MemRW==2'b10) begin
     		paddr_read(memAddr, unextMemDataR);
     	end else if (MemRW==2'b01) begin
     		paddr_write(memAddr, memDataW, {4'b0000, wmask});
     	end
-	// end
+	end
   end
 
 
