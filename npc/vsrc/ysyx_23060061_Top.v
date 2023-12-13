@@ -5,11 +5,13 @@ import "DPI-C" function void paddr_write(input int waddr, input int wdata, input
 module ysyx_23060061_Top (
   input clk,
   input rst, 
-  input [31 : 0] inst,
-  output [31 : 0] pc,
+  // input [31 : 0] inst,
+  // output [31 : 0] pc,
   output [31 : 0] ftrace_dnpc // used only for ftrace
 );
   // IF: reg PC and its updating rule.
+  wire [31:0] inst;
+  wire [31:0] pc;
   wire [31:0] snpc;
   wire [31:0] dnpc;
   wire [31:0] imm;
@@ -61,11 +63,15 @@ module ysyx_23060061_Top (
   assign snpc = pc + 4;
   assign dnpc = mret == 1 ? mepc : (ecall == 1 ? mtvec : (PCSel == 0 ? snpc : aluOut));
   ysyx_23060061_Reg #(32, 32'h80000000) pc_reg(.clk(clk), .rst(rst), .din(dnpc), .dout(pc), .wen(1'b1));
-  assign ftrace_dnpc = dnpc;
+
+  assign ftrace_dnpc = dnpc; // for ftrace
+  always @(pc) begin
+	paddr_read(pc, inst);
+  end
 
   // ID: Decoder unit
   ysyx_23060061_Decoder decoder(
-  .inst(inst),
+  	.inst(inst),
 	.BrEq(BrEq),
 	.BrLt(BrLt),
 
@@ -73,13 +79,13 @@ module ysyx_23060061_Top (
 	.memExt(memExt),
 
 	.ebreak(ebreak),
-  .ecall(ecall),
-  .mret(mret),
+  	.ecall(ecall),
+  	.mret(mret),
   
 	.instType(instType),
 	.RegWrite(RegWrite), 
 	.MemRW(MemRW),
-  .csrEn(csrEn),
+  	.csrEn(csrEn),
 	.PCSel(PCSel),
 	.aluAsel(aluAsel),
 	.aluBsel(aluBsel),

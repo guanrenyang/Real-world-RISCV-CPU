@@ -63,7 +63,7 @@ CPU_State get_cpu_state() {
 	for (int i=0; i<NR_GPR; i++) {
 		cpu.gpr[i] = top->rootp->ysyx_23060061_Top__DOT__GPRs__DOT__rf[i];
 	}
-	cpu.pc = top->pc;
+	// cpu.pc = top->pc;
 	
 	return cpu;
 }
@@ -101,7 +101,7 @@ void exec_once() {
 	if (inst_cnt > 0){ difftest_step(top->pc, top->ftrace_dnpc); }
 #endif
 	
-	top->clk = 0b0; top->rst = 0b0; top->inst = pmem_read(top->pc, 4); 
+	top->clk = 0b0; top->rst = 0b0; // top->inst = pmem_read(top->pc, 4); 
 
 #ifdef CONFIG_ITRACE
 	itrace(top->pc, top->inst, 4);
