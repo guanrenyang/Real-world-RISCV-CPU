@@ -21,6 +21,8 @@ static VerilatedVcdC *tfp = nullptr;
 static VerilatedContext *contextp = nullptr;
 static TOPNAME *top = nullptr;
 
+static int inst_cnt = 0;
+
 // DPI-C function for `ebreak` instruction
 static bool Trap = false;
 void trap() { Trap = true; }
@@ -61,7 +63,7 @@ CPU_State get_cpu_state() {
 	for (int i=0; i<NR_GPR; i++) {
 		cpu.gpr[i] = top->rootp->ysyx_23060061_Top__DOT__GPRs__DOT__rf[i];
 	}
-	cpu.pc = top->pc;
+	cpu.pc = top->rootp->ysyx_23060061_Top__DOT__pc;
 	
 	return cpu;
 }
@@ -77,12 +79,12 @@ CPU_State sim_init_then_reset() {
 
 void sim_exit() {
 	step_and_dump_wave();
+	printf("Total instructions executed: %d\n", inst_cnt);
 #ifdef CONFIG_WAVETRACE
 	tfp->close();
 #endif
 }
 
-static int inst_cnt = 0;
 void exec_once() {
 	
 	// printf("MemRW before the next clock: %x\n", top->rootp->ysyx_23060061_Top__DOT__MemRW);
@@ -90,6 +92,7 @@ void exec_once() {
 	// printf("aluOpA before the current clock: %x\n", top->rootp->ysyx_23060061_Top__DOT__aluOpA);
 	// printf("aluOpB before the current clock: %x\n", top->rootp->ysyx_23060061_Top__DOT__aluOpB);
 	// printf("aluOp before the current clock: %x\n", top->rootp->ysyx_23060061_Top__DOT__aluOp);
+	// printf("pc: %x, ra: %x\n", top->rootp->ysyx_23060061_Top__DOT__pc, top->rootp->ysyx_23060061_Top__DOT__CSRs__DOT__rf[1]);
 	top->clk = 0b1; top->rst = 0b0; step_and_dump_wave();
 
 	// printf("pc = %x\n", top->pc);
@@ -99,7 +102,7 @@ void exec_once() {
 	if (inst_cnt > 0){ difftest_step(top->pc, top->ftrace_dnpc); }
 #endif
 	
-	top->clk = 0b0; top->rst = 0b0; top->inst = pmem_read(top->pc, 4); 
+	top->clk = 0b0; top->rst = 0b0; // top->inst = pmem_read(top->pc, 4); 
 
 #ifdef CONFIG_ITRACE
 	itrace(top->pc, top->inst, 4);
