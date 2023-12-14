@@ -127,7 +127,7 @@ module ID_EX_WB (
     .csrId(inst[31:20]),
     .wdata(aluOut),
     .rdata(csr_rdata),
-    .ecall(ecall),
+    .ecall(ecall & inst_pc_valid),
     .pc(pc),
     .mtvec(mtvec),
     .mepc(mepc),
