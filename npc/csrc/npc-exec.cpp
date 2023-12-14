@@ -133,6 +133,10 @@ void exec_once() {
 #endif
 
 	inst_cnt ++;
+	if(inst_cnt >= 3) {
+		sim_exit();
+		exit(0);
+	}
 }
 
 void execute(uint64_t n) {
