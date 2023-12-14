@@ -13,7 +13,7 @@ module ysyx_23060061_Top (
 	wire [31:0] pc;
 	wire [31:0] dnpc;
 	wire [31:0] inst;
-	wire inst_pc_valid;
+	wire ifu_valid;
 
 	ysyx_23060061_IFU_with_SRAM ifu(
 		.clk(clk),
@@ -21,7 +21,7 @@ module ysyx_23060061_Top (
 		.dnpc(dnpc),
 		.inst(inst),
 		.pc(pc),
-		.instValid(inst_pc_valid)
+		.instValid(ifu_valid)
 	);
 	
 	ID_EX_WB id_ex_wb(
@@ -30,7 +30,7 @@ module ysyx_23060061_Top (
 
 		.inst(inst),
 		.pc(pc),
-		.inst_pc_valid(inst_pc_valid),
+		.ifu_valid(ifu_valid),
 		.dnpc(dnpc),
 		.ftrace_dnpc(ftrace_dnpc)
 	);
