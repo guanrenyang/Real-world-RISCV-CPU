@@ -52,6 +52,7 @@ static bool in_pmem(uint32_t paddr) {
 static uint32_t htime = 0;
 static bool ltime_valid = false;
 extern "C" void paddr_read(int raddr, int *rdata) {
+  printf("paddr_read: %x\n", raddr);
   if (in_pmem(raddr)) {
 	(*rdata) = pmem_read(raddr, 4);
 	return;
