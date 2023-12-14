@@ -97,7 +97,7 @@ void exec_once() {
 	// printf("pc: %x, ra: %x\n", top->rootp->ysyx_23060061_Top__DOT__pc, top->rootp->ysyx_23060061_Top__DOT__CSRs__DOT__rf[1]);
 	top->clk = 0b1; top->rst = 0b0; step_and_dump_wave();
 
-	printf("pc = %x\n", top->rootp->ysyx_23060061_Top__DOT__pc);
+	// printf("pc = %x\n", top->rootp->ysyx_23060061_Top__DOT__pc);
 
 	// if (top->rootp->ysyx_23060061_Top__DOT__pc==0x80000014) {
 	// 	printf("ra = %x\n", top->rootp->ysyx_23060061_Top__DOT__id_ex_wb__DOT__GPRs__DOT__rf[1]);
@@ -143,7 +143,7 @@ void exec_once() {
 void execute(uint64_t n) {
 	for ( ;n > 0; n --) {
 		exec_once();
-		printf("EXEC_CODE: %d\n", EXEC_CODE);
+		// printf("EXEC_CODE: %d\n", EXEC_CODE);
 		switch (EXEC_CODE) {
 			case Trap:
 				if (top->rootp->ysyx_23060061_Top__DOT__id_ex_wb__DOT__GPRs__DOT__rf[10]==0)
