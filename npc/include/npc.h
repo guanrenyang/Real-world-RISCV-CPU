@@ -1,3 +1,5 @@
+#ifndef __NPC_H__
+#define __NPC_H__
 #include <macro.h>
 #include <stdint.h>
 
@@ -19,3 +21,7 @@ void sim_exit();
 
 CPU_State get_cpu_state();
 void reg_display();
+
+enum { SUCCESS = 0, Trap, BAD_TIMER_IO};
+
+#endif
