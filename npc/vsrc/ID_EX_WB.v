@@ -5,13 +5,15 @@
 module ID_EX_WB (
   input clk,
   input rst, 
-  input instValid,
+
+  input inst_pc_valid,
+  input [31:0] inst,
+  input [31:0] pc,
+
   output [31:0] dnpc,
   output [31:0] ftrace_dnpc // used only for ftrace
 );
   // IF: reg PC and its updating rule.
-  wire [31:0] inst;
-  wire [31:0] pc;
   wire [31:0] snpc;
   // wire [31:0] dnpc;
   wire [31:0] imm;
@@ -61,7 +63,7 @@ module ID_EX_WB (
   wire [31:0] mepc;
 
   assign snpc = pc + 4;
-  assign dnpc = rst ? 32'h80000000 : (instValid == 0 ? pc : (mret == 1 ? mepc : (ecall == 1 ? mtvec : (PCSel == 0 ? snpc : aluOut))));
+  assign dnpc = inst_pc_valid == 0 ? pc : (mret == 1 ? mepc : (ecall == 1 ? mtvec : (PCSel == 0 ? snpc : aluOut)));
   // ysyx_23060061_Reg #(32, 32'h80000000) pc_reg(.clk(clk), .rst(rst), .din(dnpc), .dout(pc), .wen(1'b1));
 
   assign ftrace_dnpc = dnpc; // for ftrace

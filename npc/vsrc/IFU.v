@@ -5,16 +5,16 @@ module ysyx_23060061_IFU_with_SRAM(
 	input [31:0] dnpc,
 
 	output reg [31:0] inst,
+	output reg [31:0] pc,
 	output reg instValid
 );	
 
 	wire [31:0] instImm_internal;
 
 	reg [31:0] pc_old;
-	reg [31:0] pc;
 	
 	// Combinationa logic
-	always @(pc != pc_old) begin
+	always @(pc) begin
 		if (!rst) begin
 			paddr_read(pc, instImm_internal);
 			// instImm_internal = pc;
