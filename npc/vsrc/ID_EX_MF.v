@@ -102,9 +102,20 @@ module ID_EX_WB (
   assign rd = inst[11:7];
   
   // CSRs
-  assign csrId = inst[31:20];
-  assign csrWriteData = aluOut;
-
+  ysyx_23060061_CSRs #(32) CSRs(
+    .clk(clk),
+    .rst(rst),
+    .csrId(inst[31:20]),
+    .wdata(aluOut),
+    .rdata(csr_rdata),
+    .ecall(ecall & inst_pc_valid),
+    .pc(pc),
+    .mtvec(mtvec),
+    .mepc(mepc),
+	// enable signals
+    .csrEn(csrEn & inst_pc_valid)
+  );
+  
   ysyx_23060061_ImmGen imm_gen(.inst(inst[31:7]), .ImmSel(instType), .imm(imm));
 
   // EX
