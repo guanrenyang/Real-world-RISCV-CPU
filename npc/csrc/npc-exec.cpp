@@ -133,7 +133,7 @@ void exec_once() {
 #endif
 
 	cycle_cnt ++;
-	if(cycle_cnt >= 3) {
+	if(cycle_cnt >= 5) {
 		sim_exit();
 		exit(0);
 	}
