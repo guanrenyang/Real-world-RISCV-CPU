@@ -53,11 +53,11 @@ module ysyx_23060061_Top (
     	.csrId(csrId),
     	.wdata(csrWriteData),
     	.rdata(csrReadData),
-    	.ecall(ecall),
     	.pc(pc),
     	.mtvec(mtvec),
     	.mepc(mepc),
 		// enable signals
+    	.ecall(ecall & ifu_valid),
     	.csrEn(csrEn & ifu_valid)
   	);
 
