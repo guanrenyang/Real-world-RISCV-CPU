@@ -18,14 +18,16 @@
 #ifdef CONFIG_WAVETRACE
 static VerilatedVcdC *tfp = nullptr;
 #endif
+
+int EXEC_CODE = SUCCESS;
+
 static VerilatedContext *contextp = nullptr;
 static TOPNAME *top = nullptr;
 
-static int inst_cnt = 0;
+static int cycle_cnt = 0;
 
 // DPI-C function for `ebreak` instruction
-static bool Trap = false;
-void trap() { Trap = true; }
+void trap() { EXEC_CODE = Trap; }
 
 void step_and_dump_wave(){
 	top->eval();
@@ -61,7 +63,7 @@ CPU_State get_cpu_state() {
 	CPU_State cpu;
 
 	for (int i=0; i<NR_GPR; i++) {
-		cpu.gpr[i] = top->rootp->ysyx_23060061_Top__DOT__GPRs__DOT__rf[i];
+		cpu.gpr[i] = top->rootp->ysyx_23060061_Top__DOT__id_ex_wb__DOT__GPRs__DOT__rf[i];
 	}
 	cpu.pc = top->rootp->ysyx_23060061_Top__DOT__pc;
 	
@@ -79,7 +81,7 @@ CPU_State sim_init_then_reset() {
 
 void sim_exit() {
 	step_and_dump_wave();
-	printf("Total instructions executed: %d\n", inst_cnt);
+	printf("Total cycles executed: %d\n", cycle_cnt);
 #ifdef CONFIG_WAVETRACE
 	tfp->close();
 #endif
@@ -95,8 +97,13 @@ void exec_once() {
 	// printf("pc: %x, ra: %x\n", top->rootp->ysyx_23060061_Top__DOT__pc, top->rootp->ysyx_23060061_Top__DOT__CSRs__DOT__rf[1]);
 	top->clk = 0b1; top->rst = 0b0; step_and_dump_wave();
 
-	// printf("pc = %x\n", top->pc);
+	// printf("pc = %x\n", top->rootp->ysyx_23060061_Top__DOT__pc);
 
+	// if (top->rootp->ysyx_23060061_Top__DOT__pc==0x80000014) {
+	// 	printf("ra = %x\n", top->rootp->ysyx_23060061_Top__DOT__id_ex_wb__DOT__GPRs__DOT__rf[1]);
+	// 	sim_exit();
+	// 	exit(0);
+	// }
 	/*Difftest*/
 #ifdef CONFIG_DIFFTEST
 	if (inst_cnt > 0){ difftest_step(top->pc, top->ftrace_dnpc); }
@@ -130,23 +137,31 @@ void exec_once() {
 	ftrace(top->inst, top->ftrace_dnpc, top->pc);
 #endif
 
-	inst_cnt ++;
+	cycle_cnt ++;
 }
 
 void execute(uint64_t n) {
 	for ( ;n > 0; n --) {
 		exec_once();
-		if (Trap) { 
-			if (top->rootp->ysyx_23060061_Top__DOT__GPRs__DOT__rf[10]==0)
-				printf("HIT GOOD TRAP\n");
-			else
-				printf("HIT BAD TRAP\n");
-			sim_exit();
+		// printf("EXEC_CODE: %d\n", EXEC_CODE);
+		switch (EXEC_CODE) {
+			case Trap:
+				if (top->rootp->ysyx_23060061_Top__DOT__id_ex_wb__DOT__GPRs__DOT__rf[10]==0)
+					printf("HIT GOOD TRAP\n");
+				else
+					printf("HIT BAD TRAP\n");
+				sim_exit();
+				break;
+			case BAD_TIMER_IO:
+				printf("BAD TIMER IO ADDRESS\n");
+				sim_exit();
+				assert(NULL);
+				break;
+		}
+		if (EXEC_CODE == Trap) { 
 			break; 
 		}
 	}
-	// sim_exit();
-	// exit(0);
 }
 
 void npc_exec(uint64_t n) {
@@ -159,7 +174,7 @@ void npc_exec(uint64_t n) {
 
 void reg_display() {
 	const int num_regs = 32;
-	VlUnpacked<IData/*31:0*/, num_regs> rf = top->rootp->ysyx_23060061_Top__DOT__GPRs__DOT__rf;
+	VlUnpacked<IData/*31:0*/, num_regs> rf = top->rootp->ysyx_23060061_Top__DOT__id_ex_wb__DOT__GPRs__DOT__rf;
 	
 	int i;
 	for (i=0; i<num_regs; i++){
