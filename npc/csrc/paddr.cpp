@@ -1,5 +1,6 @@
 #include <paddr.h>
 #include <utils.h>
+#include <npc.h>
 
 static uint8_t *instMem = NULL;
 
@@ -71,8 +72,8 @@ extern "C" void paddr_read(int raddr, int *rdata) {
 	
 	ltime_valid = false;
   } else {
-	printf("Bad timer IO: %08x\n", raddr);
-	assert(NULL);
+	extern int EXEC_CODE;
+	EXEC_CODE = BAD_TIMER_IO;
   }
 }
 

@@ -18,14 +18,16 @@
 #ifdef CONFIG_WAVETRACE
 static VerilatedVcdC *tfp = nullptr;
 #endif
+
+int EXEC_CODE = SUCCESS;
+
 static VerilatedContext *contextp = nullptr;
 static TOPNAME *top = nullptr;
 
 static int inst_cnt = 0;
 
 // DPI-C function for `ebreak` instruction
-static bool Trap = false;
-void trap() { Trap = true; }
+void trap() { EXEC_CODE = Trap; }
 
 void step_and_dump_wave(){
 	top->eval();
@@ -136,17 +138,24 @@ void exec_once() {
 void execute(uint64_t n) {
 	for ( ;n > 0; n --) {
 		exec_once();
-		if (Trap) { 
-			if (top->rootp->ysyx_23060061_Top__DOT__id_ex_wb__DOT__GPRs__DOT__rf[10]==0)
-				printf("HIT GOOD TRAP\n");
-			else
-				printf("HIT BAD TRAP\n");
-			sim_exit();
+		switch (EXEC_CODE) {
+			case Trap:
+				if (top->rootp->ysyx_23060061_Top__DOT__id_ex_wb__DOT__GPRs__DOT__rf[10]==0)
+					printf("HIT GOOD TRAP\n");
+				else
+					printf("HIT BAD TRAP\n");
+				sim_exit();
+				break;
+			case BAD_TIMER_IO:
+				printf("BAD TIMER IO ADDRESS\n");
+				sim_exit();
+				exit(0);
+				break;
+		}
+		if (EXEC_CODE == Trap) { 
 			break; 
 		}
 	}
-	// sim_exit();
-	// exit(0);
 }
 
 void npc_exec(uint64_t n) {
