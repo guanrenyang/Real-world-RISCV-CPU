@@ -1,5 +1,4 @@
 TOPNAME = ysyx_23060061_Top
-SIM_PATH = ./csrc
 
 VERILATOR = verilator
 VERILATOR_CFLAGS += -MMD --build -cc  \
@@ -11,7 +10,7 @@ BIN = $(BUILD_DIR)/$(TOPNAME)
 
 #project source
 VSRCS = $(shell find $(abspath ./vsrc) -name "*.v")
-CSRCS = $(shell find $(abspath $(SIM_PATH)) -name "*.c" -or -name "*.cc" -or -name "*.cpp")
+CSRCS = $(shell find $(abspath ./csrc) -name "*.c" -or -name "*.cc" -or -name "*.cpp")
 CSRCS += $(SRC_AUTO_BIND)
 # CSRCS := $(filter-out %/main.cpp,$(filter main.cpp,$(CSRCS)) $(filter-out main.cpp,$(CSRCS))) // filter main.cpp which is the old version of main.cpp, this line is only for testing
 

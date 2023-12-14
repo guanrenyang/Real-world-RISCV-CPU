@@ -1,6 +1,3 @@
-#ifndef __PADDR_H__
-#define __PADDR_H__
-
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -10,5 +7,3 @@
 
 uint8_t* guest_to_host(uint32_t paddr);
 uint32_t pmem_read(uint32_t paddr, int len); 
-
-#endif

@@ -1,6 +1,5 @@
 #include <paddr.h>
 #include <utils.h>
-#include <npc.h>
 
 static uint8_t *instMem = NULL;
 
@@ -52,7 +51,6 @@ static bool in_pmem(uint32_t paddr) {
 static uint32_t htime = 0;
 static bool ltime_valid = false;
 extern "C" void paddr_read(int raddr, int *rdata) {
-  // printf("paddr_read: %x\n", raddr);
   if (in_pmem(raddr)) {
 	(*rdata) = pmem_read(raddr, 4);
 	return;
@@ -73,9 +71,8 @@ extern "C" void paddr_read(int raddr, int *rdata) {
 	
 	ltime_valid = false;
   } else {
-	extern int EXEC_CODE;
-	EXEC_CODE = BAD_TIMER_IO;
-	printf("Bad Address: %x\n", raddr);
+	printf("Bad timer IO: %08x\n", raddr);
+	assert(NULL);
   }
 }
 
