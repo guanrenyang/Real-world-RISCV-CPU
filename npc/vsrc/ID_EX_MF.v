@@ -29,14 +29,7 @@ module ID_EX_WB (
   wire [31:0] snpc;
   // wire [31:0] dnpc;
   wire [31:0] imm;
-  // wire RegWrite;
-  // wire [4:0] rs2;
-  // wire [4:0] rd;
-  // wire [4:0] rs1;
-  // wire [31:0] regData1;
-  // wire [31:0] regData2;
-  // wire [31:0] regDataWB;
-  //
+
   wire [1:0] MemRW;
   wire [31:0] memDataW;
   wire [31:0] unextMemDataR;
@@ -118,20 +111,6 @@ module ID_EX_WB (
   assign rs2 = inst[24:20];
   assign rd = inst[11:7];
   
-  /* Register File */
-  // GPRs 
- //  ysyx_23060061_GPRs #(5, 32) GPRs(
- //    .clk(clk),
- //    .rst(rst),
- //    .wdata(regDataWB),
- //    .waddr(rd),
- //    .raddr1(rs1),
- //    .raddr2(rs2),
- //    .rdata1(regData1),
- //    .rdata2(regData2),
-	// // enable signals
- //    .wen(RegWrite & ifu_valid)
- //  );
   // CSRs
   ysyx_23060061_CSRs #(32) CSRs(
     .clk(clk),
