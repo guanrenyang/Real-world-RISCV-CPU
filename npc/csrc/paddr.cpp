@@ -74,6 +74,7 @@ extern "C" void paddr_read(int raddr, int *rdata) {
   } else {
 	extern int EXEC_CODE;
 	EXEC_CODE = BAD_TIMER_IO;
+	printf("Bad Address: %x\n", raddr);
   }
 }
 

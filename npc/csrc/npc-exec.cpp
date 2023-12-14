@@ -81,7 +81,7 @@ CPU_State sim_init_then_reset() {
 
 void sim_exit() {
 	step_and_dump_wave();
-	printf("Total instructions executed: %d\n", cycle_cnt);
+	printf("Total cycles executed: %d\n", cycle_cnt);
 #ifdef CONFIG_WAVETRACE
 	tfp->close();
 #endif
