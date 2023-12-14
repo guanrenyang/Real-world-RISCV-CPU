@@ -143,6 +143,7 @@ void exec_once() {
 void execute(uint64_t n) {
 	for ( ;n > 0; n --) {
 		exec_once();
+		printf("EXEC_CODE: %d\n", EXEC_CODE);
 		switch (EXEC_CODE) {
 			case Trap:
 				if (top->rootp->ysyx_23060061_Top__DOT__id_ex_wb__DOT__GPRs__DOT__rf[10]==0)
