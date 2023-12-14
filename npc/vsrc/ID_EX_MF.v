@@ -6,24 +6,30 @@ module ID_EX_WB (
   input clk,
   input rst, 
 
-  input inst_pc_valid,
+  // signals from IFU
+  input ifu_valid,
   input [31:0] inst,
   input [31:0] pc,
-
+  //signals for reading GRP
+  output [4:0] rd,
+  output [4:0] rs1,
+  output [4:0] rs2,
+  output RegWrite,
+  output [31:0] regDataWB,
+  input [31:0] regData1,
+  input [31:0] regData2,
+  
+  //signals for read
+  // signals to WB
   output [31:0] dnpc,
+  // signals out from top
   output [31:0] ftrace_dnpc // used only for ftrace
 );
   // IF: reg PC and its updating rule.
   wire [31:0] snpc;
   // wire [31:0] dnpc;
   wire [31:0] imm;
-  wire RegWrite;
-  wire [4:0] rs2;
-  wire [4:0] rd;
-  wire [4:0] rs1;
-  wire [31:0] regData1;
-  wire [31:0] regData2;
-  
+
   wire [1:0] MemRW;
   wire [31:0] memDataW;
   wire [31:0] unextMemDataR;
@@ -44,7 +50,6 @@ module ID_EX_WB (
   wire aluAsel;
   wire [1:0] aluBsel;
   
-  wire [31:0] regDataWB;
 
   /* For Branch */
   wire BrUn;
@@ -63,7 +68,7 @@ module ID_EX_WB (
   wire [31:0] mepc;
 
   assign snpc = pc + 4;
-  assign dnpc = inst_pc_valid == 0 ? pc : (mret == 1 ? mepc : (ecall == 1 ? mtvec : (PCSel == 0 ? snpc : aluOut)));
+  assign dnpc = ifu_valid == 0 ? pc : (mret == 1 ? mepc : (ecall == 1 ? mtvec : (PCSel == 0 ? snpc : aluOut)));
   // ysyx_23060061_Reg #(32, 32'h80000000) pc_reg(.clk(clk), .rst(rst), .din(dnpc), .dout(pc), .wen(1'b1));
 
   assign ftrace_dnpc = dnpc; // for ftrace
@@ -106,20 +111,6 @@ module ID_EX_WB (
   assign rs2 = inst[24:20];
   assign rd = inst[11:7];
   
-  /* Register File */
-  // GPRs 
-  ysyx_23060061_GPRs #(5, 32) GPRs(
-    .clk(clk),
-    .rst(rst),
-    .wdata(regDataWB),
-    .waddr(rd),
-    .raddr1(rs1),
-    .raddr2(rs2),
-    .rdata1(regData1),
-    .rdata2(regData2),
-	// enable signals
-    .wen(RegWrite & inst_pc_valid)
-  );
   // CSRs
   ysyx_23060061_CSRs #(32) CSRs(
     .clk(clk),
@@ -132,7 +123,7 @@ module ID_EX_WB (
     .mtvec(mtvec),
     .mepc(mepc),
 	// enable signals
-    .csrEn(csrEn & inst_pc_valid)
+    .csrEn(csrEn & ifu_valid)
   );
   
   ysyx_23060061_ImmGen imm_gen(.inst(inst[31:7]), .ImmSel(instType), .imm(imm));
@@ -175,7 +166,7 @@ module ID_EX_WB (
   );
 
   always @(MemRW, memAddr, memDataW) begin
-	if (inst_pc_valid) begin
+	if (ifu_valid) begin
     	if(MemRW==2'b10) begin
     		paddr_read(memAddr, unextMemDataR);
     	end else if (MemRW==2'b01) begin
