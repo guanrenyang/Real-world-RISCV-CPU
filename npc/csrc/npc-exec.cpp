@@ -99,6 +99,11 @@ void exec_once() {
 
 	printf("pc = %x\n", top->rootp->ysyx_23060061_Top__DOT__pc);
 
+	if (top->rootp->ysyx_23060061_Top__DOT__pc==0x80000014) {
+		printf("ra = %x\n", top->rootp->ysyx_23060061_Top__DOT__id_ex_wb__DOT__CSRs__DOT__rf[1]);
+		sim_exit();
+		exit(0);
+	}
 	/*Difftest*/
 #ifdef CONFIG_DIFFTEST
 	if (inst_cnt > 0){ difftest_step(top->pc, top->ftrace_dnpc); }
@@ -133,10 +138,6 @@ void exec_once() {
 #endif
 
 	cycle_cnt ++;
-	// if(cycle_cnt >= 5) {
-	// 	sim_exit();
-	// 	exit(0);
-	// }
 }
 
 void execute(uint64_t n) {
