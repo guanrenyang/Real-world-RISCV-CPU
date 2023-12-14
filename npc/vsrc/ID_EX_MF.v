@@ -1,7 +1,3 @@
-// import "DPI-C" function void trap();
-// import "DPI-C" function void paddr_read(input int raddr, output int rdata);
-// import "DPI-C" function void paddr_write(input int waddr, input int wdata, input byte wmask);
-
 module ID_EX_WB (
   input clk,
   input rst, 
@@ -63,27 +59,14 @@ module ID_EX_WB (
   wire BrEq;
   wire BrLt;
 
-  /* For CSR */
-  // wire csrEn;
-  // wire [31:0] csr_rdata;
- 
   wire ebreak;
   // wire ecall;
   wire mret;
  
-  // wire [31:0] mtvec;
-  // wire [31:0] mepc;
-
   assign snpc = pc + 4;
   assign dnpc = ifu_valid == 0 ? pc : (mret == 1 ? mepc : (ecall == 1 ? mtvec : (PCSel == 0 ? snpc : aluOut)));
-  // ysyx_23060061_Reg #(32, 32'h80000000) pc_reg(.clk(clk), .rst(rst), .din(dnpc), .dout(pc), .wen(1'b1));
 
   assign ftrace_dnpc = dnpc; // for ftrace
- //  always @(pc) begin
-	// if (!rst) begin
-	// 	paddr_read(pc, inst);
-	// end
- //  end
 
   // ID: Decoder unit
   ysyx_23060061_Decoder decoder(
@@ -122,20 +105,6 @@ module ID_EX_WB (
   assign csrId = inst[31:20];
   assign csrWriteData = aluOut;
 
- //  ysyx_23060061_CSRs #(32) CSRs(
- //    .clk(clk),
- //    .rst(rst),
- //    .csrId(csrId),
- //    .wdata(csrWriteData),
- //    .rdata(csrReadData),
- //    .ecall(ecall),
- //    .pc(pc),
- //    .mtvec(mtvec),
- //    .mepc(mepc),
-	// // enable signals
- //    .csrEn(csrEn & ifu_valid)
- //  );
-  
   ysyx_23060061_ImmGen imm_gen(.inst(inst[31:7]), .ImmSel(instType), .imm(imm));
 
   // EX
