@@ -13,6 +13,7 @@ module ysyx_23060061_IFU_with_SRAM(
 	reg [31:0] pc_old;
 	reg [31:0] pc;
 
+	
 	// Combinationa logic
 	always @(pc) begin
 		if (!rst) begin

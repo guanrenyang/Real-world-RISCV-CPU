@@ -6,13 +6,14 @@ module ID_EX_WB (
   input clk,
   input rst, 
   input instValid,
-  output [31 : 0] ftrace_dnpc // used only for ftrace
+  output [31:0] dnpc,
+  output [31:0] ftrace_dnpc // used only for ftrace
 );
   // IF: reg PC and its updating rule.
   wire [31:0] inst;
   wire [31:0] pc;
   wire [31:0] snpc;
-  wire [31:0] dnpc;
+  // wire [31:0] dnpc;
   wire [31:0] imm;
   wire RegWrite;
   wire [4:0] rs2;

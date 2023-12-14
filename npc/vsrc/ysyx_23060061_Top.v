@@ -26,6 +26,7 @@ module ysyx_23060061_Top (
 		.clk(clk),
 		.rst(rst),
 		.instValid(instValid),
+		.dnpc(dnpc),
 		.ftrace_dnpc(ftrace_dnpc)
 	);
   
