@@ -175,13 +175,13 @@ module ID_EX_WB (
   );
 
   always @(MemRW, memAddr, memDataW) begin
-	// if(!clk) begin
+	if (inst_pc_valid) begin
     	if(MemRW==2'b10) begin
     		paddr_read(memAddr, unextMemDataR);
     	end else if (MemRW==2'b01) begin
     		paddr_write(memAddr, memDataW, {4'b0000, wmask});
     	end
-	// end
+	end
   end
 
 
