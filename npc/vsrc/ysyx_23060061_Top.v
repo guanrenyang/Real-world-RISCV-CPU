@@ -33,7 +33,7 @@ module ysyx_23060061_Top (
 	wire [31:0] mtvec;
 	wire [31:0] mepc;
 	
-		
+			
 	ysyx_23060061_GPRs #(5, 32) GPRs(
 		.clk(clk),
 		.rst(rst),
@@ -53,11 +53,11 @@ module ysyx_23060061_Top (
     	.csrId(csrId),
     	.wdata(csrWriteData),
     	.rdata(csrReadData),
-    	.ecall(ecall),
     	.pc(pc),
     	.mtvec(mtvec),
     	.mepc(mepc),
 		// enable signals
+    	.ecall(ecall & ifu_valid),
     	.csrEn(csrEn & ifu_valid)
   	);
 

@@ -22,6 +22,12 @@ module ID_EX_WB (
   input [31:0] csrReadData,
   input [31:0] mtvec,
   input [31:0] mepc,
+  // Forward to WBU
+  // output [31:0] memDataR,
+  // output [31:0] aluOut,
+  // output [31:0] snpc,
+  // output [31:0] dnpc,
+
   
   // signals to WB
   output [31:0] dnpc,
@@ -52,7 +58,6 @@ module ID_EX_WB (
   wire PCSel;
   wire aluAsel;
   wire [1:0] aluBsel;
-  
 
   /* For Branch */
   wire BrUn;
@@ -67,6 +72,10 @@ module ID_EX_WB (
   assign dnpc = ifu_valid == 0 ? pc : (mret == 1 ? mepc : (ecall == 1 ? mtvec : (PCSel == 0 ? snpc : aluOut)));
 
   assign ftrace_dnpc = dnpc; // for ftrace
+
+  // For CSRs
+  assign csrWriteData = aluOut;
+  assign csrId = inst[31:20];
 
   // ID: Decoder unit
   ysyx_23060061_Decoder decoder(
@@ -100,21 +109,6 @@ module ID_EX_WB (
   assign rs1 = inst[19:15];
   assign rs2 = inst[24:20];
   assign rd = inst[11:7];
-  
-  // CSRs
-  ysyx_23060061_CSRs #(32) CSRs(
-    .clk(clk),
-    .rst(rst),
-    .csrId(inst[31:20]),
-    .wdata(aluOut),
-    .rdata(csr_rdata),
-    .ecall(ecall & inst_pc_valid),
-    .pc(pc),
-    .mtvec(mtvec),
-    .mepc(mepc),
-	// enable signals
-    .csrEn(csrEn & inst_pc_valid)
-  );
   
   ysyx_23060061_ImmGen imm_gen(.inst(inst[31:7]), .ImmSel(instType), .imm(imm));
 

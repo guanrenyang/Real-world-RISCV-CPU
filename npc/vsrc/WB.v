@@ -6,7 +6,7 @@
 // 	input [31:0] aluOut,
 // 	input [31:0] snpc,
 // 	input [31:0] dnpc,
-// 	input [31:0] csr_data
+// 	input [31:0] csrReadData;
 //
 // );
 // endmodule
