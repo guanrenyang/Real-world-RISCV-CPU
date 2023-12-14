@@ -12,10 +12,9 @@ module ysyx_23060061_IFU_with_SRAM(
 
 	reg [31:0] pc_old;
 	reg [31:0] pc;
-
 	
 	// Combinationa logic
-	always @(pc) begin
+	always @(pc != pc_old) begin
 		if (!rst) begin
 			paddr_read(pc, instImm_internal);
 			// instImm_internal = pc;
@@ -27,7 +26,7 @@ module ysyx_23060061_IFU_with_SRAM(
 		if (rst) begin
 			inst <= 0;
 			pc <= 32'h80000000;
-			pc_old <= 0;
+			pc_old <= 32'h80000000;
 			instValid <= 0;
 		end else begin
 			inst <= instImm_internal;
