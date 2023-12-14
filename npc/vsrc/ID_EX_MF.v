@@ -75,6 +75,7 @@ module ID_EX_WB (
 
   // For CSRs
   assign csrWriteData = aluOut;
+  assign csrId = inst[31:20];
 
   // ID: Decoder unit
   ysyx_23060061_Decoder decoder(
