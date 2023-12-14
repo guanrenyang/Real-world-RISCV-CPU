@@ -73,6 +73,9 @@ module ID_EX_WB (
 
   assign ftrace_dnpc = dnpc; // for ftrace
 
+  // For CSRs
+  assign csrWriteData = aluOut;
+
   // ID: Decoder unit
   ysyx_23060061_Decoder decoder(
   	.inst(inst),
