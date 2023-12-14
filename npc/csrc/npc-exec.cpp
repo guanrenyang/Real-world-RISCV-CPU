@@ -24,7 +24,7 @@ int EXEC_CODE = SUCCESS;
 static VerilatedContext *contextp = nullptr;
 static TOPNAME *top = nullptr;
 
-static int inst_cnt = 0;
+static int cycle_cnt = 0;
 
 // DPI-C function for `ebreak` instruction
 void trap() { EXEC_CODE = Trap; }
@@ -81,7 +81,7 @@ CPU_State sim_init_then_reset() {
 
 void sim_exit() {
 	step_and_dump_wave();
-	printf("Total instructions executed: %d\n", inst_cnt);
+	printf("Total instructions executed: %d\n", cycle_cnt);
 #ifdef CONFIG_WAVETRACE
 	tfp->close();
 #endif
@@ -132,8 +132,8 @@ void exec_once() {
 	ftrace(top->inst, top->ftrace_dnpc, top->pc);
 #endif
 
-	inst_cnt ++;
-	if(inst_cnt >= 3) {
+	cycle_cnt ++;
+	if(cycle_cnt >= 3) {
 		sim_exit();
 		exit(0);
 	}
