@@ -113,24 +113,26 @@ module ID_EX_WB (
     .rst(rst),
     .wdata(regDataWB),
     .waddr(rd),
-    .wen(RegWrite),
     .raddr1(rs1),
     .raddr2(rs2),
     .rdata1(regData1),
-    .rdata2(regData2)
+    .rdata2(regData2),
+	// enable signals
+    .wen(RegWrite & inst_pc_valid)
   );
   // CSRs
   ysyx_23060061_CSRs #(32) CSRs(
     .clk(clk),
     .rst(rst),
-    .csrEn(csrEn),
     .csrId(inst[31:20]),
     .wdata(aluOut),
     .rdata(csr_rdata),
     .ecall(ecall),
     .pc(pc),
     .mtvec(mtvec),
-    .mepc(mepc)
+    .mepc(mepc),
+	// enable signals
+    .csrEn(csrEn & inst_pc_valid)
   );
   
   ysyx_23060061_ImmGen imm_gen(.inst(inst[31:7]), .ImmSel(instType), .imm(imm));
