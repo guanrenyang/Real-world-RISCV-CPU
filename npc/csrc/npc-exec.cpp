@@ -156,7 +156,7 @@ void execute(uint64_t n) {
 			case BAD_TIMER_IO:
 				printf("BAD TIMER IO ADDRESS\n");
 				sim_exit();
-				exit(0);
+				assert(NULL);
 				break;
 		}
 		if (EXEC_CODE == Trap) { 
