@@ -17,6 +17,7 @@ module ysyx_23060061_IFU_with_SRAM(
 	always @(pc) begin
 		if (!rst) begin
 			paddr_read(pc, instImm_internal);
+			// instImm_internal = pc;
 		end
 	end
 
@@ -26,7 +27,7 @@ module ysyx_23060061_IFU_with_SRAM(
 			inst <= 0;
 			pc <= 0;
 			pc_old <= 0;
-			intValid <= 0;
+			instValid <= 0;
 		end else begin
 			inst <= instImm_internal;
 			pc <= dnpc;
