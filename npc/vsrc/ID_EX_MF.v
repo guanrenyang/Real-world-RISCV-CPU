@@ -10,7 +10,7 @@ module ID_EX_WB (
   input ifu_valid,
   input [31:0] inst,
   input [31:0] pc,
-  //signals for reading GRP
+  //signals for GRP
   output [4:0] rd,
   output [4:0] rs1,
   output [4:0] rs2,
@@ -18,8 +18,15 @@ module ID_EX_WB (
   output [31:0] regDataWB,
   input [31:0] regData1,
   input [31:0] regData2,
+  // For CSRs
+  output csrEn,
+  output [11:0] csrId,
+  output [31:0] csrWriteData,
+  output ecall,
+  input [31:0] csrReadData,
+  input [31:0] mtvec,
+  input [31:0] mepc,
   
-  //signals for read
   // signals to WB
   output [31:0] dnpc,
   // signals out from top
@@ -57,15 +64,15 @@ module ID_EX_WB (
   wire BrLt;
 
   /* For CSR */
-  wire csrEn;
-  wire [31:0] csr_rdata;
+  // wire csrEn;
+  // wire [31:0] csr_rdata;
  
   wire ebreak;
-  wire ecall;
+  // wire ecall;
   wire mret;
  
-  wire [31:0] mtvec;
-  wire [31:0] mepc;
+  // wire [31:0] mtvec;
+  // wire [31:0] mepc;
 
   assign snpc = pc + 4;
   assign dnpc = ifu_valid == 0 ? pc : (mret == 1 ? mepc : (ecall == 1 ? mtvec : (PCSel == 0 ? snpc : aluOut)));
@@ -112,19 +119,22 @@ module ID_EX_WB (
   assign rd = inst[11:7];
   
   // CSRs
-  ysyx_23060061_CSRs #(32) CSRs(
-    .clk(clk),
-    .rst(rst),
-    .csrId(inst[31:20]),
-    .wdata(aluOut),
-    .rdata(csr_rdata),
-    .ecall(ecall),
-    .pc(pc),
-    .mtvec(mtvec),
-    .mepc(mepc),
-	// enable signals
-    .csrEn(csrEn & ifu_valid)
-  );
+  assign csrId = inst[31:20];
+  assign csrWriteData = aluOut;
+
+ //  ysyx_23060061_CSRs #(32) CSRs(
+ //    .clk(clk),
+ //    .rst(rst),
+ //    .csrId(csrId),
+ //    .wdata(csrWriteData),
+ //    .rdata(csrReadData),
+ //    .ecall(ecall),
+ //    .pc(pc),
+ //    .mtvec(mtvec),
+ //    .mepc(mepc),
+	// // enable signals
+ //    .csrEn(csrEn & ifu_valid)
+ //  );
   
   ysyx_23060061_ImmGen imm_gen(.inst(inst[31:7]), .ImmSel(instType), .imm(imm));
 
@@ -136,7 +146,7 @@ module ID_EX_WB (
 	.lut({
 		2'b00, regData2,
 		2'b01, imm,
-		2'b10, csr_rdata
+		2'b10, csrReadData
 	})
   );
   ysyx_23060061_ALU #(32, 32'd0) alu(.clk(clk), .a(aluOpA), .b(aluOpB), .aluOut(aluOut), .aluOp(aluOp));
@@ -184,7 +194,7 @@ module ID_EX_WB (
 		2'b00, memDataR,
 		2'b01, aluOut,
 		2'b10, snpc,
-    	2'b11, csr_rdata
+    	2'b11, csrReadData
 	})
   );
   
