@@ -95,7 +95,7 @@ void exec_once() {
 	// printf("pc: %x, ra: %x\n", top->rootp->ysyx_23060061_Top__DOT__pc, top->rootp->ysyx_23060061_Top__DOT__CSRs__DOT__rf[1]);
 	top->clk = 0b1; top->rst = 0b0; step_and_dump_wave();
 
-	// printf("pc = %x\n", top->pc);
+	printf("pc = %x\n", top->rootp->ysyx_23060061_Top__DOT__ifu__DOT__pc);
 
 	/*Difftest*/
 #ifdef CONFIG_DIFFTEST
