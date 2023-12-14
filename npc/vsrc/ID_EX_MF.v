@@ -22,6 +22,12 @@ module ID_EX_WB (
   input [31:0] csrReadData,
   input [31:0] mtvec,
   input [31:0] mepc,
+  // Forward to WBU
+  // output [31:0] memDataR,
+  // output [31:0] aluOut,
+  // output [31:0] snpc,
+  // output [31:0] dnpc,
+
   
   // signals to WB
   output [31:0] dnpc,
@@ -52,7 +58,6 @@ module ID_EX_WB (
   wire PCSel;
   wire aluAsel;
   wire [1:0] aluBsel;
-  
 
   /* For Branch */
   wire BrUn;

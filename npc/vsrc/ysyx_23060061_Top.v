@@ -33,7 +33,7 @@ module ysyx_23060061_Top (
 	wire [31:0] mtvec;
 	wire [31:0] mepc;
 	
-		
+			
 	ysyx_23060061_GPRs #(5, 32) GPRs(
 		.clk(clk),
 		.rst(rst),
