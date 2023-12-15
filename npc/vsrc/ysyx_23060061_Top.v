@@ -139,6 +139,8 @@ module ysyx_23060061_Top (
 	);
 
 	ysyx_23060061_LSU lsu(
+		.clk(clk),
+		.rst(rst),
 		.memExt(memExt),
 		.MemRW(MemRW),
 		.memAddr(memAddr),
