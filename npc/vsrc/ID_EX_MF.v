@@ -1,4 +1,4 @@
-module ID_EX_WB (
+module ysyx_23060061_ID_EX_WB (
   input clk,
   input rst, 
 
@@ -23,14 +23,13 @@ module ID_EX_WB (
   input [31:0] mtvec,
   input [31:0] mepc,
   // Forward to WBU
+  // output mfu_valid,
+  // output [1:0] WBSel,
   // output [31:0] memDataR,
   // output [31:0] aluOut,
-  // output [31:0] snpc,
-  // output [31:0] dnpc,
-
-  
-  // signals to WB
+  // output [31:0] snpc, 
   output [31:0] dnpc,
+  
   // signals out from top
   output [31:0] ftrace_dnpc // used only for ftrace
 );
@@ -159,7 +158,6 @@ module ID_EX_WB (
 	end
   end
 
-
   // WB
   ysyx_23060061_MuxKey #(4, 2, 32) wb_mux(
 	.out(regDataWB),
@@ -171,7 +169,6 @@ module ID_EX_WB (
     	2'b11, csrReadData
 	})
   );
-  
   
 endmodule
 
