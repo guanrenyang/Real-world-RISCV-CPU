@@ -45,9 +45,9 @@ module ysyx_23060061_LSU(
 		DataMemValid_internal <= 0;
 	end else begin
 		memDataR <= memDataR_internal;
-		DataMemValid_internal <= exu_valid & ~wbu_ready;
+		DataMemValid_internal <= exu_valid & MemRW[1] & ~wbu_ready;
 	end
   end
-  assign lsu_valid = (DataMemValid_internal); 
+  assign lsu_valid = exu_valid & (DataMemValid_internal | ~MemRW[1]); 
   assign lsu_ready = wbu_ready;
 endmodule

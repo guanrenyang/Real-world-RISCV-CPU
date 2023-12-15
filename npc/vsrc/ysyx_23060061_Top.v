@@ -97,7 +97,7 @@ module ysyx_23060061_Top (
 		.iduReady(idu_ready)
 	);
 	
-	ysyx_23060061_ID_EX_WB id_ex_wb( 
+	ysyx_23060061_IDEXU id_ex_u( 
 		.clk(clk),
 		.rst(rst),
 
