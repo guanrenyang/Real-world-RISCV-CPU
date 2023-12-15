@@ -23,12 +23,18 @@ module ysyx_23060061_ID_EX_WB (
   input [31:0] csrReadData,
   input [31:0] mtvec,
   input [31:0] mepc,
+  
+  // Forward to LSU
+  output [2:0] memExt, 
+  output [1:0] MemRW,
+  output [31:0] memAddr,
+  output [31:0] memDataW,
+  output [3:0] wmask,
 
   // Forward to WBU
   output mfu_valid,
   input wbu_ready,
   output [1:0] WBSel,
-  output [31:0] memDataR,
   output [31:0] aluOut,
   output [31:0] snpc, 
   output [31:0] dnpc,
@@ -41,13 +47,13 @@ module ysyx_23060061_ID_EX_WB (
   // wire [31:0] dnpc;
   wire [31:0] imm;
 
-  wire [1:0] MemRW;
-  wire [31:0] memDataW;
+  // wire [1:0] MemRW;
+  // wire [31:0] memDataW;
   wire [31:0] unextMemDataR;
   // wire [31:0] memDataR;
-  wire [31:0] memAddr;
-  wire [3:0] wmask;
-  wire [2:0] memExt;
+  // wire [31:0] memAddr;
+  // wire [3:0] wmask;
+  // wire [2:0] memExt;
   
   wire [2:0] instType;
 
@@ -139,15 +145,15 @@ module ysyx_23060061_ID_EX_WB (
   // MEM
   assign memDataW = regData2;
   assign memAddr = aluOut; 
-  ysyx_23060061_LSU lsu(
-	.memExt(memExt),
-	.MemRW(MemRW),
-	.memAddr(memAddr),
-	.memDataW(memDataW),
-	.wmask(wmask),
-	.ifu_valid(ifu_valid),
-	.memDataR(memDataR)
-  );
+ //  ysyx_23060061_LSU lsu(
+	// .memExt(memExt),
+	// .MemRW(MemRW),
+	// .memAddr(memAddr),
+	// .memDataW(memDataW),
+	// .wmask(wmask),
+	// .ifu_valid(ifu_valid),
+	// .memDataR(memDataR)
+ //  );
 
   assign mfu_valid = ifu_valid; 
   assign idu_ready = wbu_ready;

@@ -22,6 +22,12 @@ module ysyx_23060061_Top (
 	wire [31:0] memDataR; // LSU read data
 	wire [31:0] aluOut; // ALU output
 	
+	// For LSU
+	wire [2:0] memExt;
+	wire [1:0] MemRW;
+	wire [31:0] memAddr;
+	wire [31:0] memDataW;
+	wire [3:0] wmask;
 
 	wire [31:0] pc;
 	wire [31:0] dnpc;
@@ -112,15 +118,31 @@ module ysyx_23060061_Top (
 		.mtvec(mtvec),
 		.mepc(mepc),
 
+		.memExt(memExt),
+		.MemRW(MemRW),
+		.memAddr(memAddr),
+		.memDataW(memDataW),
+		.wmask(wmask),
+
 		.mfu_valid(mfu_valid),
 		.wbu_ready(wbu_ready),
 		.WBSel(WBSel),
-		.memDataR(memDataR),
+		// .memDataR(memDataR),
 		.aluOut(aluOut),
 		.snpc(snpc),
 		.dnpc(dnpc),
 		.ftrace_dnpc(ftrace_dnpc)
 	);
+
+	ysyx_23060061_LSU lsu(
+		.memExt(memExt),
+		.MemRW(MemRW),
+		.memAddr(memAddr),
+		.memDataW(memDataW),
+		.wmask(wmask),
+		.ifu_valid(ifu_valid),
+		.memDataR(memDataR)
+  	);
 
 	ysyx_23060061_WBU wbu(
 		.clk(clk),
