@@ -2,7 +2,7 @@ module ysyx_23060061_WBU(
 	input clk,
 	input rst,
 
-	input mfu_valid,
+	input lsu_valid,
 	output wbu_ready,
 	input [1:0] WBSel,
 	input [31:0] memDataR,
@@ -21,6 +21,6 @@ module ysyx_23060061_WBU(
     	2'b11, csrReadData
 	})
   );
-  assign wbu_ready = mfu_valid;
+  assign wbu_ready = lsu_valid;
 
 endmodule

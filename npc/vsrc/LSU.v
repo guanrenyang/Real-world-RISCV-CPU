@@ -5,9 +5,11 @@ module ysyx_23060061_LSU(
 	input [31:0] memDataW,
 	input [3:0] wmask,
 	input exu_valid,
+	
+	output lsu_valid,
 	output [31:0] memDataR
 );
-
+	assign lsu_valid = exu_valid;
 	wire [31:0] unextMemDataR;
 	ysyx_23060061_MuxKey #(5, 3, 32) memDataR_ext(
 		.out(memDataR),
