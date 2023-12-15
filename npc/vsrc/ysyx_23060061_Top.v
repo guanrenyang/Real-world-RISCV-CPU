@@ -15,7 +15,7 @@ module ysyx_23060061_Top (
 
 	wire exu_valid; // EXU valid signal
 
-	wire mfu_valid; // MFU valid signal
+	// wire mfu_valid; // MFU valid signal
 	wire wbu_ready; // WBU ready signal
 	wire RegWrite; // GPR write enable
 	wire csrEn; // CSR write enable
@@ -53,7 +53,7 @@ module ysyx_23060061_Top (
 	ysyx_23060061_Reg #(32, 32'h80000000) pc_reg(
 		.clk(clk),
 		.rst(rst),
-		.din(mfu_valid ? dnpc : pc),
+		.din(exu_valid ? dnpc : pc),
 		.dout(pc),
 		.wen(1'b1)
 	);
@@ -150,7 +150,7 @@ module ysyx_23060061_Top (
 		.clk(clk),
 		.rst(rst),
 
-		.mfu_valid(mfu_valid),
+		.mfu_valid(exu_valid),
 		.wbu_ready(wbu_ready),
 		.WBSel(WBSel),
 		.memDataR(memDataR),
