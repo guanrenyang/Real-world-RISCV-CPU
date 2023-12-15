@@ -23,25 +23,25 @@ module ysyx_23060061_ID_EX_WB (
   input [31:0] mtvec,
   input [31:0] mepc,
   // Forward to WBU
-  // output mfu_valid,
-  // output [1:0] WBSel,
-  // output [31:0] memDataR,
-  // output [31:0] aluOut,
-  // output [31:0] snpc, 
+  output mfu_valid,
+  output [1:0] WBSel,
+  output [31:0] memDataR,
+  output [31:0] aluOut,
+  output [31:0] snpc, 
   output [31:0] dnpc,
   
   // signals out from top
   output [31:0] ftrace_dnpc // used only for ftrace
 );
   // IF: reg PC and its updating rule.
-  wire [31:0] snpc;
+  // wire [31:0] snpc;
   // wire [31:0] dnpc;
   wire [31:0] imm;
 
   wire [1:0] MemRW;
   wire [31:0] memDataW;
   wire [31:0] unextMemDataR;
-  wire [31:0] memDataR;
+  // wire [31:0] memDataR;
   wire [31:0] memAddr;
   wire [3:0] wmask;
   wire [2:0] memExt;
@@ -50,10 +50,10 @@ module ysyx_23060061_ID_EX_WB (
 
   wire [31:0] aluOpA;
   wire [31:0] aluOpB;
-  wire [31:0] aluOut;
+  // wire [31:0] aluOut;
 
   wire [3:0] aluOp;
-  wire [1:0] WBSel;
+  // wire [1:0] WBSel;
   wire PCSel;
   wire aluAsel;
   wire [1:0] aluBsel;
@@ -147,16 +147,16 @@ module ysyx_23060061_ID_EX_WB (
   );
 
   // WB
-  ysyx_23060061_MuxKey #(4, 2, 32) wb_mux(
-	.out(regDataWB),
-	.key(WBSel),
-	.lut({
-		2'b00, memDataR,
-		2'b01, aluOut,
-		2'b10, snpc,
-    	2'b11, csrReadData
-	})
-  );
-  
+ //  ysyx_23060061_MuxKey #(4, 2, 32) wb_mux(
+	// .out(regDataWB),
+	// .key(WBSel),
+	// .lut({
+	// 	2'b00, memDataR,
+	// 	2'b01, aluOut,
+	// 	2'b10, snpc,
+ //    	2'b11, csrReadData
+	// })
+ //  );
+  assign mfu_valid = ifu_valid; 
 endmodule
 
