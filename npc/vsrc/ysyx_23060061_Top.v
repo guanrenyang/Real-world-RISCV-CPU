@@ -78,7 +78,7 @@ module ysyx_23060061_Top (
 		.instValid(ifu_valid)
 	);
 	
-	ID_EX_WB id_ex_wb(
+	ysyx_23060061_ID_EX_WB id_ex_wb(
 		.clk(clk),
 		.rst(rst),
 
