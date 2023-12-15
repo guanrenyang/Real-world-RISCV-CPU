@@ -70,7 +70,7 @@ module ysyx_23060061_Top (
     	.rdata1(regData1),
     	.rdata2(regData2),
 		// enable signals
-    	.wen(RegWrite & ifu_valid)
+    	.wen(RegWrite & lsu_valid)
 	);
 
   	ysyx_23060061_CSRs #(32) CSRs(
@@ -83,8 +83,8 @@ module ysyx_23060061_Top (
     	.mtvec(mtvec),
     	.mepc(mepc),
 		// enable signals
-    	.ecall(ecall & ifu_valid),
-    	.csrEn(csrEn & ifu_valid)
+    	.ecall(ecall & lsu_valid),
+    	.csrEn(csrEn & lsu_valid)
   	);
 
 	ysyx_23060061_IFU_with_SRAM ifu(
