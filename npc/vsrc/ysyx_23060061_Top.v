@@ -13,6 +13,8 @@ module ysyx_23060061_Top (
 	wire ifu_valid; // IFU valid signal
 	wire idu_ready; // IDU ready signal
 
+	wire exu_valid; // EXU valid signal
+
 	wire mfu_valid; // MFU valid signal
 	wire wbu_ready; // WBU ready signal
 	wire RegWrite; // GPR write enable
@@ -124,7 +126,7 @@ module ysyx_23060061_Top (
 		.memDataW(memDataW),
 		.wmask(wmask),
 
-		.mfu_valid(mfu_valid),
+		.exu_valid(exu_valid),
 		.wbu_ready(wbu_ready),
 		.WBSel(WBSel),
 		// .memDataR(memDataR),
@@ -140,7 +142,7 @@ module ysyx_23060061_Top (
 		.memAddr(memAddr),
 		.memDataW(memDataW),
 		.wmask(wmask),
-		.ifu_valid(ifu_valid),
+		.exu_valid(exu_valid),
 		.memDataR(memDataR)
   	);
 

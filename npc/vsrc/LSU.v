@@ -4,7 +4,7 @@ module ysyx_23060061_LSU(
 	input [31:0] memAddr,
 	input [31:0] memDataW,
 	input [3:0] wmask,
-	input ifu_valid,
+	input exu_valid,
 	output [31:0] memDataR
 );
 
@@ -22,7 +22,7 @@ module ysyx_23060061_LSU(
   	);
 
   always @(MemRW, memAddr, memDataW) begin
-	if (ifu_valid) begin
+	if (exu_valid) begin
     	if(MemRW==2'b10) begin
     		paddr_read(memAddr, unextMemDataR);
     	end else if (MemRW==2'b01) begin

@@ -7,6 +7,7 @@ module ysyx_23060061_ID_EX_WB (
   output idu_ready,
   input [31:0] inst,
   input [31:0] pc,
+
   //signals for GRP
   output [4:0] rd,
   output [4:0] rs1,
@@ -25,6 +26,7 @@ module ysyx_23060061_ID_EX_WB (
   input [31:0] mepc,
   
   // Forward to LSU
+  output exu_valid,
   output [2:0] memExt, 
   output [1:0] MemRW,
   output [31:0] memAddr,
@@ -32,7 +34,6 @@ module ysyx_23060061_ID_EX_WB (
   output [3:0] wmask,
 
   // Forward to WBU
-  output mfu_valid,
   input wbu_ready,
   output [1:0] WBSel,
   output [31:0] aluOut,
@@ -155,7 +156,7 @@ module ysyx_23060061_ID_EX_WB (
 	// .memDataR(memDataR)
  //  );
 
-  assign mfu_valid = ifu_valid; 
+  assign exu_valid = ifu_valid; 
   assign idu_ready = wbu_ready;
 endmodule
 
