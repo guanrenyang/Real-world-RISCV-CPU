@@ -4,6 +4,7 @@ module ysyx_23060061_WBU(
 
 	input lsu_valid,
 	output wbu_ready,
+
 	input [1:0] WBSel,
 	input [31:0] memDataR,
 	input [31:0] aluOut,

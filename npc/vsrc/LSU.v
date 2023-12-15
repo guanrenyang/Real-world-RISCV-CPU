@@ -5,8 +5,10 @@ module ysyx_23060061_LSU(
 	input [31:0] memDataW,
 	input [3:0] wmask,
 	input exu_valid,
+	output lsu_ready,
 	
 	output lsu_valid,
+	input wbu_ready,
 	output [31:0] memDataR
 );
 	assign lsu_valid = exu_valid;

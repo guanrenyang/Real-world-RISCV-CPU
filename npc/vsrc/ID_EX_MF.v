@@ -34,7 +34,7 @@ module ysyx_23060061_ID_EX_WB (
   output [3:0] wmask,
 
   // Forward to WBU
-  input wbu_ready,
+  input lsu_ready,
   output [1:0] WBSel,
   output [31:0] aluOut,
   output [31:0] snpc, 
@@ -157,6 +157,6 @@ module ysyx_23060061_ID_EX_WB (
  //  );
 
   assign exu_valid = ifu_valid; 
-  assign idu_ready = wbu_ready;
+  assign idu_ready = lsu_ready;
 endmodule
 

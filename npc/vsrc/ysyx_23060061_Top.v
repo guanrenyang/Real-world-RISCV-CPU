@@ -14,10 +14,11 @@ module ysyx_23060061_Top (
 	wire idu_ready; // IDU ready signal
 
 	wire exu_valid; // EXU valid signal
+	wire lsu_ready; // LSU ready signal
 
 	wire lsu_valid; // LSU valid signal
-
 	wire wbu_ready; // WBU ready signal
+
 	wire RegWrite; // GPR write enable
 	wire csrEn; // CSR write enable
 	wire ecall; // ecall signal
@@ -128,7 +129,7 @@ module ysyx_23060061_Top (
 		.wmask(wmask),
 
 		.exu_valid(exu_valid),
-		.wbu_ready(wbu_ready),
+		.lsu_ready(lsu_ready),
 		.WBSel(WBSel),
 		// .memDataR(memDataR),
 		.aluOut(aluOut),
@@ -144,7 +145,9 @@ module ysyx_23060061_Top (
 		.memDataW(memDataW),
 		.wmask(wmask),
 		.exu_valid(exu_valid),
+		.lsu_ready(lsu_ready),
 		.lsu_valid(lsu_valid),
+		.wbu_ready(wbu_ready),
 		.memDataR(memDataR)
   	);
 
