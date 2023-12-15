@@ -12,6 +12,7 @@ module ysyx_23060061_LSU(
 	output [31:0] memDataR
 );
 	assign lsu_valid = exu_valid;
+	assign lsu_ready = wbu_ready;
 	wire [31:0] unextMemDataR;
 	ysyx_23060061_MuxKey #(5, 3, 32) memDataR_ext(
 		.out(memDataR),
