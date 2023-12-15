@@ -23,8 +23,10 @@ module ysyx_23060061_ID_EX_WB (
   input [31:0] csrReadData,
   input [31:0] mtvec,
   input [31:0] mepc,
+
   // Forward to WBU
   output mfu_valid,
+  input wbu_ready,
   output [1:0] WBSel,
   output [31:0] memDataR,
   output [31:0] aluOut,
@@ -148,6 +150,6 @@ module ysyx_23060061_ID_EX_WB (
   );
 
   assign mfu_valid = ifu_valid; 
-  assign idu_ready = ifu_valid;
+  assign idu_ready = wbu_ready;
 endmodule
 

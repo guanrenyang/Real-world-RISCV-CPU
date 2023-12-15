@@ -3,6 +3,7 @@ module ysyx_23060061_WBU(
 	input rst,
 
 	input mfu_valid,
+	output wbu_ready,
 	input [1:0] WBSel,
 	input [31:0] memDataR,
 	input [31:0] aluOut,
@@ -20,6 +21,6 @@ module ysyx_23060061_WBU(
     	2'b11, csrReadData
 	})
   );
-
+  assign wbu_ready = mfu_valid;
 
 endmodule
