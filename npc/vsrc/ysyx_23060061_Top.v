@@ -10,14 +10,19 @@ module ysyx_23060061_Top (
   output [31 : 0] ftrace_dnpc // used only for ftrace
 );
 	wire ifu_valid; // IFU valid signal
+	wire mfu_valid; // MFU valid signal
 	wire RegWrite; // GPR write enable
 	wire csrEn; // CSR write enable
 	wire ecall; // ecall signal
+	wire [1:0] WBSel; // WBU write back select
+	wire [31:0] memDataR; // LSU read data
+	wire [31:0] aluOut; // ALU output
 	
 
 	wire [31:0] pc;
 	wire [31:0] dnpc;
 	wire [31:0] inst;
+	wire [31:0] snpc; // next PC
 
 	// For GPRs
 	wire [31:0] regDataWB;
@@ -32,12 +37,11 @@ module ysyx_23060061_Top (
 	wire [31:0] csrReadData;
 	wire [31:0] mtvec;
 	wire [31:0] mepc;
-	
 			
 	ysyx_23060061_Reg #(32, 32'h80000000) pc_reg(
 		.clk(clk),
 		.rst(rst),
-		.din(dnpc),
+		.din(mfu_valid ? dnpc : pc),
 		.dout(pc),
 		.wen(1'b1)
 	);
@@ -78,7 +82,7 @@ module ysyx_23060061_Top (
 		.instValid(ifu_valid)
 	);
 	
-	ysyx_23060061_ID_EX_WB id_ex_wb(
+	ysyx_23060061_ID_EX_WB id_ex_wb( 
 		.clk(clk),
 		.rst(rst),
 
@@ -102,8 +106,26 @@ module ysyx_23060061_Top (
 		.mtvec(mtvec),
 		.mepc(mepc),
 
+		.mfu_valid(mfu_valid),
+		.WBSel(WBSel),
+		.memDataR(memDataR),
+		.aluOut(aluOut),
+		.snpc(snpc),
 		.dnpc(dnpc),
 		.ftrace_dnpc(ftrace_dnpc)
+	);
+
+	ysyx_23060061_WBU wbu(
+		.clk(clk),
+		.rst(rst),
+
+		.mfu_valid(mfu_valid),
+		.WBSel(WBSel),
+		.memDataR(memDataR),
+		.aluOut(aluOut),
+		.snpc(snpc),
+		.csrReadData(csrReadData),
+		.regDataWB(regDataWB)
 	);
 
 endmodule
