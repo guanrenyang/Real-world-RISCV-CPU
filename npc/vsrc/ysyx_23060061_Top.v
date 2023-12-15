@@ -13,8 +13,12 @@ module ysyx_23060061_Top (
 	wire ifu_valid; // IFU valid signal
 	wire idu_ready; // IDU ready signal
 
-	wire mfu_valid; // MFU valid signal
+	wire exu_valid; // EXU valid signal
+	wire lsu_ready; // LSU ready signal
+
+	wire lsu_valid; // LSU valid signal
 	wire wbu_ready; // WBU ready signal
+
 	wire RegWrite; // GPR write enable
 	wire csrEn; // CSR write enable
 	wire ecall; // ecall signal
@@ -22,6 +26,12 @@ module ysyx_23060061_Top (
 	wire [31:0] memDataR; // LSU read data
 	wire [31:0] aluOut; // ALU output
 	
+	// For LSU
+	wire [2:0] memExt;
+	wire [1:0] MemRW;
+	wire [31:0] memAddr;
+	wire [31:0] memDataW;
+	wire [3:0] wmask;
 
 	wire [31:0] pc;
 	wire [31:0] dnpc;
@@ -45,7 +55,7 @@ module ysyx_23060061_Top (
 	ysyx_23060061_Reg #(32, 32'h80000000) pc_reg(
 		.clk(clk),
 		.rst(rst),
-		.din(mfu_valid ? dnpc : pc),
+		.din(lsu_valid ? dnpc : pc),
 		.dout(pc),
 		.wen(1'b1)
 	);
@@ -60,7 +70,7 @@ module ysyx_23060061_Top (
     	.rdata1(regData1),
     	.rdata2(regData2),
 		// enable signals
-    	.wen(RegWrite & ifu_valid)
+    	.wen(RegWrite & lsu_valid)
 	);
 
   	ysyx_23060061_CSRs #(32) CSRs(
@@ -73,8 +83,8 @@ module ysyx_23060061_Top (
     	.mtvec(mtvec),
     	.mepc(mepc),
 		// enable signals
-    	.ecall(ecall & ifu_valid),
-    	.csrEn(csrEn & ifu_valid)
+    	.ecall(ecall & lsu_valid),
+    	.csrEn(csrEn & lsu_valid)
   	);
 
 	ysyx_23060061_IFU_with_SRAM ifu(
@@ -112,21 +122,42 @@ module ysyx_23060061_Top (
 		.mtvec(mtvec),
 		.mepc(mepc),
 
-		.mfu_valid(mfu_valid),
-		.wbu_ready(wbu_ready),
+		.memExt(memExt),
+		.MemRW(MemRW),
+		.memAddr(memAddr),
+		.memDataW(memDataW),
+		.wmask(wmask),
+
+		.exu_valid(exu_valid),
+		.lsu_ready(lsu_ready),
 		.WBSel(WBSel),
-		.memDataR(memDataR),
+		// .memDataR(memDataR),
 		.aluOut(aluOut),
 		.snpc(snpc),
 		.dnpc(dnpc),
 		.ftrace_dnpc(ftrace_dnpc)
 	);
 
+	ysyx_23060061_LSU lsu(
+		.clk(clk),
+		.rst(rst),
+		.memExt(memExt),
+		.MemRW(MemRW),
+		.memAddr(memAddr),
+		.memDataW(memDataW),
+		.wmask(wmask),
+		.exu_valid(exu_valid),
+		.lsu_ready(lsu_ready),
+		.lsu_valid(lsu_valid),
+		.wbu_ready(wbu_ready),
+		.memDataR(memDataR)
+  	);
+
 	ysyx_23060061_WBU wbu(
 		.clk(clk),
 		.rst(rst),
 
-		.mfu_valid(mfu_valid),
+		.lsu_valid(lsu_valid),
 		.wbu_ready(wbu_ready),
 		.WBSel(WBSel),
 		.memDataR(memDataR),
