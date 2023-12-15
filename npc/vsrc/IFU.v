@@ -3,9 +3,9 @@ module ysyx_23060061_IFU_with_SRAM(
 	input clk,
 	input rst,
 	input [31:0] dnpc,
-
+	input [31:0] pc,
 	output reg [31:0] inst,
-	output reg [31:0] pc,
+	// output reg [31:0] pc,
 	output reg instValid
 );	
 
@@ -25,12 +25,10 @@ module ysyx_23060061_IFU_with_SRAM(
 	always @(posedge clk) begin
 		if (rst) begin
 			inst <= 0;
-			pc <= 32'h80000000;
 			pc_old <= 0;
 			instValid <= 0;
 		end else begin
 			inst <= instImm_internal;
-			pc <= dnpc;
 			pc_old <= pc;
 			instValid <= (pc_old == pc) ? 0 : 1;
 		end
