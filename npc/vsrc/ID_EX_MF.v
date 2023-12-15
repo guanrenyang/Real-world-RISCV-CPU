@@ -136,27 +136,15 @@ module ysyx_23060061_ID_EX_WB (
   // MEM
   assign memDataW = regData2;
   assign memAddr = aluOut; 
-  ysyx_23060061_MuxKey #(5, 3, 32) memDataR_ext(
-	.out(memDataR),
-	.key(memExt),
-	.lut({
-		3'b000, unextMemDataR,
-		3'b001, {{24{unextMemDataR[7]}}, unextMemDataR[7:0]},
-		3'b010, {{16{unextMemDataR[15]}}, unextMemDataR[15:0]},
-		3'b011, {24'd0, unextMemDataR[7:0]},
-		3'b100, {16'd0, unextMemDataR[15:0]}
-	})
+  ysyx_23060061_LSU lsu(
+	.memExt(memExt),
+	.MemRW(MemRW),
+	.memAddr(memAddr),
+	.memDataW(memDataW),
+	.wmask(wmask),
+	.ifu_valid(ifu_valid),
+	.memDataR(memDataR)
   );
-
-  always @(MemRW, memAddr, memDataW) begin
-	if (ifu_valid) begin
-    	if(MemRW==2'b10) begin
-    		paddr_read(memAddr, unextMemDataR);
-    	end else if (MemRW==2'b01) begin
-    		paddr_write(memAddr, memDataW, {4'b0000, wmask});
-    	end
-	end
-  end
 
   // WB
   ysyx_23060061_MuxKey #(4, 2, 32) wb_mux(
