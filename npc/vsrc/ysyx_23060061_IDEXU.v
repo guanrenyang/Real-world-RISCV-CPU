@@ -1,4 +1,4 @@
-module ysyx_23060061_ID_EX_WB (
+module ysyx_23060061_IDEXU (
   input clk,
   input rst, 
 
