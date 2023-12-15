@@ -5,8 +5,8 @@ module ysyx_23060061_IFU_with_SRAM(
 	input [31:0] dnpc,
 	input [31:0] pc,
 	output reg [31:0] inst,
-	// output reg [31:0] pc,
-	output reg instValid
+	output reg instValid,
+	input iduReady
 );	
 
 	wire [31:0] instImm_internal;
@@ -17,7 +17,6 @@ module ysyx_23060061_IFU_with_SRAM(
 	always @(pc!=pc_old) begin
 		if (!rst) begin
 			paddr_read(pc, instImm_internal);
-			// instImm_internal = pc;
 		end
 	end
 
@@ -30,7 +29,8 @@ module ysyx_23060061_IFU_with_SRAM(
 		end else begin
 			inst <= instImm_internal;
 			pc_old <= pc;
-			instValid <= (pc_old == pc) ? 0 : 1;
+			// instValid <= (pc_old == pc) ? 0 : 1;
+			instValid <= ~iduReady;
 		end
 	end	
 
