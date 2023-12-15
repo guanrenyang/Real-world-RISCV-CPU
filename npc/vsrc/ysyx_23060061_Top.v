@@ -9,7 +9,10 @@ module ysyx_23060061_Top (
   // output [31 : 0] pc,
   output [31 : 0] ftrace_dnpc // used only for ftrace
 );
+	// ifu->idu
 	wire ifu_valid; // IFU valid signal
+	wire idu_ready; // IDU ready signal
+
 	wire mfu_valid; // MFU valid signal
 	wire RegWrite; // GPR write enable
 	wire csrEn; // CSR write enable
@@ -79,7 +82,8 @@ module ysyx_23060061_Top (
 		.dnpc(dnpc),
 		.inst(inst),
 		.pc(pc),
-		.instValid(ifu_valid)
+		.instValid(ifu_valid),
+		.iduReady(idu_ready)
 	);
 	
 	ysyx_23060061_ID_EX_WB id_ex_wb( 
@@ -89,6 +93,7 @@ module ysyx_23060061_Top (
 		.inst(inst),
 		.pc(pc),
 		.ifu_valid(ifu_valid),
+		.idu_ready(idu_ready),
 		
 		.rd(rd),
 		.rs1(rs1),

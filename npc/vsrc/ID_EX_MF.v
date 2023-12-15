@@ -4,6 +4,7 @@ module ysyx_23060061_ID_EX_WB (
 
   // signals from IFU
   input ifu_valid,
+  output idu_ready,
   input [31:0] inst,
   input [31:0] pc,
   //signals for GRP
@@ -146,17 +147,7 @@ module ysyx_23060061_ID_EX_WB (
 	.memDataR(memDataR)
   );
 
-  // WB
- //  ysyx_23060061_MuxKey #(4, 2, 32) wb_mux(
-	// .out(regDataWB),
-	// .key(WBSel),
-	// .lut({
-	// 	2'b00, memDataR,
-	// 	2'b01, aluOut,
-	// 	2'b10, snpc,
- //    	2'b11, csrReadData
-	// })
- //  );
   assign mfu_valid = ifu_valid; 
+  assign idu_ready = ifu_valid;
 endmodule
 
