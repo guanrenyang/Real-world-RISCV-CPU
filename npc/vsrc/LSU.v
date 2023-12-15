@@ -1,7 +1,7 @@
 module ysyx_23060061_LSU(
 	input clk,
 	input rst,
-	
+
 	input [2:0] memExt,
 	input [1:0] MemRW,
 	input [31:0] memAddr,
@@ -48,6 +48,6 @@ module ysyx_23060061_LSU(
 		DataMemValid_internal <= exu_valid & ~wbu_ready;
 	end
   end
-  assign lsu_valid = exu_valid & (DataMemValid_internal | ~MemRW[1]); 
+  assign lsu_valid = (DataMemValid_internal | ~MemRW[1]); 
   assign lsu_ready = wbu_ready;
 endmodule
