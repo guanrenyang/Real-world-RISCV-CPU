@@ -12,7 +12,30 @@ module ysyx_23060061_LSU(
 	
 	output lsu_valid,
 	input wbu_ready,
-	output reg [31:0] memDataR
+	output reg [31:0] memDataR,
+
+	output [31:0] araddr,
+	output arvalid,
+	input arready,
+
+	input [31:0] rdata,
+	input rresp,
+	input rvalid,
+	output rready,
+
+	output [31:0] awaddr,
+	output awvalid,
+	input awready,
+
+	output [31:0] wdata,
+	output [3:0] wstrb,
+	output wvalid,
+	input wready,
+
+	input bresp,
+	input bvalid,
+	output bready
+
 );
 	wire [31:0] unextMemDataR;
 
