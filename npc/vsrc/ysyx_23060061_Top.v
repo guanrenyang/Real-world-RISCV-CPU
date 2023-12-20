@@ -51,7 +51,53 @@ module ysyx_23060061_Top (
 	wire [31:0] csrReadData;
 	wire [31:0] mtvec;
 	wire [31:0] mepc;
-			
+
+	// For IFU->SRAM
+	wire [31:0] ifu_araddr;
+	wire ifu_arvalid;
+	wire ifu_arready;
+
+	wire [31:0] ifu_rdata;
+	wire ifu_rresp;
+	wire ifu_rvalid;
+	wire ifu_rready;
+
+	wire [31:0] ifu_awaddr;
+	wire ifu_awvalid;
+	wire ifu_awready;
+
+	wire [31:0] ifu_wdata;
+	wire [3:0] ifu_wstrb;
+	wire ifu_wvalid;
+	wire ifu_wready;
+
+	wire ifu_bresp;
+	wire ifu_bvalid;
+	wire ifu_bready;
+
+	// For LSU->SRAM
+	wire [31:0] lsu_araddr;
+	wire lsu_arvalid;
+	wire lsu_arready;
+
+	wire [31:0] lsu_rdata;
+	wire lsu_rresp;
+	wire lsu_rvalid;
+	wire lsu_rready;
+
+	wire [31:0] lsu_awaddr;
+	wire lsu_awvalid;
+	wire lsu_awready;
+
+	wire [31:0] lsu_wdata;
+	wire [3:0] lsu_wstrb;
+	wire lsu_wvalid;
+	wire lsu_wready;
+
+	wire lsu_bresp;
+	wire lsu_bvalid;
+	wire lsu_bready;
+
 	ysyx_23060061_Reg #(32, 32'h80000000) pc_reg(
 		.clk(clk),
 		.rst(rst),
@@ -87,6 +133,60 @@ module ysyx_23060061_Top (
     	.csrEn(csrEn & lsu_valid)
   	);
 
+	ysyx_23060061_SRAM InstRam(
+		.clk(clk),
+		.rst(rst),
+
+		.araddr(ifu_araddr),
+		.arvalid(ifu_arvalid),
+		.arready(ifu_arready),
+
+		.rdata(ifu_rdata),
+		.rresp(ifu_rresp),
+		.rvalid(ifu_rvalid),
+		.rready(ifu_rready),
+
+		.awaddr(ifu_awaddr),
+		.awvalid(ifu_awvalid),
+		.awready(ifu_awready),
+
+		.wdata(ifu_wdata),
+		.wstrb(ifu_wstrb),
+		.wvalid(ifu_wvalid),
+		.wready(ifu_wready),
+
+		.bresp(ifu_bresp),
+		.bvalid(ifu_bvalid),
+		.bready(ifu_bready)
+	);
+	
+	ysyx_23060061_SRAM DataRam(
+		.clk(clk),
+		.rst(rst),
+
+		.araddr(lsu_araddr),
+		.arvalid(lsu_arvalid),
+		.arready(lsu_arready),
+
+		.rdata(lsu_rdata),
+		.rresp(lsu_rresp),
+		.rvalid(lsu_rvalid),
+		.rready(lsu_rready),
+
+		.awaddr(lsu_awaddr),
+		.awvalid(lsu_awvalid),
+		.awready(lsu_awready),
+
+		.wdata(lsu_wdata),
+		.wstrb(lsu_wstrb),
+		.wvalid(lsu_wvalid),
+		.wready(lsu_wready),
+
+		.bresp(lsu_bresp),
+		.bvalid(lsu_bvalid),
+		.bready(lsu_bready)
+	);
+
 	ysyx_23060061_IFU_with_SRAM ifu(
 		.clk(clk),
 		.rst(rst),
@@ -94,7 +194,30 @@ module ysyx_23060061_Top (
 		.inst(inst),
 		.pc(pc),
 		.instValid(ifu_valid),
-		.iduReady(idu_ready)
+		.iduReady(idu_ready),
+
+		// For IFU->SRAM in AXI-Lite
+		.araddr(ifu_araddr),
+		.arvalid(ifu_arvalid),
+		.arready(ifu_arready),
+
+		.rdata(ifu_rdata),
+		.rresp(ifu_rresp),
+		.rvalid(ifu_rvalid),
+		.rready(ifu_rready),
+
+		.awaddr(ifu_awaddr),
+		.awvalid(ifu_awvalid),
+		.awready(ifu_awready),
+
+		.wdata(ifu_wdata),
+		.wstrb(ifu_wstrb),
+		.wvalid(ifu_wvalid),
+		.wready(ifu_wready),
+
+		.bresp(ifu_bresp),
+		.bvalid(ifu_bvalid),
+		.bready(ifu_bready)
 	);
 	
 	ysyx_23060061_IDEXU id_ex_u( 
@@ -150,7 +273,30 @@ module ysyx_23060061_Top (
 		.lsu_ready(lsu_ready),
 		.lsu_valid(lsu_valid),
 		.wbu_ready(wbu_ready),
-		.memDataR(memDataR)
+		.memDataR(memDataR),
+
+		// For LSU->SRAM in AXI-Lite interface
+		.araddr(lsu_araddr),
+		.arvalid(lsu_arvalid),
+		.arready(lsu_arready),
+
+		.rdata(lsu_rdata),
+		.rresp(lsu_rresp),
+		.rvalid(lsu_rvalid),
+		.rready(lsu_rready),
+
+		.awaddr(lsu_awaddr),
+		.awvalid(lsu_awvalid),
+		.awready(lsu_awready),
+
+		.wdata(lsu_wdata),
+		.wstrb(lsu_wstrb),
+		.wvalid(lsu_wvalid),
+		.wready(lsu_wready),
+
+		.bresp(lsu_bresp),
+		.bvalid(lsu_bvalid),
+		.bready(lsu_bready)
   	);
 
 	ysyx_23060061_WBU wbu(
