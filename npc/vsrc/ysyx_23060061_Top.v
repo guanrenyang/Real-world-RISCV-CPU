@@ -52,7 +52,7 @@ module ysyx_23060061_Top (
 	wire [31:0] mtvec;
 	wire [31:0] mepc;
 
-	// For IFU->SRAM
+	// AXI-Lite IFU->SRAM
 	wire [31:0] ifu_araddr;
 	wire ifu_arvalid;
 	wire ifu_arready;
@@ -75,7 +75,7 @@ module ysyx_23060061_Top (
 	wire ifu_bvalid;
 	wire ifu_bready;
 
-	// For LSU->SRAM
+	// AXI-Lite: LSU->SRAM
 	wire [31:0] lsu_araddr;
 	wire lsu_arvalid;
 	wire lsu_arready;
@@ -133,7 +133,7 @@ module ysyx_23060061_Top (
     	.csrEn(csrEn & lsu_valid)
   	);
 
-	ysyx_23060061_SRAM InstRam(
+	ysyx_23060061_SRAM InstMem(
 		.clk(clk),
 		.rst(rst),
 
@@ -160,7 +160,7 @@ module ysyx_23060061_Top (
 		.bready(ifu_bready)
 	);
 	
-	ysyx_23060061_SRAM DataRam(
+	ysyx_23060061_SRAM DataMem(
 		.clk(clk),
 		.rst(rst),
 
