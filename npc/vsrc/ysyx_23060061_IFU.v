@@ -55,5 +55,4 @@ module ysyx_23060061_IFU_with_SRAM(
 			instValid <= ~iduReady;
 		end
 	end	
-
 endmodule
