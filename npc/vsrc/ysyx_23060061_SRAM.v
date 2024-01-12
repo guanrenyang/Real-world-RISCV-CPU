@@ -34,7 +34,8 @@ module ysyx_23060061_SRAM(
 	reg [31:0] raddr;
 	wire [31:0] rdata_internal;
 	always @(raddr) begin
-		paddr_read(raddr, rdata_internal);
+		if (state == FEED_DATA)
+			paddr_read(raddr, rdata_internal);
 	end
 	
 	always @(posedge clk) begin
