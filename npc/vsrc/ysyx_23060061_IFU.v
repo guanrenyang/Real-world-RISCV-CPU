@@ -13,7 +13,7 @@ module ysyx_23060061_IFU_with_SRAM(
 	input arready,
 
 	input [31:0] rdata,
-	input rresp,
+	input [1:0] rresp,
 	input rvalid,
 	output rready,
 
