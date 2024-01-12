@@ -31,7 +31,7 @@ module ysyx_23060061_IFU_with_SRAM(
 	output bready
 );	
 
-	wire [31:0] instImm_internal;
+	reg [31:0] instImm_internal;
 
 	reg [31:0] pc_old;
 	
