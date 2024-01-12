@@ -52,13 +52,13 @@ module ysyx_23060061_Top (
 	wire [31:0] mtvec;
 	wire [31:0] mepc;
 
-	// For IFU->SRAM
+	// AXI-Lite IFU->SRAM
 	wire [31:0] ifu_araddr;
 	wire ifu_arvalid;
 	wire ifu_arready;
 
 	wire [31:0] ifu_rdata;
-	wire ifu_rresp;
+	wire [1:0] ifu_rresp;
 	wire ifu_rvalid;
 	wire ifu_rready;
 
@@ -75,13 +75,13 @@ module ysyx_23060061_Top (
 	wire ifu_bvalid;
 	wire ifu_bready;
 
-	// For LSU->SRAM
+	// AXI-Lite: LSU->SRAM
 	wire [31:0] lsu_araddr;
 	wire lsu_arvalid;
 	wire lsu_arready;
 
 	wire [31:0] lsu_rdata;
-	wire lsu_rresp;
+	wire [1:0] lsu_rresp;
 	wire lsu_rvalid;
 	wire lsu_rready;
 
@@ -133,9 +133,9 @@ module ysyx_23060061_Top (
     	.csrEn(csrEn & lsu_valid)
   	);
 
-	ysyx_23060061_SRAM InstRam(
+	ysyx_23060061_SRAM InstMem(
 		.clk(clk),
-		.rst(rst),
+		.rst(~rst), // reset of AXI is activate low
 
 		.araddr(ifu_araddr),
 		.arvalid(ifu_arvalid),
@@ -160,9 +160,9 @@ module ysyx_23060061_Top (
 		.bready(ifu_bready)
 	);
 	
-	ysyx_23060061_SRAM DataRam(
+	ysyx_23060061_SRAM DataMem(
 		.clk(clk),
-		.rst(rst),
+		.rst(~rst), // reset of AXI is activate low
 
 		.araddr(lsu_araddr),
 		.arvalid(lsu_arvalid),

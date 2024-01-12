@@ -13,7 +13,7 @@ module ysyx_23060061_IFU_with_SRAM(
 	input arready,
 
 	input [31:0] rdata,
-	input rresp,
+	input [1:0] rresp,
 	input rvalid,
 	output rready,
 
@@ -31,7 +31,7 @@ module ysyx_23060061_IFU_with_SRAM(
 	output bready
 );	
 
-	wire [31:0] instImm_internal;
+	reg [31:0] instImm_internal;
 
 	reg [31:0] pc_old;
 	
@@ -55,5 +55,4 @@ module ysyx_23060061_IFU_with_SRAM(
 			instValid <= ~iduReady;
 		end
 	end	
-
 endmodule
