@@ -44,7 +44,7 @@ module ysyx_23060061_IFU_with_SRAM(
 
 	// Sequential logic
 	always @(posedge clk) begin
-		if (rst) begin
+		if (~rst) begin
 			inst <= 0;
 			pc_old <= 0;
 			instValid <= 0;
