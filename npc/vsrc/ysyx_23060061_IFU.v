@@ -45,13 +45,14 @@ module ysyx_23060061_IFU_with_SRAM(
 	parameter IDLE = 0;
 	parameter SEND_ADDR = 1;
 	parameter WAIT_DATA = 2; 
-	
+	parameter WAIT_CPU = 3;	
+
 	reg [1:0] state;
 
 	// Sequential logic
 	always @(posedge clk) begin
 		if (~rst) begin // do reset
-			// signals for InstMem
+			// signals for InstMem -- determined by AXI-Lite protocol
 			arvalid <= 0;	
 			awvalid <= 0;
 			wvalid <=0;
@@ -69,7 +70,7 @@ module ysyx_23060061_IFU_with_SRAM(
 						arvalid <= 1;
 						rready <= 0;
 					end
-					instValid <= ~iduReady;
+					instValid <= 0;
 				end
 				SEND_ADDR: begin
 					if (arvalid && arready) begin
@@ -80,10 +81,16 @@ module ysyx_23060061_IFU_with_SRAM(
 				end
 				WAIT_DATA: begin
 					if (rvalid & rready) begin
-						state <= IDLE;
+						state <= WAIT_CPU;
 						rready <= 0;
 						inst <= rdata;
 						instValid <= 1;
+					end
+				end
+				WAIT_CPU: begin
+					if (iduReady) begin
+						state <= IDLE;
+						instValid <= 0;
 					end
 				end
 			endcase
