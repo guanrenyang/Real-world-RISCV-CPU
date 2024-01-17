@@ -69,6 +69,7 @@ module ysyx_23060061_IFU_with_SRAM(
 						arvalid <= 1;
 						rready <= 0;
 					end
+					instValid <= ~iduReady;
 				end
 				SEND_ADDR: begin
 					if (arvalid && arready) begin
