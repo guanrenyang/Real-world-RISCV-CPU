@@ -189,7 +189,7 @@ module ysyx_23060061_Top (
 
 	ysyx_23060061_IFU_with_SRAM ifu(
 		.clk(clk),
-		.rst(~rst), // reset of AXI is activate low
+		.rst(rst),
 		.dnpc(dnpc),
 		.inst(inst),
 		.pc(pc),
