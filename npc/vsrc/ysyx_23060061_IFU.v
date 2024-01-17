@@ -37,7 +37,7 @@ module ysyx_23060061_IFU_with_SRAM(
 	
 	// Combinationa logic
 	always @(pc!=pc_old) begin
-		if (!rst) begin
+		if (rst) begin
 			paddr_read(pc, instImm_internal);
 		end
 	end
