@@ -88,6 +88,8 @@ module ysyx_23060061_LSU(
 						wvalid <= 1;
 						wdata <= memDataW;
 						wstrb <= wmask;
+
+						bready <= 0;
 					end
 					memDataReady <= 0;
 				end
