@@ -118,7 +118,6 @@ void exec_once() {
 		uint32_t inst_old = pmem_read(pc_old, 4);
 		// difftest_step(PC_, DNPC_, (inst_old & 0x0000007f) == 0x23); 
 		difftest_step(PC_, DNPC_, false);
-		pc_old = PC_;
 	}
 #endif
 	
@@ -152,6 +151,7 @@ void exec_once() {
 #endif
 
 	cycle_cnt ++;
+	pc_old = PC_;
 }
 
 void execute(uint64_t n) {
