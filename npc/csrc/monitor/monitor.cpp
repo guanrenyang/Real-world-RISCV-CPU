@@ -13,7 +13,7 @@ char *diff_so_file = NULL;
 
 extern uint8_t *instMem;
 
-#define RESET_VECTOR 0x80000000
+// #define RESET_VECTOR 0x80000000
 
 void init_mem();
 void init_log(const char *);

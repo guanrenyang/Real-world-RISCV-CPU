@@ -6,6 +6,7 @@
 #include <paddr.h>
 #include <npc.h>
 #include <iostream>
+#include <macro.h>
 void (*ref_difftest_memcpy)(uint32_t addr, void *buf, size_t n, bool direction) = NULL;
 void (*ref_difftest_regcpy)(void *dut, bool direction) = NULL;
 void (*ref_difftest_exec)(uint64_t n) = NULL;
@@ -57,6 +58,15 @@ static bool checkregs(const CPU_State* ref_state, uint32_t npc) {
 
 	return true;
 }
+static bool checkmem(const uint8_t *ref_mem, uint32_t addr, size_t n) {
+	uint8_t *dut_mem = (uint8_t*) malloc(MEMSIZE);
+	for (int i=0; i<n; i++) {
+		if(ref_mem[i] != (uint8_t) pmem_read(addr+i, 1))
+			return false;
+	}
+	
+	return true;
+}
 
 void difftest_step(uint32_t pc, uint32_t npc) {
 	ref_difftest_exec(1);
@@ -69,4 +79,7 @@ void difftest_step(uint32_t pc, uint32_t npc) {
 		fprintf(stderr, "difftest failed with executed pc=%x, cpu_npc=%x, ref_state->pc=%x\n", pc, npc, ref_state.pc);
 		assert(0);
 	}
+	
+	uint8_t *ref_mem = (uint8_t*) malloc(MEMSIZE);
+	ref_difftest_memcpy(MEMBASE, ref_mem, MEMSIZE, DIFFTEST_TO_DUT);
 }

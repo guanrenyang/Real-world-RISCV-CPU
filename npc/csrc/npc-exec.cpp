@@ -15,6 +15,9 @@
 
 #define MAX_INST_TO_PRINT 10
 
+#define PC_ top->rootp->ysyx_23060061_Top__DOT__pc
+#define DNPC_ top->rootp->ftrace_dnpc
+
 #ifdef CONFIG_WAVETRACE
 static VerilatedVcdC *tfp = nullptr;
 #endif
@@ -25,6 +28,7 @@ static VerilatedContext *contextp = nullptr;
 static TOPNAME *top = nullptr;
 
 static int cycle_cnt = 0;
+static size_t inst_cnt = 0, pc_old;
 
 // DPI-C function for `ebreak` instruction
 void trap() { EXEC_CODE = Trap; }
@@ -77,6 +81,10 @@ CPU_State sim_init_then_reset() {
 	
 	reset();
 	
+#ifdef CONFIG_DIFFTEST
+	pc_old = PC_;
+#endif
+
 	return get_cpu_state();	
 }
 
@@ -88,8 +96,9 @@ void sim_exit() {
 #endif
 }
 
+
 void exec_once() {
-	
+
 	// printf("MemRW before the next clock: %x\n", top->rootp->ysyx_23060061_Top__DOT__MemRW);
 	// printf("memAddr before the next clock: %x\n", top->rootp->ysyx_23060061_Top__DOT__aluOut);
 	// printf("aluOpA before the current clock: %x\n", top->rootp->ysyx_23060061_Top__DOT__aluOpA);
@@ -106,13 +115,13 @@ void exec_once() {
 	// }
 	/*Difftest*/
 #ifdef CONFIG_DIFFTEST
-	if (inst_cnt > 0){ difftest_step(top->pc, top->ftrace_dnpc); }
+	if (inst_cnt > 0){ difftest_step(PC_, DNPC_); }
 #endif
 	
 	top->clk = 0b0; top->rst = 0b0; // top->inst = pmem_read(top->pc, 4); 
 
 #ifdef CONFIG_ITRACE
-	itrace(top->pc, top->inst, 4);
+	itrace(top->rootp->ysyx_23060061_Top__DOT__pc, top->rootp->ysyx_23060061_Top__DOT__inst, 4);
 #endif 
 	// printf("dnpc = %x\n", top->ftrace_dnpc); // Here, dnpc equals to pc+4
 	step_and_dump_wave();
@@ -138,6 +147,12 @@ void exec_once() {
 #endif
 
 	cycle_cnt ++;
+#ifdef CONFIG_DIFFTEST
+	if(PC_ != pc_old) {
+		inst_cnt ++;
+		pc_old = PC_;
+	}
+#endif
 }
 
 void execute(uint64_t n) {
