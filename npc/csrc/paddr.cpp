@@ -1,13 +1,11 @@
 #include <paddr.h>
 #include <utils.h>
 #include <npc.h>
-
-static uint8_t *instMem = NULL;
+static uint8_t instMem[MEMSIZE] __attribute((aligned(4096))) = {};
 
 extern char *img_file;
 
 void init_mem() {
-	instMem = (uint8_t*) malloc(MEMSIZE);
 }
 
 uint8_t* guest_to_host(uint32_t paddr) { return  instMem + paddr - MEMBASE; }
