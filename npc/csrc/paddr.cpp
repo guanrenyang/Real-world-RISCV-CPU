@@ -41,6 +41,8 @@ uint32_t pmem_read(uint32_t paddr, int len) {
 void pmem_write(uint32_t paddr, int len, uint32_t data) {
   assert(guest_to_host(paddr) < (instMem + MEMSIZE));
 
+  printf("paddr = %x, len = %d, data = %x\n", paddr, len, data);
+
   host_write(guest_to_host(paddr), len, data);
   
   // printf("\n[paddr_write]: write data %x at addr %x\n", data, paddr);
