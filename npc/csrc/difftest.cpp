@@ -39,6 +39,12 @@ void init_difftest(char *ref_so_file, long img_size, int port) {
 
 	CPU_State cpu = get_cpu_state();
 	ref_difftest_regcpy(&cpu, DIFFTEST_TO_REF);
+	
+	uint8_t *dut_mem = (uint8_t*) malloc(MEMSIZE);
+	for(int i=0;i<MEMSIZE;i++)
+		dut_mem[i] = (uint8_t) pmem_read(MEMBASE+i, 1);
+	ref_difftest_memcpy(MEMBASE, dut_mem, MEMSIZE, DIFFTEST_TO_REF);
+	free(dut_mem);
 }
 
 static bool checkregs(const CPU_State* ref_state, uint32_t npc) {
