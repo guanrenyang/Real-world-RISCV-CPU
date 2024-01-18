@@ -74,7 +74,7 @@ static bool checkmem(const uint8_t *ref_mem, uint32_t addr, size_t n) {
 	return true;
 }
 
-void difftest_step(uint32_t pc, uint32_t npc) {
+void difftest_step(uint32_t pc, uint32_t npc, bool enableMemCheck = false) {
 	ref_difftest_exec(1);
 	
 	CPU_State ref_state;
@@ -85,13 +85,15 @@ void difftest_step(uint32_t pc, uint32_t npc) {
 		fprintf(stderr, "difftest failed with executed pc=%x, cpu_npc=%x, ref_state->pc=%x\n", pc, npc, ref_state.pc);
 		assert(0);
 	}
-	
-	uint8_t *ref_mem = (uint8_t*) malloc(MEMSIZE);
-	ref_difftest_memcpy(MEMBASE, ref_mem, MEMSIZE, DIFFTEST_TO_DUT);
-	if(!checkmem(ref_mem, MEMBASE, MEMSIZE)){
-		sim_exit();
-		fprintf(stderr, "difftest failed with executed pc=%x, cpu_npc=%x, ref_state->pc=%x\n", pc, npc, ref_state.pc);
-		assert(0);
+
+	if (enableMemCheck)	{
+		uint8_t *ref_mem = (uint8_t*) malloc(MEMSIZE);
+		ref_difftest_memcpy(MEMBASE, ref_mem, MEMSIZE, DIFFTEST_TO_DUT);
+		if(!checkmem(ref_mem, MEMBASE, MEMSIZE)){
+			sim_exit();
+			fprintf(stderr, "difftest failed with executed pc=%x, cpu_npc=%x, ref_state->pc=%x\n", pc, npc, ref_state.pc);
+			assert(0);
+		}
+		free(ref_mem);
 	}
-	free(ref_mem);
 }

@@ -115,8 +115,8 @@ void exec_once() {
 	/*Difftest*/
 #ifdef CONFIG_DIFFTEST
 	if (PC_ != pc_old){ 
-		difftest_step(PC_, DNPC_); 
-		pc_old = PC_;
+		uint32_t inst_old = pmem_read(pc_old, 4);
+		difftest_step(PC_, DNPC_, inst_old * 0x00000023); 
 	}
 #endif
 	
