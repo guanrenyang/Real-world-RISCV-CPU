@@ -71,7 +71,7 @@ module ysyx_23060061_Top (
 	wire ifu_wvalid;
 	wire ifu_wready;
 
-	wire ifu_bresp;
+	wire [1:0] ifu_bresp;
 	wire ifu_bvalid;
 	wire ifu_bready;
 
@@ -94,7 +94,7 @@ module ysyx_23060061_Top (
 	wire lsu_wvalid;
 	wire lsu_wready;
 
-	wire lsu_bresp;
+	wire [1:0] lsu_bresp;
 	wire lsu_bvalid;
 	wire lsu_bready;
 
@@ -263,7 +263,7 @@ module ysyx_23060061_Top (
 
 	ysyx_23060061_LSU lsu(
 		.clk(clk),
-		.rst(rst),
+		.rst(~rst),
 		.memExt(memExt),
 		.MemRW(MemRW),
 		.memAddr(memAddr),
