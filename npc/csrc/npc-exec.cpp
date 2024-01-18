@@ -112,11 +112,6 @@ void exec_once() {
 	// 	sim_exit();
 	// 	exit(0);
 	// }
-	if (PC_==0x800012e4){
-		printf("here\n");
-		sim_exit();
-		exit(0);
-	}
 	/*Difftest*/
 #ifdef CONFIG_DIFFTEST
 	if (PC_ != pc_old){ 
@@ -152,7 +147,7 @@ void exec_once() {
 #endif
 
 #ifdef CONFIG_FTRACE
-	ftrace(top->inst, top->ftrace_dnpc, top->pc);
+	ftrace(top->rootp->ysyx_23060061_Top__DOT__inst, DNPC_, PC_);
 #endif
 
 	cycle_cnt ++;
