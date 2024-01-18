@@ -84,7 +84,6 @@ CPU_State sim_init_then_reset() {
 #ifdef CONFIG_DIFFTEST
 	pc_old = PC_;
 #endif
-	printf("PC_: %d\n", PC_);
 	return get_cpu_state();	
 }
 
