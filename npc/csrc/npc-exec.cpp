@@ -114,8 +114,7 @@ void exec_once() {
 	// }
 	/*Difftest*/
 #ifdef CONFIG_DIFFTEST
-	if (inst_cnt > 0){ 
-		printf("inst_cnt: %d\n", inst_cnt);
+	if (PC_ != pc_old){ 
 		difftest_step(PC_, DNPC_); 
 	}
 #endif
