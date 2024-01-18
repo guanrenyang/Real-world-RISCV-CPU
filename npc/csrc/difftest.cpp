@@ -74,8 +74,6 @@ void difftest_step(uint32_t pc, uint32_t npc) {
 	CPU_State ref_state;
 	ref_difftest_regcpy(&ref_state, DIFFTEST_TO_DUT);
 
-	printf("ref_pc=%x\n", ref_state.pc);	
-
 	if(!checkregs(&ref_state, pc)){
 		sim_exit();
 		fprintf(stderr, "difftest failed with executed pc=%x, cpu_npc=%x, ref_state->pc=%x\n", pc, npc, ref_state.pc);

@@ -114,7 +114,10 @@ void exec_once() {
 	// }
 	/*Difftest*/
 #ifdef CONFIG_DIFFTEST
-	if (inst_cnt > 0){ difftest_step(PC_, DNPC_); }
+	if (inst_cnt > 0){ 
+		printf("inst_cnt: %d\n", inst_cnt);
+		difftest_step(PC_, DNPC_); 
+	}
 #endif
 	
 	top->clk = 0b0; top->rst = 0b0; // top->inst = pmem_read(top->pc, 4); 
