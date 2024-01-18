@@ -117,6 +117,7 @@ void exec_once() {
 	if (PC_ != pc_old){ 
 		uint32_t inst_old = pmem_read(pc_old, 4);
 		difftest_step(PC_, DNPC_, inst_old & 0x0000007f == 0x23); 
+		pc_old = PC_;
 	}
 #endif
 	
