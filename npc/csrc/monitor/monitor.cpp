@@ -82,7 +82,7 @@ void init_monitor(int argc, char *argv[]) {
 
 	/* Load the image to memory. This will overwrite the built-in image. */	
 	long img_size = load_img();
-	printf("Load image from %s with size = %ld\n", img_file, img_size);
+	printf("Load image from %s with size = %x\n", img_file, img_size);
 	/* Initialize disassemble module*/
 #ifdef CONFIG_ITRACE
   	init_disasm("riscv32-pc-linux-gnu");
