@@ -125,7 +125,7 @@ void exec_once() {
 	top->clk = 0b0; top->rst = 0b0; // top->inst = pmem_read(top->pc, 4); 
 
 #ifdef CONFIG_ITRACE
-	itrace(top->rootp->ysyx_23060061_Top__DOT__pc, top->rootp->ysyx_23060061_Top__DOT__inst, 4);
+	itrace(PC_, pmem_read(PC_, 4), 4);
 #endif 
 	// printf("dnpc = %x\n", top->ftrace_dnpc); // Here, dnpc equals to pc+4
 	step_and_dump_wave();
