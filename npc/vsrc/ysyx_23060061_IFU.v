@@ -26,7 +26,7 @@ module ysyx_23060061_IFU_with_SRAM(
 	output reg wvalid,
 	input wready,
 
-	input bresp,
+	input [1:0] bresp,
 	input bvalid,
 	output bready
 );	
