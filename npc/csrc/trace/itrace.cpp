@@ -6,6 +6,7 @@ char logbuf[128];
 char iringbuf[128][128];
 
 void itrace(uint32_t pc, uint32_t ival, int ilen /*bytes*/){
+	static int tmp = 0;
     char *p = logbuf;
     p += snprintf(p, sizeof(logbuf), FMT_WORD ":", pc);
 
@@ -21,7 +22,9 @@ void itrace(uint32_t pc, uint32_t ival, int ilen /*bytes*/){
   disassemble(p, logbuf + sizeof(logbuf) - p, pc, (uint8_t *)&ival, ilen);
 
   log_write("%s\n", logbuf);
-  exit(0);
+  if(tmp==3)
+  	exit(0);
+  tmp++;
 }
 
 #else
