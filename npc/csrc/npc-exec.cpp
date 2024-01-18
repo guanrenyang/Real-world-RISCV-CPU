@@ -147,7 +147,7 @@ void exec_once() {
 #endif
 
 #ifdef CONFIG_FTRACE
-	ftrace(top->rootp->ysyx_23060061_Top__DOT__inst, DNPC_, PC_);
+	ftrace(pmem_read(PC_, 4), DNPC_, PC_);
 #endif
 
 	cycle_cnt ++;
