@@ -112,6 +112,11 @@ void exec_once() {
 	// 	sim_exit();
 	// 	exit(0);
 	// }
+	if (PC_==0x800012e4){
+		printf("here\n");
+		sim_exit();
+		exit(0);
+	}
 	/*Difftest*/
 #ifdef CONFIG_DIFFTEST
 	if (PC_ != pc_old){ 
