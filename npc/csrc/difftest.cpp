@@ -60,6 +60,7 @@ static bool checkregs(const CPU_State* ref_state, uint32_t npc) {
 }
 static bool checkmem(const uint8_t *ref_mem, uint32_t addr, size_t n) {
 	for (int i=0; i<n; i++) {
+		printf("ref_mem[%x]=%x, pmem_read(addr, 1)=%x\n", i, ref_mem[i], (uint8_t) pmem_read(addr+i, 1));
 		if(ref_mem[i] != (uint8_t) pmem_read(addr+i, 1))
 			return false;
 	}
