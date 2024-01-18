@@ -28,7 +28,7 @@ static VerilatedContext *contextp = nullptr;
 static TOPNAME *top = nullptr;
 
 static int cycle_cnt = 0;
-static size_t inst_cnt = 0, pc_old;
+static uint32_t pc_old;
 
 // DPI-C function for `ebreak` instruction
 void trap() { EXEC_CODE = Trap; }
@@ -116,6 +116,7 @@ void exec_once() {
 #ifdef CONFIG_DIFFTEST
 	if (PC_ != pc_old){ 
 		difftest_step(PC_, DNPC_); 
+		pc_old = PC_;
 	}
 #endif
 	
@@ -148,12 +149,6 @@ void exec_once() {
 #endif
 
 	cycle_cnt ++;
-#ifdef CONFIG_DIFFTEST
-	if(PC_ != pc_old) {
-		inst_cnt ++;
-		pc_old = PC_;
-	}
-#endif
 }
 
 void execute(uint64_t n) {
