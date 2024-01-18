@@ -130,21 +130,13 @@ void exec_once() {
 	// printf("dnpc = %x\n", top->ftrace_dnpc); // Here, dnpc equals to pc+4
 	step_and_dump_wave();
 
-#ifdef CONFIG_DEBUG
-	if(top->pc == 0x8000123c){
+	if(pc_old == 0x800003b0){
 		top->clk = 0b1; top->rst = 0b0; step_and_dump_wave();	
 		
-		// printf("aluOut: %x\n", top->rootp->ysyx_23060061_Top__DOT__aluOut);
-		// printf("aluOpA: %x\n", top->rootp->ysyx_23060061_Top__DOT__aluOpA);
-		// printf("aluOpB: %x\n", top->rootp->ysyx_23060061_Top__DOT__aluOpB);
-		// printf("mtvec: %x\nmepc: %x\nmcause: %x\n", top->rootp->ysyx_23060061_Top__DOT__CSRs__DOT__rf[1], top->rootp->ysyx_23060061_Top__DOT__CSRs__DOT__rf[2], top->rootp->ysyx_23060061_Top__DOT__CSRs__DOT__rf[3]);
-		printf("a3: %x\n", top->rootp->ysyx_23060061_Top__DOT__GPRs__DOT__rf[13]);
-		printf("pc: %x\n", top->pc);
-		top->clk = 0b0; top->rst = 0b0; top->inst = pmem_read(top->pc, 4);  step_and_dump_wave();
-		printf("mcause: %x\n", top->rootp->ysyx_23060061_Top__DOT__CSRs__DOT__rf[3]);
+		printf("a5: %x\n", top->rootp->ysyx_23060061_Top__DOT__CSRs__DOT__rf[15]);
+		sim_exit();
 		exit(0);
 	}
-#endif
 
 #ifdef CONFIG_FTRACE
 	if(PC_!=pc_old)
