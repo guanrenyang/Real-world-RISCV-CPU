@@ -89,10 +89,8 @@ void difftest_step(uint32_t pc, uint32_t npc, bool enableMemCheck = false) {
 	if (enableMemCheck)	{
 		uint8_t *ref_mem = (uint8_t*) malloc(MEMSIZE);
 		ref_difftest_memcpy(MEMBASE, ref_mem, MEMSIZE, DIFFTEST_TO_DUT);
-		printf("%x\n", ref_mem[0x80008ffc-MEMBASE+0]);
-		printf("%x\n", ref_mem[0x80008ffc-MEMBASE+1]);
-		printf("%x\n", ref_mem[0x80008ffc-MEMBASE+2]);
-		printf("%x\n", ref_mem[0x80008ffc-MEMBASE+3]);
+		// printf("%x\n",  [0x80008ffc-MEMBASE]);
+		printf("80000262: %x\n", *(uint32_t *)(ref_mem+0x80000262-MEMBASE));
 		// if(!checkmem(ref_mem, MEMBASE, MEMSIZE)){
 		// 	sim_exit();
 		// 	fprintf(stderr, "difftest failed with executed pc=%x, cpu_npc=%x, ref_state->pc=%x\n", pc, npc, ref_state.pc);
