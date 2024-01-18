@@ -147,7 +147,8 @@ void exec_once() {
 #endif
 
 #ifdef CONFIG_FTRACE
-	ftrace(pmem_read(PC_, 4), DNPC_, PC_);
+	if(PC_!=pc_old)
+		ftrace(pmem_read(PC_, 4), DNPC_, PC_);
 #endif
 
 	cycle_cnt ++;
