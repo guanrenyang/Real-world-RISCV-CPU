@@ -74,6 +74,11 @@ module ysyx_23060061_SRAM(
 		end else begin
 			case (state)
 				LISTEN_ADDR: begin
+					if (delay_trigger) begin
+						arready <= 1; // ready to receive address just after the cycle when reset is deasserted
+						awready <= 1;
+						wready <= 1;
+					end
 					if (arvalid && arready) begin
 						state <= FEED_DATA; // state transition
 						arready <= 0; // start feeding data and stop receiving address
@@ -105,7 +110,7 @@ module ysyx_23060061_SRAM(
 					if (rvalid && rready) begin
 						state <= LISTEN_ADDR; // state transition
 						rvalid <= 0; // stop feeding data
-						arready <= 1; // ready to receive address
+						// arready <= 1; // ready to receive address
 						
 						raddr <= 0;
 					end
@@ -121,8 +126,8 @@ module ysyx_23060061_SRAM(
 					if(bvalid && bready) begin
 						state <= LISTEN_ADDR; // state transition
 						bvalid <= 0; // stop writing data
-						awready <= 1; // ready to receive address
-						wready <= 1;
+						// awready <= 1; // ready to receive address
+						// wready <= 1;
 						
 						waddr_internal <= 0;
 						wdata_internal <= 0;
