@@ -3,16 +3,15 @@ module ysyx_23060061_RandomDelayGenerator (
 	input rst,
 	output delay_trigger
 );
-	localparam [31:0] DELAY = 2000;
 	reg [31:0] delay;
 	reg [31:0] delay_counter;
 	always @(posedge clk) begin
 		if (~rst) begin
-			delay <= DELAY;
+			delay <= $random;
 			delay_counter <= 0;
 		end else begin
 			if (delay_counter == delay) begin
-				delay <= DELAY;
+				delay <= $random;
 				delay_counter <= 0;
 			end else begin
 				delay <= delay;
