@@ -3,7 +3,7 @@ module ysyx_23060061_RandomDelayGenerator (
 	input rst,
 	output delay_trigger
 );
-	localparam [31:0] DELAY = 20;
+	localparam [31:0] DELAY = 30;
 	reg [31:0] delay;
 	reg [31:0] delay_counter;
 	always @(posedge clk) begin
