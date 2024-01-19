@@ -71,13 +71,13 @@ module ysyx_23060061_AXILiteArbitrater(
 	output lsu_bvalid,
 	input lsu_bready
 );
-	localparam [1:0] IDLE = 0;
-	localparam [1:0] SERVE_IFU = 1;
-	localparam [1:0] SERVE_LSU = 2;
+	localparam [1:0] IDLE = 2'b00;
+	localparam [1:0] SERVE_IFU = 2'b01;
+	localparam [1:0] SERVE_LSU = 2'b10;
 	
 	wire ifu_trigger = ifu_arvalid | (ifu_awvalid & ifu_wvalid);
 	wire lsu_trigger = lsu_arvalid | (lsu_awvalid & lsu_wvalid);
-	wire exit = rready | bready;
+	wire exit = ifu_rready | ifu_bready | lsu_rready | lsu_bready;
 	reg [1:0] state;
 	always @(posedge clk) begin
 		if (~rst) begin
@@ -101,16 +101,35 @@ module ysyx_23060061_AXILiteArbitrater(
 						state <= IDLE;
 					end
 				end
+				default: begin
+					state <= IDLE;
+				end
 			endcase
 		end
 	end
-	ysyx_23060061_MuxKeyWithDefault #(2, 2, 146) mux_arbitarter(
-		.out({araddr, arvalid, arready, rdate, rresp, rvalid, rready, awaddr, awvalid, awready, wdata, wstrb, wvalid, wready, bresp, bvalid, bready}),
+	ysyx_23060061_MuxKeyWithDefault #(2, 2, 105) mux_arbitarter_to_sram(
+		.out({araddr, arvalid, rready, awaddr, awvalid, wdata, wstrb, wvalid, bready}),
 		.key(state),
 		.default_out(0),
 		.lut({
-			SERVE_IFU, {ifu_araddr, ifu_arvalid, ifu_arready, ifu_rdate, ifu_rresp, ifu_rvalid, ifu_rready, ifu_awaddr, ifu_awvalid, ifu_awready, ifu_wdata, ifu_wstrb, ifu_wvalid, ifu_wready, ifu_bresp, ifu_bvalid, ifu_bready},
-			SERVE_LSU, {lsu_araddr, lsu_arvalid, lsu_arready, lsu_rdate, lsu_rresp, lsu_rvalid, lsu_rready, lsu_awaddr, lsu_awvalid, lsu_awready, lsu_wdata, lsu_wstrb, lsu_wvalid, lsu_wready, lsu_bresp, lsu_bvalid, lsu_bready}
+			SERVE_IFU, {ifu_araddr, ifu_arvalid, ifu_rready, ifu_awaddr, ifu_awvalid, ifu_wdata, ifu_wstrb, ifu_wvalid, ifu_bready},
+			SERVE_LSU, {lsu_araddr, lsu_arvalid, lsu_rready, lsu_awaddr, lsu_awvalid, lsu_wdata, lsu_wstrb, lsu_wvalid, lsu_bready}
+		})
+	);
+	ysyx_23060061_MuxKeyWithDefault #(1, 2, 41) mux_arbitarter_from_sram_to_ifu(
+		.out({ifu_arready, ifu_rdata, ifu_rresp, ifu_rvalid, ifu_awready, ifu_wready, ifu_bresp, ifu_bvalid}),
+		.key(state),
+		.default_out(0),
+		.lut({
+			SERVE_IFU, {arready, rdata, rresp, rvalid, awready, wready, bresp, bvalid}
+		})
+	);
+	ysyx_23060061_MuxKeyWithDefault #(1, 2, 41) mux_arbitarter_from_sram_to_lsu(
+		.out({lsu_arready, lsu_rdata, lsu_rresp, lsu_rvalid, lsu_awready, lsu_wready, lsu_bresp, lsu_bvalid}),
+		.key(state),
+		.default_out(0),
+		.lut({
+			SERVE_LSU, {arready, rdata, rresp, rvalid, awready, wready, bresp, bvalid}
 		})
 	);
 endmodule
