@@ -15,6 +15,9 @@
 
 #define MAX_INST_TO_PRINT 10
 
+#define PC_ top->rootp->ysyx_23060061_Top__DOT__pc
+#define DNPC_ top->rootp->ftrace_dnpc
+
 #ifdef CONFIG_WAVETRACE
 static VerilatedVcdC *tfp = nullptr;
 #endif
@@ -25,6 +28,7 @@ static VerilatedContext *contextp = nullptr;
 static TOPNAME *top = nullptr;
 
 static int cycle_cnt = 0;
+static uint32_t pc_old;
 
 // DPI-C function for `ebreak` instruction
 void trap() { EXEC_CODE = Trap; }
@@ -77,6 +81,9 @@ CPU_State sim_init_then_reset() {
 	
 	reset();
 	
+#ifdef CONFIG_DIFFTEST
+	pc_old = PC_;
+#endif
 	return get_cpu_state();	
 }
 
@@ -88,8 +95,9 @@ void sim_exit() {
 #endif
 }
 
+
 void exec_once() {
-	
+
 	// printf("MemRW before the next clock: %x\n", top->rootp->ysyx_23060061_Top__DOT__MemRW);
 	// printf("memAddr before the next clock: %x\n", top->rootp->ysyx_23060061_Top__DOT__aluOut);
 	// printf("aluOpA before the current clock: %x\n", top->rootp->ysyx_23060061_Top__DOT__aluOpA);
@@ -106,38 +114,37 @@ void exec_once() {
 	// }
 	/*Difftest*/
 #ifdef CONFIG_DIFFTEST
-	if (inst_cnt > 0){ difftest_step(top->pc, top->ftrace_dnpc); }
+	if (PC_ != pc_old){ 
+		uint32_t inst_old = pmem_read(pc_old, 4);
+		// difftest_step(PC_, DNPC_, (inst_old & 0x0000007f) == 0x23); 
+		difftest_step(PC_, DNPC_, false);
+	}
 #endif
 	
 	top->clk = 0b0; top->rst = 0b0; // top->inst = pmem_read(top->pc, 4); 
 
 #ifdef CONFIG_ITRACE
-	itrace(top->pc, top->inst, 4);
+	if(PC_!=pc_old)
+		itrace(PC_, pmem_read(PC_, 4), 4);
 #endif 
 	// printf("dnpc = %x\n", top->ftrace_dnpc); // Here, dnpc equals to pc+4
 	step_and_dump_wave();
 
-#ifdef CONFIG_DEBUG
-	if(top->pc == 0x8000123c){
-		top->clk = 0b1; top->rst = 0b0; step_and_dump_wave();	
-		
-		// printf("aluOut: %x\n", top->rootp->ysyx_23060061_Top__DOT__aluOut);
-		// printf("aluOpA: %x\n", top->rootp->ysyx_23060061_Top__DOT__aluOpA);
-		// printf("aluOpB: %x\n", top->rootp->ysyx_23060061_Top__DOT__aluOpB);
-		// printf("mtvec: %x\nmepc: %x\nmcause: %x\n", top->rootp->ysyx_23060061_Top__DOT__CSRs__DOT__rf[1], top->rootp->ysyx_23060061_Top__DOT__CSRs__DOT__rf[2], top->rootp->ysyx_23060061_Top__DOT__CSRs__DOT__rf[3]);
-		printf("a3: %x\n", top->rootp->ysyx_23060061_Top__DOT__GPRs__DOT__rf[13]);
-		printf("pc: %x\n", top->pc);
-		top->clk = 0b0; top->rst = 0b0; top->inst = pmem_read(top->pc, 4);  step_and_dump_wave();
-		printf("mcause: %x\n", top->rootp->ysyx_23060061_Top__DOT__CSRs__DOT__rf[3]);
-		exit(0);
-	}
-#endif
+	// if(pc_old == 0x800003c4 ){
+	// 	top->clk = 0b1; top->rst = 0b0; step_and_dump_wave();	
+	// 	
+	// 	printf("a5: %x\n", top->rootp->ysyx_23060061_Top__DOT__GPRs__DOT__rf[15]);
+	// 	sim_exit();
+	// 	exit(0);
+	// }
 
 #ifdef CONFIG_FTRACE
-	ftrace(top->inst, top->ftrace_dnpc, top->pc);
+	if(PC_!=pc_old)
+		ftrace(pmem_read(PC_, 4), DNPC_, PC_);
 #endif
 
 	cycle_cnt ++;
+	pc_old = PC_;
 }
 
 void execute(uint64_t n) {

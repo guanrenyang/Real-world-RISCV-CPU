@@ -6,6 +6,7 @@
 #include <paddr.h>
 #include <npc.h>
 #include <iostream>
+#include <macro.h>
 void (*ref_difftest_memcpy)(uint32_t addr, void *buf, size_t n, bool direction) = NULL;
 void (*ref_difftest_regcpy)(void *dut, bool direction) = NULL;
 void (*ref_difftest_exec)(uint64_t n) = NULL;
@@ -38,13 +39,19 @@ void init_difftest(char *ref_so_file, long img_size, int port) {
 
 	CPU_State cpu = get_cpu_state();
 	ref_difftest_regcpy(&cpu, DIFFTEST_TO_REF);
+	
+	uint8_t *dut_mem = (uint8_t*) malloc(MEMSIZE);
+	for(int i=0;i<MEMSIZE;i++)
+		dut_mem[i] = (uint8_t) pmem_read(MEMBASE+i, 1);
+	ref_difftest_memcpy(MEMBASE, dut_mem, MEMSIZE, DIFFTEST_TO_REF);
+	free(dut_mem);
 }
 
 static bool checkregs(const CPU_State* ref_state, uint32_t npc) {
 	CPU_State cpu = get_cpu_state();
 
 	for (int i=0; i<NR_GPR; i++) {
-		printf("cpu.gpr[%d]=%x, ref_state->gpr[%d]=%x\n", i, cpu.gpr[i], i, ref_state->gpr[i]);
+		// printf("cpu.gpr[%d]=%x, ref_state->gpr[%d]=%x\n", i, cpu.gpr[i], i, ref_state->gpr[i]);
 		if(ref_state->gpr[i] != cpu.gpr[i])
 			return false;
 	}	
@@ -57,16 +64,36 @@ static bool checkregs(const CPU_State* ref_state, uint32_t npc) {
 
 	return true;
 }
+static bool checkmem(const uint8_t *ref_mem, uint32_t addr, size_t n) {
+	for (int i=0; i<n; i++) {
+		printf("ref_mem[%x]=%x, pmem_read(%x, 1)=%x\n", i, ref_mem[i],(uint32_t) addr+i, (uint8_t) pmem_read(addr+i, 1));
+		if(ref_mem[i] != (uint8_t) pmem_read(addr+i, 1))
+			return false;
+	}
+		
+	return true;
+}
 
-void difftest_step(uint32_t pc, uint32_t npc) {
+void difftest_step(uint32_t pc, uint32_t npc, bool enableMemCheck = false) {
 	ref_difftest_exec(1);
 	
 	CPU_State ref_state;
 	ref_difftest_regcpy(&ref_state, DIFFTEST_TO_DUT);
-	
+
 	if(!checkregs(&ref_state, pc)){
 		sim_exit();
 		fprintf(stderr, "difftest failed with executed pc=%x, cpu_npc=%x, ref_state->pc=%x\n", pc, npc, ref_state.pc);
 		assert(0);
+	}
+
+	if (enableMemCheck)	{
+		uint8_t *ref_mem = (uint8_t*) malloc(MEMSIZE);
+		ref_difftest_memcpy(MEMBASE, ref_mem, MEMSIZE, DIFFTEST_TO_DUT);
+		if(!checkmem(ref_mem, MEMBASE, 0x10000)){
+			sim_exit();
+			fprintf(stderr, "difftest failed with executed pc=%x, cpu_npc=%x, ref_state->pc=%x\n", pc, npc, ref_state.pc);
+			assert(0);
+		}
+		free(ref_mem);
 	}
 }
