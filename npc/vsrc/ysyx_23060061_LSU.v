@@ -53,6 +53,15 @@ module ysyx_23060061_LSU(
 	assign lsu_valid = exu_valid & ( MemRW == 0 | memDataReady);
 	assign lsu_ready = wbu_ready;
 
+	
+	// Random delay generator
+	wire delay_trigger;
+	ysyx_23060061_RandomDelayGenerator randomDelayGenerator(
+		.clk(clk),
+		.rst(rst),
+		.delay_trigger(delay_trigger)
+	);
+
 	reg [31:0] unextMemDataR; // Store the data read from DataMem
 	always @(posedge clk) begin
 		if (~rst) begin
@@ -67,7 +76,7 @@ module ysyx_23060061_LSU(
 		end else begin
 			case (state) 
 				IDLE: begin
-					if (exu_valid & MemRW[1]) begin // need to read DataMem
+					if (exu_valid & MemRW[1] & delay_trigger) begin // need to read DataMem
 						state <= SEND_ADDR;
 
 						assert (memDataReady == 0);// In IDLE state, memDataReady must be 0
@@ -77,7 +86,7 @@ module ysyx_23060061_LSU(
 						araddr <= memAddr;
 						rready <= 0;
 					end
-					if (exu_valid && MemRW[0]) begin
+					if (exu_valid & MemRW[0] & delay_trigger) begin
 						state <= SEND_AWADDR_WDATA;
 
 						assert (memDataReady == 0);// In IDLE state, memDataReady must be 0
