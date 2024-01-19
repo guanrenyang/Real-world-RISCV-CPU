@@ -116,4 +116,20 @@ module ysyx_23060061_AXILiteArbitrater(
 			SERVE_LSU, {lsu_araddr, lsu_arvalid, lsu_awaddr, lsu_awvalid, lsu_wdata, lsu_wstrb, lsu_wvalid, lsu_bready}
 		})
 	);
+	ysyx_23060061_MuxKeyWithDefault #(1, 2, 41) mux_arbitarter_from_sram_to_ifu(
+		.out({ifu_arready, ifu_rdata, ifu_rresp, ifu_rvalid, ifu_awready, ifu_wready, ifu_bresp, ifu_bvalid}),
+		.key(state),
+		.default_out(0),
+		.lut({
+			SERVE_IFU, {arready, rdata, rresp, rvalid, awready, wready, bresp, bvalid}
+		})
+	);
+	ysyx_23060061_MuxKeyWithDefault #(1, 2, 41) mux_arbitarter_from_sram_to_lsu(
+		.out({lsu_arready, lsu_rdata, lsu_rresp, lsu_rvalid, lsu_awready, lsu_wready, lsu_bresp, lsu_bvalid}),
+		.key(state),
+		.default_out(0),
+		.lut({
+			SERVE_LSU, {arready, rdata, rresp, rvalid, awready, wready, bresp, bvalid}
+		})
+	);
 endmodule
