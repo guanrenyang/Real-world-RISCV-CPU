@@ -77,7 +77,7 @@ module ysyx_23060061_AXILiteArbitrater(
 	
 	wire ifu_trigger = ifu_arvalid | (ifu_awvalid & ifu_wvalid);
 	wire lsu_trigger = lsu_arvalid | (lsu_awvalid & lsu_wvalid);
-	wire exit = rready | bready;
+	wire exit = ifu_rready | ifu_bready | lsu_rready | lsu_bready;
 	reg [1:0] state;
 	always @(posedge clk) begin
 		if (~rst) begin
