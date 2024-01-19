@@ -51,7 +51,7 @@ module ysyx_23060061_SRAM(
 	end
 	
 	// Generate Random Delay
-	localparam [31:0] DELAY = 50;
+	localparam [31:0] DELAY = 2000;
 	reg [31:0] delay;
 	reg [31:0] delay_counter;
 	always @(posedge clk) begin
