@@ -14,30 +14,40 @@ module ysyx_23060061_SRAM(
 
 	input [31:0] awaddr,
 	input awvalid,
-	output awready,
+	output reg awready,
 
 	input [31:0] wdata,
 	input [3:0] wstrb,
 	input wvalid,
-	output wready,
+	output reg wready,
 
-	output bresp,
+	output reg [1:0] bresp,
 	output reg bvalid,
 	input bready
 );
-	parameter LISTEN_ADDR = 0;
-	parameter FEED_DATA = 1;
-	parameter WAIT_RECEIVE = 2;
-	
-	reg [1:0] state;
+	localparam LISTEN_ADDR = 0;
+	localparam FEED_DATA = 1;
+	localparam WAIT_RECEIVE = 2;
+	localparam WRITE_DATA = 3;	
+	localparam WAIT_RESP = 4;
+
+	reg [2:0] state;
 	
 	reg [31:0] raddr;
+	reg [31:0] waddr_internal;
+	reg [3:0] wstrb_internal;
+	reg [31:0] wdata_internal;
+	
 	wire [31:0] rdata_internal;
 	always @(raddr) begin
 		if (state == FEED_DATA)
 			paddr_read(raddr, rdata_internal);
 	end
-	
+	always @(waddr_internal or wstrb_internal or wdata_internal) begin
+		if (state == WRITE_DATA)
+			paddr_write(waddr_internal, wdata_internal, {4'b0000, wstrb_internal});
+	end
+
 	always @(posedge clk) begin
 		if (~rst) begin
 			state <= LISTEN_ADDR; // state transition
@@ -47,6 +57,9 @@ module ysyx_23060061_SRAM(
 			bvalid <= 0;	
 
 			arready <= 1; // ready to receive address just after the cycle when reset is deasserted
+
+			awready <= 1;
+			wready <= 1;
 		end else begin
 			case (state)
 				LISTEN_ADDR: begin
@@ -55,6 +68,17 @@ module ysyx_23060061_SRAM(
 						arready <= 0; // start feeding data and stop receiving address
 
 						raddr <= araddr; // store the araddr because reading data may take serval cycles
+					end
+					if (awvalid && awready && wvalid && awready) begin
+						state <= WRITE_DATA; // state transition
+						
+						// start writing data and stop receiving address
+						awready <= 0; 
+						wready <= 0;
+						// store the waddr and wdata 
+						waddr_internal <= awaddr;
+						wdata_internal <= wdata;
+						wstrb_internal <= wstrb;
 					end
 				end
 				FEED_DATA: begin
@@ -69,6 +93,27 @@ module ysyx_23060061_SRAM(
 						state <= LISTEN_ADDR; // state transition
 						rvalid <= 0; // stop feeding data
 						arready <= 1; // ready to receive address
+						
+						raddr <= 0;
+					end
+				end
+
+				WRITE_DATA: begin
+					state <= WAIT_RESP; // state transition
+					// Now SRAM can write data in one cycle
+					bvalid <= 1;
+					bresp <= 2'b00; // OKAY
+				end
+				WAIT_RESP: begin
+					if(bvalid && bready) begin
+						state <= LISTEN_ADDR; // state transition
+						bvalid <= 0; // stop writing data
+						awready <= 1; // ready to receive address
+						wready <= 1;
+						
+						waddr_internal <= 0;
+						wdata_internal <= 0;
+						wstrb_internal <= 0;
 					end
 				end
 			endcase
