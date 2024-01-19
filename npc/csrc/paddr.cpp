@@ -55,7 +55,6 @@ extern "C" void paddr_read(int raddr, int *rdata) {
 
   if (in_pmem(raddr)) {
 	(*rdata) = pmem_read(raddr, 4);
-	printf("paddr_read: %x, %x\n", raddr, *rdata);
 	return;
   } 
 
@@ -81,8 +80,6 @@ extern "C" void paddr_read(int raddr, int *rdata) {
 }
 
 extern "C" void paddr_write(int waddr, int wdata, char wmask){
-
-  printf("paddr_write: %x, %x, %x\n", waddr, wdata, wmask);
 
   if (in_pmem(waddr)) {
 	wdata &= ((wmask & 1) * 0xFF) | ((((wmask & 2) >> 1)* 0xFF) << 8) | ((((wmask & 4) >> 2 ) * 0xFF) << 16) | ((((wmask & 8) >> 3 ) * 0xFF) << 24);
