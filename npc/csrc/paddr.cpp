@@ -1,18 +1,17 @@
 #include <paddr.h>
 #include <utils.h>
 #include <npc.h>
-
-static uint8_t *instMem = NULL;
+static uint8_t instMem[MEMSIZE] __attribute((aligned(4096))) = {};
 
 extern char *img_file;
 
 void init_mem() {
-	instMem = (uint8_t*) malloc(MEMSIZE);
 }
 
 uint8_t* guest_to_host(uint32_t paddr) { return  instMem + paddr - MEMBASE; }
 
 uint32_t host_read(void *addr, int len) {
+	assert(len == 1 || len == 2 || len == 4);
 	switch (len) {
 		case 1: return *(uint8_t  *)addr;
 		case 2: return *(uint16_t *)addr;
@@ -21,11 +20,12 @@ uint32_t host_read(void *addr, int len) {
 }
 
 void host_write(void *addr, int len, uint32_t data) {
-  switch (len) {
-    case 1: *(uint8_t  *)addr = data; return;
-    case 2: *(uint16_t *)addr = data; return;
-    case 4: *(uint32_t *)addr = data; return;
-  }
+	assert(len == 1 || len == 2 || len == 4);
+  	switch (len) {
+    	case 1: *(uint8_t  *)addr = data; return;
+    	case 2: *(uint16_t *)addr = data; return;
+    	case 4: *(uint32_t *)addr = data; return;
+  	}
 }
 
 uint32_t pmem_read(uint32_t paddr, int len) {
@@ -52,7 +52,7 @@ static bool in_pmem(uint32_t paddr) {
 static uint32_t htime = 0;
 static bool ltime_valid = false;
 extern "C" void paddr_read(int raddr, int *rdata) {
-  // printf("paddr_read: %x\n", raddr);
+
   if (in_pmem(raddr)) {
 	(*rdata) = pmem_read(raddr, 4);
 	return;

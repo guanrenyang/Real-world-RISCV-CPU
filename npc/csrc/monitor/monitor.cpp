@@ -13,7 +13,7 @@ char *diff_so_file = NULL;
 
 extern uint8_t *instMem;
 
-#define RESET_VECTOR 0x80000000
+// #define RESET_VECTOR 0x80000000
 
 void init_mem();
 void init_log(const char *);
@@ -82,7 +82,7 @@ void init_monitor(int argc, char *argv[]) {
 
 	/* Load the image to memory. This will overwrite the built-in image. */	
 	long img_size = load_img();
-	
+	printf("Load image from %s with size = %x\n", img_file, img_size);
 	/* Initialize disassemble module*/
 #ifdef CONFIG_ITRACE
   	init_disasm("riscv32-pc-linux-gnu");
