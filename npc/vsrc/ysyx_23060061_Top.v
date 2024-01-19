@@ -97,6 +97,29 @@ module ysyx_23060061_Top (
 	wire [1:0] lsu_bresp;
 	wire lsu_bvalid;
 	wire lsu_bready;
+	
+	// AXI-Lite 
+	wire [31:0] araddr;
+	wire arvalid;
+	wire arready;
+
+	wire [31:0] rdata;
+	wire [1:0] rresp;
+	wire rvalid;
+	wire rready;
+
+	wire [31:0] awaddr;
+	wire awvalid;
+	wire awready;
+
+	wire [31:0] wdata;
+	wire [3:0] wstrb;
+	wire wvalid;
+	wire wready;
+
+	wire [1:0] bresp;
+	wire bvalid;
+	wire bready;
 
 	ysyx_23060061_Reg #(32, 32'h80000000) pc_reg(
 		.clk(clk),
@@ -137,56 +160,139 @@ module ysyx_23060061_Top (
 		.clk(clk),
 		.rst(~rst), // reset of AXI is activate low
 
-		.araddr(ifu_araddr),
-		.arvalid(ifu_arvalid),
-		.arready(ifu_arready),
+		.araddr(araddr),
+		.arvalid(arvalid),
+		.arready(arready),
 
-		.rdata(ifu_rdata),
-		.rresp(ifu_rresp),
-		.rvalid(ifu_rvalid),
-		.rready(ifu_rready),
+		.rdata(rdata),
+		.rresp(rresp),
+		.rvalid(rvalid),
+		.rready(rready),
 
-		.awaddr(ifu_awaddr),
-		.awvalid(ifu_awvalid),
-		.awready(ifu_awready),
+		.awaddr(awaddr),
+		.awvalid(awvalid),
+		.awready(awready),
 
-		.wdata(ifu_wdata),
-		.wstrb(ifu_wstrb),
-		.wvalid(ifu_wvalid),
-		.wready(ifu_wready),
+		.wdata(wdata),
+		.wstrb(wstrb),
+		.wvalid(wvalid),
+		.wready(wready),
 
-		.bresp(ifu_bresp),
-		.bvalid(ifu_bvalid),
-		.bready(ifu_bready)
+		.bresp(bresp),
+		.bvalid(bvalid),
+		.bready(bready)
 	);
 	
-	ysyx_23060061_SRAM DataMem(
-		.clk(clk),
-		.rst(~rst), // reset of AXI is activate low
+	// ysyx_23060061_SRAM DataMem(
+	// 	.clk(clk),
+	// 	.rst(~rst), // reset of AXI is activate low
+	//
+	// 	.araddr(araddr),
+	// 	.arvalid(arvalid),
+	// 	.arready(arready),
+	//
+	// 	.rdata(rdata),
+	// 	.rresp(rresp),
+	// 	.rvalid(rvalid),
+	// 	.rready(rready),
+	//
+	// 	.awaddr(awaddr),
+	// 	.awvalid(awvalid),
+	// 	.awready(awready),
+	//
+	// 	.wdata(wdata),
+	// 	.wstrb(wstrb),
+	// 	.wvalid(wvalid),
+	// 	.wready(wready),
+	//
+	// 	.bresp(bresp),
+	// 	.bvalid(bvalid),
+	// 	.bready(bready)
+	// );
 
-		.araddr(lsu_araddr),
-		.arvalid(lsu_arvalid),
-		.arready(lsu_arready),
-
-		.rdata(lsu_rdata),
-		.rresp(lsu_rresp),
-		.rvalid(lsu_rvalid),
-		.rready(lsu_rready),
-
-		.awaddr(lsu_awaddr),
-		.awvalid(lsu_awvalid),
-		.awready(lsu_awready),
-
-		.wdata(lsu_wdata),
-		.wstrb(lsu_wstrb),
-		.wvalid(lsu_wvalid),
-		.wready(lsu_wready),
-
-		.bresp(lsu_bresp),
-		.bvalid(lsu_bvalid),
-		.bready(lsu_bready)
+	// outports wire
+	wire [31:0] 	araddr;
+	wire        	arvalid;
+	wire        	rready;
+	wire [31:0] 	awaddr;
+	wire        	awvalid;
+	wire [31:0] 	wdata;
+	wire [3:0]  	wstrb;
+	wire        	wvalid;
+	wire        	bread;
+	wire        	ifu_arready;
+	wire [31:0] 	ifu_rdata;
+	wire [1:0]  	ifu_rresp;
+	wire        	ifu_rvalid;
+	wire        	ifu_awready;
+	wire        	ifu_wready;
+	wire [1:0]  	ifu_bresp;
+	wire        	ifu_bvalid;
+	wire        	lsu_arready;
+	wire [31:0] 	lsu_rdata;
+	wire [1:0]  	lsu_rresp;
+	wire        	lsu_rvalid;
+	wire        	lsu_awready;
+	wire        	lsu_wready;
+	wire [1:0]  	lsu_bresp;
+	wire        	lsu_bvalid;
+	
+	ysyx_23060061_AXILiteArbitrater busArbitrater(
+		.clk         	( clk          ),
+		.rst         	( ~rst          ),
+		.araddr      	( araddr       ),
+		.arvalid     	( arvalid      ),
+		.arready     	( arready      ),
+		.rdata       	( rdata        ),
+		.rresp       	( rresp        ),
+		.rvalid      	( rvalid       ),
+		.rready      	( rready       ),
+		.awaddr      	( awaddr       ),
+		.awvalid     	( awvalid      ),
+		.awready     	( awready      ),
+		.wdata       	( wdata        ),
+		.wstrb       	( wstrb        ),
+		.wvalid      	( wvalid       ),
+		.wready      	( wready       ),
+		.bresp       	( bresp        ),
+		.bvalid      	( bvalid       ),
+		.bready      	( bready       ),
+		.ifu_araddr  	( ifu_araddr   ),
+		.ifu_arvalid 	( ifu_arvalid  ),
+		.ifu_arready 	( ifu_arready  ),
+		.ifu_rdata   	( ifu_rdata    ),
+		.ifu_rresp   	( ifu_rresp    ),
+		.ifu_rvalid  	( ifu_rvalid   ),
+		.ifu_rready  	( ifu_rready   ),
+		.ifu_awaddr  	( ifu_awaddr   ),
+		.ifu_awvalid 	( ifu_awvalid  ),
+		.ifu_awready 	( ifu_awready  ),
+		.ifu_wdata   	( ifu_wdata    ),
+		.ifu_wstrb   	( ifu_wstrb    ),
+		.ifu_wvalid  	( ifu_wvalid   ),
+		.ifu_wready  	( ifu_wready   ),
+		.ifu_bresp   	( ifu_bresp    ),
+		.ifu_bvalid  	( ifu_bvalid   ),
+		.ifu_bready  	( ifu_bready   ),
+		.lsu_araddr     ( lsu_araddr   ),
+		.lsu_arvalid 	( lsu_arvalid  ),
+		.lsu_arready 	( lsu_arready  ),
+		.lsu_rdata   	( lsu_rdata    ),
+		.lsu_rresp   	( lsu_rresp    ),
+		.lsu_rvalid  	( lsu_rvalid   ),
+		.lsu_rready  	( lsu_rready   ),
+		.lsu_awaddr  	( lsu_awaddr   ),
+		.lsu_awvalid 	( lsu_awvalid  ),
+		.lsu_awready 	( lsu_awready  ),
+		.lsu_wdata   	( lsu_wdata    ),
+		.lsu_wstrb   	( lsu_wstrb    ),
+		.lsu_wvalid  	( lsu_wvalid   ),
+		.lsu_wready  	( lsu_wready   ),
+		.lsu_bresp   	( lsu_bresp    ),
+		.lsu_bvalid  	( lsu_bvalid   ),
+		.lsu_bready  	( lsu_bready   )
 	);
-
+	
 	ysyx_23060061_IFU_with_SRAM ifu(
 		.clk(clk),
 		.rst(~rst), // reset of AXI is activate low
