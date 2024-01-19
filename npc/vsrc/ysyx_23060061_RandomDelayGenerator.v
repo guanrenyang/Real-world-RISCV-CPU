@@ -8,7 +8,7 @@ module ysyx_23060061_RandomDelayGenerator (
 	reg [31:0] delay_counter;
 	always @(posedge clk) begin
 		if (~rst) begin
-			delay <= DELAY;
+			delay <= $random;
 			delay_counter <= 0;
 		end else begin
 			if (delay_counter == delay) begin
