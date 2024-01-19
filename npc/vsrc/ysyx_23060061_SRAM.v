@@ -56,8 +56,8 @@ module ysyx_23060061_SRAM(
 	reg [31:0] delay_counter;
 	always @(posedge clk) begin
 		if (~rst) begin
-			delay <= 0;
-			delay_counter <= DELAY;
+			delay <= DELAY;
+			delay_counter <= 0;
 		end else begin
 			if (delay_counter == delay) begin
 				delay <= DELAY;
