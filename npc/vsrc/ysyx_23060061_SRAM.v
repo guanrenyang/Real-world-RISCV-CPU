@@ -51,25 +51,12 @@ module ysyx_23060061_SRAM(
 	end
 	
 	// Generate Random Delay
-	localparam [31:0] DELAY = 2000;
-	reg [31:0] delay;
-	reg [31:0] delay_counter;
-	always @(posedge clk) begin
-		if (~rst) begin
-			delay <= DELAY;
-			delay_counter <= 0;
-		end else begin
-			if (delay_counter == delay) begin
-				delay <= DELAY;
-				delay_counter <= 0;
-			end else begin
-				delay <= delay;
-				delay_counter <= delay_counter + 1;
-			end
-		end
-	end
 	wire delay_trigger;
-	assign delay_trigger = (delay_counter == delay);
+	ysyx_23060061_RandomDelayGenerator randomDelayGenerator(
+		.clk(clk),
+		.rst(rst),
+		.delay_trigger(delay_trigger)
+	);
 
 	// State Transition
 	always @(posedge clk) begin
