@@ -117,10 +117,12 @@ module ysyx_23060061_SRAM(
 				end
 
 				WRITE_DATA: begin
-					state <= WAIT_RESP; // state transition
-					// Now SRAM can write data in one cycle
-					bvalid <= 1;
-					bresp <= 2'b00; // OKAY
+					if (delay_trigger) begin
+						state <= WAIT_RESP; // state transition
+						// Now SRAM can write data in one cycle
+						bvalid <= 1;
+						bresp <= 2'b00; // OKAY
+					end
 				end
 				WAIT_RESP: begin
 					if(bvalid && bready) begin
