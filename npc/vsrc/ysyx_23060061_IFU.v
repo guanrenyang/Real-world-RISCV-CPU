@@ -87,10 +87,11 @@ module ysyx_23060061_IFU_with_SRAM(
 					if (arvalid && arready) begin
 						state <= WAIT_DATA;
 						arvalid <= 0;
-						rready <= 1;		
 					end
 				end
 				WAIT_DATA: begin
+					if (delay_trigger)
+						rready <= 1;		
 					if (rvalid & rready) begin
 						state <= WAIT_CPU;
 						rready <= 0;
