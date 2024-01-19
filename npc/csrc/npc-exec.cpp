@@ -133,7 +133,7 @@ void exec_once() {
 	if(pc_old == 0x800003c4 ){
 		top->clk = 0b1; top->rst = 0b0; step_and_dump_wave();	
 		
-		printf("a5: %x\n", top->rootp->ysyx_23060061_Top__DOT__CSRs__DOT__rf[15]);
+		printf("a5: %x\n", top->rootp->ysyx_23060061_Top__DOT__GPRs__DOT__rf[15]);
 		sim_exit();
 		exit(0);
 	}
