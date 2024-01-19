@@ -107,10 +107,11 @@ module ysyx_23060061_LSU(
 						state <= WAIT_DATA;
 
 						arvalid <= 0;
-						rready <= 1;
 					end
 				end
 				WAIT_DATA: begin
+					if (delay_trigger)
+						rready <= 1;
 					if (rvalid & rready) begin
 						state <= WAIT_WBU;
 						
@@ -125,10 +126,11 @@ module ysyx_23060061_LSU(
 
 						awvalid <= 0;
 						wvalid <= 0;
-						bready <= 1;
 					end
 				end
 				WAIT_WRESP: begin
+					if (delay_trigger)	
+						bready <= 1;
 					if (bvalid && bready) begin
 						state <= WAIT_WBU;
 
