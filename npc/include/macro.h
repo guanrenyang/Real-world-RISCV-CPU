@@ -1,10 +1,10 @@
 #include <inttypes.h>
 
-#define CONFIG_ITRACE y
+// #define CONFIG_ITRACE y
 // #define CONFIG_FTRACE y
 // #define CONFIG_DEBUG y
 // #define CONFIG_DIFFTEST y
-#define CONFIG_WAVETRACE y
+// #define CONFIG_WAVETRACE y
 #define CONFIG_TIMER_GETTIMEOFDAY y
 
 #define CONFIG_RVE y
