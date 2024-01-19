@@ -71,16 +71,19 @@ module ysyx_23060061_IFU_with_SRAM(
 		end else begin
 			case (state)
 				IDLE: begin
-					if(pc_old != pc && delay_trigger) begin// need to read InstMem
+					if(pc_old != pc) begin// need to read InstMem
 						state <= SEND_ADDR; // state transition
 						
-						araddr <= pc;
-						arvalid <= 1;
 						rready <= 0;
 					end
 					instValid <= 0;
 				end
 				SEND_ADDR: begin
+					if (delay_trigger) begin
+						araddr <= pc;
+						arvalid <= 1;
+					end
+
 					if (arvalid && arready) begin
 						state <= WAIT_DATA;
 						arvalid <= 0;
