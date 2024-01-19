@@ -4,8 +4,9 @@ module ysyx_23060061_RandomDelayGenerator (
 	output delay_trigger
 );
 
-	wire [31:0] random_number;
-	ysyx_23060061_lfsr_random_generator #(32) lfsr_random_generator (
+	localparam random_number_bit = 6;
+	wire [random_number_bit-1:0] random_number;
+	ysyx_23060061_lfsr_random_generator #(random_number_bit) lfsr_random_generator (
 		.clk(clk),
 		.reset(rst),
 		.random_number(random_number)
@@ -15,11 +16,11 @@ module ysyx_23060061_RandomDelayGenerator (
 	reg [31:0] delay_counter;
 	always @(posedge clk) begin
 		if (~rst) begin
-			delay <= random_number;
+			delay <= {26'b0, random_number};
 			delay_counter <= 0;
 		end else begin
 			if (delay_counter == delay) begin
-				delay <= random_number;
+				delay <= {26'b0, random_number};
 				delay_counter <= 0;
 			end else begin
 				delay <= delay;
