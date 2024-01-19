@@ -107,13 +107,13 @@ module ysyx_23060061_AXILiteArbitrater(
 			endcase
 		end
 	end
-	ysyx_23060061_MuxKeyWithDefault #(2, 2, 104) mux_arbitarter_to_sram(
-		.out({araddr, arvalid, awaddr, awvalid, wdata, wstrb, wvalid, bready}),
+	ysyx_23060061_MuxKeyWithDefault #(2, 2, 105) mux_arbitarter_to_sram(
+		.out({araddr, arvalid, rready, awaddr, awvalid, wdata, wstrb, wvalid, bready}),
 		.key(state),
 		.default_out(0),
 		.lut({
-			SERVE_IFU, {ifu_araddr, ifu_arvalid, ifu_awaddr, ifu_awvalid, ifu_wdata, ifu_wstrb, ifu_wvalid, ifu_bready},
-			SERVE_LSU, {lsu_araddr, lsu_arvalid, lsu_awaddr, lsu_awvalid, lsu_wdata, lsu_wstrb, lsu_wvalid, lsu_bready}
+			SERVE_IFU, {ifu_araddr, ifu_arvalid, ifu_rready, ifu_awaddr, ifu_awvalid, ifu_wdata, ifu_wstrb, ifu_wvalid, ifu_bready},
+			SERVE_LSU, {lsu_araddr, lsu_arvalid, lsu_rready, lsu_awaddr, lsu_awvalid, lsu_wdata, lsu_wstrb, lsu_wvalid, lsu_bready}
 		})
 	);
 	ysyx_23060061_MuxKeyWithDefault #(1, 2, 41) mux_arbitarter_from_sram_to_ifu(
