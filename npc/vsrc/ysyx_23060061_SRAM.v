@@ -93,8 +93,11 @@ module ysyx_23060061_SRAM(
 						state <= LISTEN_ADDR; // state transition
 						rvalid <= 0; // stop feeding data
 						arready <= 1; // ready to receive address
+						
+						raddr <= 0;
 					end
 				end
+
 				WRITE_DATA: begin
 					state <= WAIT_RESP; // state transition
 					// Now SRAM can write data in one cycle
@@ -107,6 +110,10 @@ module ysyx_23060061_SRAM(
 						bvalid <= 0; // stop writing data
 						awready <= 1; // ready to receive address
 						wready <= 1;
+						
+						waddr_internal <= 0;
+						wdata_internal <= 0;
+						wstrb_internal <= 0;
 					end
 				end
 			endcase
