@@ -210,33 +210,6 @@ module ysyx_23060061_Top (
 	// 	.bready(bready)
 	// );
 
-	// outports wire
-	wire [31:0] 	araddr;
-	wire        	arvalid;
-	wire        	rready;
-	wire [31:0] 	awaddr;
-	wire        	awvalid;
-	wire [31:0] 	wdata;
-	wire [3:0]  	wstrb;
-	wire        	wvalid;
-	wire        	bread;
-	wire        	ifu_arready;
-	wire [31:0] 	ifu_rdata;
-	wire [1:0]  	ifu_rresp;
-	wire        	ifu_rvalid;
-	wire        	ifu_awready;
-	wire        	ifu_wready;
-	wire [1:0]  	ifu_bresp;
-	wire        	ifu_bvalid;
-	wire        	lsu_arready;
-	wire [31:0] 	lsu_rdata;
-	wire [1:0]  	lsu_rresp;
-	wire        	lsu_rvalid;
-	wire        	lsu_awready;
-	wire        	lsu_wready;
-	wire [1:0]  	lsu_bresp;
-	wire        	lsu_bvalid;
-	
 	ysyx_23060061_AXILiteArbitrater busArbitrater(
 		.clk         	( clk          ),
 		.rst         	( ~rst          ),
