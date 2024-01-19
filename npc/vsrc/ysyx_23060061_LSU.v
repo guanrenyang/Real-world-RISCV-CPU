@@ -53,7 +53,6 @@ module ysyx_23060061_LSU(
 	assign lsu_valid = exu_valid & ( MemRW == 0 | memDataReady);
 	assign lsu_ready = wbu_ready;
 
-	
 	// Random delay generator
 	wire delay_trigger;
 	ysyx_23060061_RandomDelayGenerator randomDelayGenerator(
