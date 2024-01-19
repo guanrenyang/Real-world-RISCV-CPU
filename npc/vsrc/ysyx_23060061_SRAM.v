@@ -25,19 +25,21 @@ module ysyx_23060061_SRAM(
 	output reg bvalid,
 	input bready
 );
+	// FSM
+	reg [2:0] state;
 	localparam LISTEN_ADDR = 0;
 	localparam FEED_DATA = 1;
 	localparam WAIT_RECEIVE = 2;
 	localparam WRITE_DATA = 3;	
 	localparam WAIT_RESP = 4;
 
-	reg [2:0] state;
-	
+	// Internal signals to store the address and data
 	reg [31:0] raddr;
 	reg [31:0] waddr_internal;
 	reg [3:0] wstrb_internal;
 	reg [31:0] wdata_internal;
 	
+	// DPI-C to access SRAM
 	wire [31:0] rdata_internal;
 	always @(raddr) begin
 		if (state == FEED_DATA)
@@ -47,7 +49,29 @@ module ysyx_23060061_SRAM(
 		if (state == WRITE_DATA)
 			paddr_write(waddr_internal, wdata_internal, {4'b0000, wstrb_internal});
 	end
+	
+	// Generate Random Delay
+	localparam [31:0] DELAY = 8;
+	reg [31:0] delay;
+	reg [31:0] delay_counter;
+	always @(posedge clk) begin
+		if (~rst) begin
+			delay <= 0;
+			delay_counter <= DELAY;
+		end else begin
+			if (delay_counter == delay) begin
+				delay <= DELAY;
+				delay_counter <= 0;
+			end else begin
+				delay <= delay;
+				delay_counter <= delay_counter + 1;
+			end
+		end
+	end
+	wire delay_trigger;
+	assign delay_trigger = (delay_counter == delay);
 
+	// State Transition
 	always @(posedge clk) begin
 		if (~rst) begin
 			state <= LISTEN_ADDR; // state transition
@@ -82,11 +106,13 @@ module ysyx_23060061_SRAM(
 					end
 				end
 				FEED_DATA: begin
-					state <= WAIT_RECEIVE; // state transition
-					// Now SRAM can feed data in one cycle
-					rvalid <= 1;
-					rdata <= rdata_internal;
-					rresp <= 2'b00; // OKAY
+					if (delay_trigger) begin
+    					state <= WAIT_RECEIVE; // state transition
+    					// Now SRAM can feed data in one cycle
+    					rvalid <= 1;
+    					rdata <= rdata_internal;
+    					rresp <= 2'b00; // OKAY
+					end
 				end
 				WAIT_RECEIVE: begin
 					if (rvalid && rready) begin
