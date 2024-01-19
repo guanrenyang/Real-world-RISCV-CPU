@@ -25,19 +25,21 @@ module ysyx_23060061_SRAM(
 	output reg bvalid,
 	input bready
 );
+	// FSM
+	reg [2:0] state;
 	localparam LISTEN_ADDR = 0;
 	localparam FEED_DATA = 1;
 	localparam WAIT_RECEIVE = 2;
 	localparam WRITE_DATA = 3;	
 	localparam WAIT_RESP = 4;
 
-	reg [2:0] state;
-	
+	// Internal signals to store the address and data
 	reg [31:0] raddr;
 	reg [31:0] waddr_internal;
 	reg [3:0] wstrb_internal;
 	reg [31:0] wdata_internal;
 	
+	// DPI-C to access SRAM
 	wire [31:0] rdata_internal;
 	always @(raddr) begin
 		if (state == FEED_DATA)
@@ -47,7 +49,16 @@ module ysyx_23060061_SRAM(
 		if (state == WRITE_DATA)
 			paddr_write(waddr_internal, wdata_internal, {4'b0000, wstrb_internal});
 	end
+	
+	// Generate Random Delay
+	wire delay_trigger;
+	ysyx_23060061_RandomDelayGenerator randomDelayGenerator(
+		.clk(clk),
+		.rst(rst),
+		.delay_trigger(delay_trigger)
+	);
 
+	// State Transition
 	always @(posedge clk) begin
 		if (~rst) begin
 			state <= LISTEN_ADDR; // state transition
@@ -63,6 +74,11 @@ module ysyx_23060061_SRAM(
 		end else begin
 			case (state)
 				LISTEN_ADDR: begin
+					if (delay_trigger) begin
+						arready <= 1; // ready to receive address just after the cycle when reset is deasserted
+						awready <= 1;
+						wready <= 1;
+					end
 					if (arvalid && arready) begin
 						state <= FEED_DATA; // state transition
 						arready <= 0; // start feeding data and stop receiving address
@@ -82,34 +98,38 @@ module ysyx_23060061_SRAM(
 					end
 				end
 				FEED_DATA: begin
-					state <= WAIT_RECEIVE; // state transition
-					// Now SRAM can feed data in one cycle
-					rvalid <= 1;
-					rdata <= rdata_internal;
-					rresp <= 2'b00; // OKAY
+					if (delay_trigger) begin
+    					state <= WAIT_RECEIVE; // state transition
+    					// Now SRAM can feed data in one cycle
+    					rvalid <= 1;
+    					rdata <= rdata_internal;
+    					rresp <= 2'b00; // OKAY
+					end
 				end
 				WAIT_RECEIVE: begin
 					if (rvalid && rready) begin
 						state <= LISTEN_ADDR; // state transition
 						rvalid <= 0; // stop feeding data
-						arready <= 1; // ready to receive address
+						// arready <= 1; // ready to receive address
 						
 						raddr <= 0;
 					end
 				end
 
 				WRITE_DATA: begin
-					state <= WAIT_RESP; // state transition
-					// Now SRAM can write data in one cycle
-					bvalid <= 1;
-					bresp <= 2'b00; // OKAY
+					if (delay_trigger) begin
+						state <= WAIT_RESP; // state transition
+						// Now SRAM can write data in one cycle
+						bvalid <= 1;
+						bresp <= 2'b00; // OKAY
+					end
 				end
 				WAIT_RESP: begin
 					if(bvalid && bready) begin
 						state <= LISTEN_ADDR; // state transition
 						bvalid <= 0; // stop writing data
-						awready <= 1; // ready to receive address
-						wready <= 1;
+						// awready <= 1; // ready to receive address
+						// wready <= 1;
 						
 						waddr_internal <= 0;
 						wdata_internal <= 0;

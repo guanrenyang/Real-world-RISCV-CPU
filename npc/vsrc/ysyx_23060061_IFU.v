@@ -49,6 +49,14 @@ module ysyx_23060061_IFU_with_SRAM(
 
 	reg [1:0] state;
 
+	// Random delay generator
+	wire delay_trigger;
+	ysyx_23060061_RandomDelayGenerator randomDelayGenerator(
+		.clk(clk),
+		.rst(rst),
+		.delay_trigger(delay_trigger)
+	);
+
 	// Sequential logic
 	always @(posedge clk) begin
 		if (~rst) begin // do reset
@@ -66,20 +74,24 @@ module ysyx_23060061_IFU_with_SRAM(
 					if(pc_old != pc) begin// need to read InstMem
 						state <= SEND_ADDR; // state transition
 						
-						araddr <= pc;
-						arvalid <= 1;
 						rready <= 0;
 					end
 					instValid <= 0;
 				end
 				SEND_ADDR: begin
+					if (delay_trigger) begin
+						araddr <= pc;
+						arvalid <= 1;
+					end
+
 					if (arvalid && arready) begin
 						state <= WAIT_DATA;
 						arvalid <= 0;
-						rready <= 1;		
 					end
 				end
 				WAIT_DATA: begin
+					if (delay_trigger)
+						rready <= 1;		
 					if (rvalid & rready) begin
 						state <= WAIT_CPU;
 						rready <= 0;
