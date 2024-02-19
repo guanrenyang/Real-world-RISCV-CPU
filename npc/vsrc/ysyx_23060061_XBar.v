@@ -73,9 +73,9 @@ module ysyx_23060061_XBar (
 );
 
 	reg [1:0] state;
-	localparam IDLE = 0;
-	localparam UART = 1;
-	localparam SRAM = 2;
+	localparam IDLE = 2'b00;
+	localparam UART = 2'b01;
+	localparam SRAM = 2'b10;
 
 	// serial logic
 	always @(posedge clk) begin
@@ -108,6 +108,7 @@ module ysyx_23060061_XBar (
 						state <= IDLE;
 					end
 				end
+				default: state <= IDLE;
 			endcase
 		end
 	end
