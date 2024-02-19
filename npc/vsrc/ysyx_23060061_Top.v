@@ -1,6 +1,7 @@
 import "DPI-C" function void trap();
 import "DPI-C" function void paddr_read(input int raddr, output int rdata);
 import "DPI-C" function void paddr_write(input int waddr, input int wdata, input byte wmask);
+import "DPI-C" function void uart_display(input int waddr, input int wdata);
 
 module ysyx_23060061_Top (
   input clk,
