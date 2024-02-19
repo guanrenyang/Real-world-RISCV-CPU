@@ -1,7 +1,7 @@
 module ysyx_23060061_SRAM(
 	// A SRAM which supports AXI-Lite interface
 	input clk,
-	input rst, // low active
+	input rst, // low activate
 
 	input [31:0] araddr,
 	input arvalid,
