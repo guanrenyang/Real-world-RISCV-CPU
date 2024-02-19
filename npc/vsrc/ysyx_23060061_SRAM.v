@@ -85,7 +85,7 @@ module ysyx_23060061_SRAM(
 
 						raddr <= araddr; // store the araddr because reading data may take serval cycles
 					end
-					if (awvalid && awready && wvalid && awready) begin
+					if (awvalid && awready && wvalid && wready) begin
 						state <= WRITE_DATA; // state transition
 						
 						// start writing data and stop receiving address
