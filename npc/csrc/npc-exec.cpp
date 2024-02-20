@@ -106,7 +106,7 @@ void exec_once() {
 	// printf("pc: %x, ra: %x\n", top->rootp->ysyx_23060061_Top__DOT__pc, top->rootp->ysyx_23060061_Top__DOT__CSRs__DOT__rf[1]);
 	top->clk = 0b1; top->rst = 0b0; step_and_dump_wave();
 
-	printf("pc = %x\n", top->rootp->ysyx_23060061_Top__DOT__pc);
+	// printf("pc = %x\n", top->rootp->ysyx_23060061_Top__DOT__pc);
 	// if (top->rootp->ysyx_23060061_Top__DOT__pc==0x80000014) {
 	// 	printf("ra = %x\n", top->rootp->ysyx_23060061_Top__DOT__id_ex_wb__DOT__GPRs__DOT__rf[1]);
 	// 	sim_exit();
