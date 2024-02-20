@@ -90,6 +90,12 @@ extern "C" void paddr_write(int waddr, int wdata, char wmask){
 	return;
   } 
   
-  assert(waddr == SERIAL_MMIO && wmask == 1);
+  assert(NULL);
+  // assert(waddr == SERIAL_MMIO && wmask == 1);
+  // putc((char)wdata, stderr);
+}
+
+extern "C" void uart_display(int waddr, int wdata) {
+  assert(waddr == SERIAL_MMIO);
   putc((char)wdata, stderr);
 }
