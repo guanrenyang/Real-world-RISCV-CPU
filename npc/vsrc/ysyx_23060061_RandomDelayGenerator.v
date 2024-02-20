@@ -29,6 +29,7 @@ module ysyx_23060061_RandomDelayGenerator (
 	end
 
 	assign delay_trigger = (delay_counter == delay);
+	// assign delay_trigger = 1'b1;
 endmodule
 
 module ysyx_23060061_lfsr_random_generator #(NR_BIT=32)(

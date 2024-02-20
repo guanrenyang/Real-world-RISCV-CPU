@@ -168,6 +168,29 @@ module ysyx_23060061_Top (
 	wire uart_bvalid;
 	wire uart_bready;
 
+	// AXI-Lite: Xbar->CLINT
+	wire [31:0] clint_araddr;
+	wire clint_arvalid;
+	wire clint_arready;
+
+	wire [31:0] clint_rdata;
+	wire [1:0] clint_rresp;
+	wire clint_rvalid;
+	wire clint_rready;
+
+	wire [31:0] clint_awaddr;
+	wire clint_awvalid;
+	wire clint_awready;
+
+	wire [31:0] clint_wdata;
+	wire [3:0] clint_wstrb;
+	wire clint_wvalid;
+	wire clint_wready;
+
+	wire [1:0] clint_bresp;
+	wire clint_bvalid;
+	wire clint_bready;
+
 	// AXI-Lite 
 	ysyx_23060061_Reg #(32, 32'h80000000) pc_reg(
 		.clk(clk),
@@ -263,32 +286,27 @@ module ysyx_23060061_Top (
 		.bready  	( uart_bready   )
 	);
 		
-	// ysyx_23060061_SRAM DataMem(
-	// 	.clk(clk),
-	// 	.rst(~rst), // reset of AXI is activate low
-	//
-	// 	.araddr(araddr),
-	// 	.arvalid(arvalid),
-	// 	.arready(arready),
-	//
-	// 	.rdata(rdata),
-	// 	.rresp(rresp),
-	// 	.rvalid(rvalid),
-	// 	.rready(rready),
-	//
-	// 	.awaddr(awaddr),
-	// 	.awvalid(awvalid),
-	// 	.awready(awready),
-	//
-	// 	.wdata(wdata),
-	// 	.wstrb(wstrb),
-	// 	.wvalid(wvalid),
-	// 	.wready(wready),
-	//
-	// 	.bresp(bresp),
-	// 	.bvalid(bvalid),
-	// 	.bready(bready)
-	// );
+	ysyx_23060061_CLINT clint(
+		.clk     	( clk      ),
+		.rst     	( ~rst      ),
+		.araddr  	( clint_araddr   ),
+		.arvalid 	( clint_arvalid  ),
+		.arready 	( clint_arready  ),
+		.rdata   	( clint_rdata    ),
+		.rresp   	( clint_rresp    ),
+		.rvalid  	( clint_rvalid   ),
+		.rready  	( clint_rready   ),
+		.awaddr  	( clint_awaddr   ),
+		.awvalid 	( clint_awvalid  ),
+		.awready 	( clint_awready  ),
+		.wdata   	( clint_wdata    ),
+		.wstrb   	( clint_wstrb    ),
+		.wvalid  	( clint_wvalid   ),
+		.wready  	( clint_wready   ),
+		.bresp   	( clint_bresp    ),
+		.bvalid  	( clint_bvalid   ),
+		.bready  	( clint_bready   )
+	);
 	ysyx_23060061_XBar xbar(
 		.clk            ( clk          ),
 		.rst			( ~rst         ),
@@ -342,7 +360,24 @@ module ysyx_23060061_Top (
 		.uart_wready    ( uart_wready  ),
 		.uart_bresp     ( uart_bresp   ),
 		.uart_bvalid    ( uart_bvalid  ),
-		.uart_bready    ( uart_bready  )
+		.uart_bready    ( uart_bready  ),
+		.clint_araddr    ( clint_araddr  ),
+		.clint_arvalid   ( clint_arvalid ),
+		.clint_arready   ( clint_arready ),
+		.clint_rdata     ( clint_rdata   ),
+		.clint_rresp     ( clint_rresp   ),
+		.clint_rvalid    ( clint_rvalid  ),
+		.clint_rready    ( clint_rready  ),
+		.clint_awaddr    ( clint_awaddr  ),
+		.clint_awvalid   ( clint_awvalid ),
+		.clint_awready   ( clint_awready ),
+		.clint_wdata     ( clint_wdata   ),
+		.clint_wstrb     ( clint_wstrb   ),
+		.clint_wvalid    ( clint_wvalid  ),
+		.clint_wready    ( clint_wready  ),
+		.clint_bresp     ( clint_bresp   ),
+		.clint_bvalid    ( clint_bvalid  ),
+		.clint_bready    ( clint_bready  )
 	);
 
 	ysyx_23060061_AXILiteArbitrater busArbitrater(
