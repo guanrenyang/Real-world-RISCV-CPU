@@ -243,7 +243,7 @@ module ysyx_23060061_Top (
 	
 	ysyx_23060061_UART uart(
 		.clk     	( clk      ),
-		.rst     	( rst      ),
+		.rst     	( ~rst      ),
 		.araddr  	( uart_araddr   ),
 		.arvalid 	( uart_arvalid  ),
 		.arready 	( uart_arready  ),
