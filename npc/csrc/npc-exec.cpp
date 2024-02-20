@@ -130,13 +130,13 @@ void exec_once() {
 	// printf("dnpc = %x\n", top->ftrace_dnpc); // Here, dnpc equals to pc+4
 	step_and_dump_wave();
 
-	// if(pc_old == 0x800003c4 ){
-	// 	top->clk = 0b1; top->rst = 0b0; step_and_dump_wave();	
-	// 	
-	// 	printf("a5: %x\n", top->rootp->ysyx_23060061_Top__DOT__GPRs__DOT__rf[15]);
-	// 	sim_exit();
-	// 	exit(0);
-	// }
+	if(pc_old == 0x80001084 ){
+		top->clk = 0b1; top->rst = 0b0; step_and_dump_wave();	
+		
+		printf("a5: %x\n", top->rootp->ysyx_23060061_Top__DOT__GPRs__DOT__rf[15]);
+		sim_exit();
+		exit(0);
+	}
 
 #ifdef CONFIG_FTRACE
 	if(PC_!=pc_old)
