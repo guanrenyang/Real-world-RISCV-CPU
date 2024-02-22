@@ -1,4 +1,4 @@
-TOPNAME = ysyx_23060061_Top
+TOPNAME = Top
 SIM_PATH = ./csrc
 
 VERILATOR = verilator

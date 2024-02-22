@@ -1,5 +1,5 @@
 // import "DPI-C" function void paddr_read(input int raddr, output int rdata);
-module ysyx_23060061_IFU_with_SRAM(
+module ysyx_23060061_IFU(
 	input clk,
 	input rst,
 	input [31:0] dnpc,

@@ -38,10 +38,10 @@ module ysyx_23060061_IDEXU (
   output [1:0] WBSel,
   output [31:0] aluOut,
   output [31:0] snpc, 
-  output [31:0] dnpc,
+  output [31:0] dnpc
   
   // signals out from top
-  output [31:0] ftrace_dnpc // used only for ftrace
+  // output [31:0] ftrace_dnpc // used only for ftrace
 );
   // IF: reg PC and its updating rule.
   // wire [31:0] snpc;
@@ -80,7 +80,7 @@ module ysyx_23060061_IDEXU (
   assign snpc = pc + 4;
   assign dnpc = ifu_valid == 0 ? pc : (mret == 1 ? mepc : (ecall == 1 ? mtvec : (PCSel == 0 ? snpc : aluOut)));
 
-  assign ftrace_dnpc = dnpc; // for ftrace
+  // assign ftrace_dnpc = dnpc; // for ftrace
 
   // For CSRs
   assign csrWriteData = aluOut;
