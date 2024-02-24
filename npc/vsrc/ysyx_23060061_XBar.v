@@ -6,11 +6,17 @@ module ysyx_23060061_XBar (
 	input [31:0] araddr,
 	input arvalid,
 	output arready,
+	input [3:0] arid, // AXI4
+	input [7:0] arlen, // AXI4
+	input [2:0] arsize, // AXI4
+	input [1:0] arburst, // AXI4
 
 	output [31:0] rdata,
 	output [1:0] rresp,
 	output rvalid,
 	input rready,
+	output rlast, // AXI4
+	output [3:0] rid, // AXI4
 
 	input [31:0] awaddr,
 	input awvalid,
@@ -29,11 +35,17 @@ module ysyx_23060061_XBar (
 	output [31:0] sram_araddr,
 	output sram_arvalid,
 	input sram_arready,
+	output [3:0] sram_arid, // AXI4
+	output [7:0] sram_arlen, // AXI4
+	output [2:0] sram_arsize, // AXI4
+	output [1:0] sram_arburst, // AXI4
 
 	input [31:0] sram_rdata,
 	input [1:0] sram_rresp,
 	input sram_rvalid,
 	output sram_rready,
+	input sram_rlast, // AXI4
+	input [3:0] sram_rid, // AXI4
 
 	output [31:0] sram_awaddr,
 	output sram_awvalid,
@@ -52,11 +64,17 @@ module ysyx_23060061_XBar (
 	output [31:0] uart_araddr,
 	output uart_arvalid,
 	input uart_arready,
+	output [3:0] uart_arid, // AXI4
+	output [7:0] uart_arlen, // AXI4
+	output [2:0] uart_arsize, // AXI4
+	output [1:0] uart_arburst, // AXI4
 
 	input [31:0] uart_rdata,
 	input [1:0] uart_rresp,
 	input uart_rvalid,
 	output uart_rready,
+	input uart_rlast, // AXI4
+	input [3:0] uart_rid, // AXI4
 
 	output [31:0] uart_awaddr,
 	output uart_awvalid,
@@ -75,11 +93,17 @@ module ysyx_23060061_XBar (
 	output [31:0] clint_araddr,
 	output clint_arvalid,
 	input clint_arready,
+	output [3:0] clint_arid, // AXI4
+	output [7:0] clint_arlen, // AXI4
+	output [2:0] clint_arsize, // AXI4
+	output [1:0] clint_arburst, // AXI4
 
 	input [31:0] clint_rdata,
 	input [1:0] clint_rresp,
 	input clint_rvalid,
 	output clint_rready,
+	input clint_rlast, // AXI4
+	input [3:0] clint_rid, // AXI4
 
 	output [31:0] clint_awaddr,
 	output clint_awvalid,

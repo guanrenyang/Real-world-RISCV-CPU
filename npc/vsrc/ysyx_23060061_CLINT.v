@@ -5,11 +5,17 @@ module ysyx_23060061_CLINT (
 	input [31:0] araddr,
 	input arvalid,
 	output reg arready,
+	input [3:0] arid, // AXI4
+	input [7:0] arlen, // AXI4
+	input [2:0] arsize, // AXI4
+	input [1:0] arburst, // AXI4
 
 	output reg [31:0] rdata,
 	output reg [1:0] rresp,
 	output reg rvalid,
 	input rready,
+	output reg rlast, // AXI4
+	output reg [3:0] rid, // AXI4
 
 	input [31:0] awaddr,
 	input awvalid,

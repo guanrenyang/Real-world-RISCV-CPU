@@ -9,6 +9,7 @@ module ysyx_23060061 (
   input io_interrupt,
 
   // AXI4-Master
+  // write address signal
   input io_master_awready,
   output io_master_awvalid,
   output [31:0]	io_master_awaddr,
@@ -16,15 +17,18 @@ module ysyx_23060061 (
   output [7:0] io_master_awlen, // AXI4
   output [2:0] io_master_awsize, // AXI4
   output [3:0] io_master_awburst, // AXI4
+  // write data channel
   input io_master_wready,
   output io_master_wvalid,
   output [63:0] io_master_wdata,
   output [7:0] io_master_wstrb,
   output io_master_wlast, // AXI4
+  // wirte response channel
   output io_master_bready,
   input io_master_bvalid,
   input [1:0] io_master_bresp,
   input [3:0] io_master_bid, // AXI4
+  // read address channel
   input io_master_arready,
   output io_master_arvalid,
   output [31:0] io_master_araddr,
@@ -32,6 +36,7 @@ module ysyx_23060061 (
   output [7:0] io_master_arlen, // AXI4
   output [2:0] io_master_arsize, // AXI4
   output [1:0] io_master_arburst, // AXI4
+  // read data channel
   output io_master_rready,
   input io_master_rvalid,
   input [1:0] io_master_rresp,

@@ -6,11 +6,17 @@ module Top(
 	wire [31:0] araddr_cpu2xbar;
 	wire arvalid_cpu2xbar;
 	wire arready_cpu2xbar;
+	wire [3:0] arid_cpu2xbar; // AXI4
+	wire [7:0] arlen_cpu2xbar; // AXI4
+	wire [2:0] arsize_cpu2xbar; // AXI4
+	wire [1:0] arburst_cpu2xbar; // AXI4
 
 	wire [63:0] rdata_cpu2xbar;
 	wire [1:0] rresp_cpu2xbar;
 	wire rvalid_cpu2xbar;
 	wire rready_cpu2xbar;
+	wire rlast_cpu2xbar;  // AXI4
+	wire [3:0] rid_cpu2xbar; // AXI4
 
 	wire [31:0] awaddr_cpu2xbar;
 	wire awvalid_cpu2xbar;
@@ -29,11 +35,17 @@ module Top(
 	wire [31:0] araddr_xbar2clint;
 	wire arvalid_xbar2clint;
 	wire arready_xbar2clint;
+	wire [3:0] arid_xbar2clint; // AXI4
+	wire [7:0] arlen_xbar2clint; // AXI4
+	wire [2:0] arsize_xbar2clint; // AXI4
+	wire [1:0] arburst_xbar2clint; // AXI4
 
 	wire [31:0] rdata_xbar2clint;
 	wire [1:0] rresp_xbar2clint;
 	wire rvalid_xbar2clint;
 	wire rready_xbar2clint;
+	wire rlast_xbar2clint;  // AXI4
+	wire [3:0] rid_xbar2clint; // AXI4
 
 	wire [31:0] awaddr_xbar2clint;
 	wire awvalid_xbar2clint;
@@ -52,11 +64,17 @@ module Top(
 	wire [31:0] araddr_xbar2sram;
 	wire arvalid_xbar2sram;
 	wire arready_xbar2sram;
+	wire [3:0] arid_xbar2sram; // AXI4
+	wire [7:0] arlen_xbar2sram; // AXI4
+	wire [2:0] arsize_xbar2sram; // AXI4
+	wire [1:0] arburst_xbar2sram; // AXI4
 
 	wire [31:0] rdata_xbar2sram;
 	wire [1:0] rresp_xbar2sram;
 	wire rvalid_xbar2sram;
 	wire rready_xbar2sram;
+	wire rlast_xbar2sram;  // AXI4
+	wire [3:0] rid_xbar2sram; // AXI4
 
 	wire [31:0] awaddr_xbar2sram;
 	wire awvalid_xbar2sram;
@@ -75,11 +93,17 @@ module Top(
 	wire [31:0] araddr_xbar2uart;
 	wire arvalid_xbar2uart;
 	wire arready_xbar2uart;
+	wire [3:0] arid_xbar2uart; // AXI4
+	wire [7:0] arlen_xbar2uart; // AXI4
+	wire [2:0] arsize_xbar2uart; // AXI4
+	wire [1:0] arburst_xbar2uart; // AXI4
 
 	wire [31:0] rdata_xbar2uart;
 	wire [1:0] rresp_xbar2uart;
 	wire rvalid_xbar2uart;
 	wire rready_xbar2uart;
+	wire rlast_xbar2uart;  // AXI4
+	wire [3:0] rid_xbar2uart; // AXI4
 
 	wire [31:0] awaddr_xbar2uart;
 	wire awvalid_xbar2uart;
@@ -118,16 +142,16 @@ module Top(
 		.io_master_arready(arready_cpu2xbar),
 		.io_master_arvalid(arvalid_cpu2xbar),
 		.io_master_araddr(araddr_cpu2xbar),
-		.io_master_arid(),
-		.io_master_arlen(),
-		.io_master_arsize(),
-		.io_master_arburst(),
+		.io_master_arid(arid_cpu2xbar),
+		.io_master_arlen(arlen_cpu2xbar),
+		.io_master_arsize(arsize_cpu2xbar),
+		.io_master_arburst(arburst_cpu2xbar),
 		.io_master_rready(rready_cpu2xbar),
 		.io_master_rvalid(rvalid_cpu2xbar),
 		.io_master_rresp(rresp_cpu2xbar),
 		.io_master_rdata(rdata_cpu2xbar),
-		.io_master_rlast(),
-		.io_master_rid(),
+		.io_master_rlast(rlast_cpu2xbar),
+		.io_master_rid(rid_cpu2xbar),
 
 		.io_slave_awready(),
 		.io_slave_awvalid(),
@@ -166,10 +190,16 @@ module Top(
 		.araddr      	( araddr_cpu2xbar       ),
 		.arvalid     	( arvalid_cpu2xbar      ),
 		.arready     	( arready_cpu2xbar      ),
+		.arid			( arid_cpu2xbar			),
+		.arlen			( arlen_cpu2xbar		),
+		.arsize			( arsize_cpu2xbar		),
+		.arburst		( arburst_cpu2xbar		),
 		.rdata       	( rdata_cpu2xbar[31:0]        ),
 		.rresp       	( rresp_cpu2xbar        ),
 		.rvalid      	( rvalid_cpu2xbar       ),
 		.rready      	( rready_cpu2xbar       ),
+		.rlast	   	( rlast_cpu2xbar       ),
+		.rid			( rid_cpu2xbar			),
 		.awaddr      	( awaddr_cpu2xbar       ),
 		.awvalid     	( awvalid_cpu2xbar      ),
 		.awready     	( awready_cpu2xbar      ),
@@ -184,10 +214,16 @@ module Top(
 		.sram_araddr    ( araddr_xbar2sram),
 		.sram_arvalid   ( arvalid_xbar2sram),
 		.sram_arready   ( arready_xbar2sram),
+		.sram_arid      ( arid_xbar2sram),
+		.sram_arlen	 ( arlen_xbar2sram),
+		.sram_arsize	 ( arsize_xbar2sram),
+		.sram_arburst	 ( arburst_xbar2sram),
 		.sram_rdata     ( rdata_xbar2sram),
 		.sram_rresp     ( rresp_xbar2sram),
 		.sram_rvalid    ( rvalid_xbar2sram),
 		.sram_rready    ( rready_xbar2sram),
+		.sram_rlast	 ( rlast_xbar2sram),
+		.sram_rid       ( rid_xbar2sram),
 		.sram_awaddr    ( awaddr_xbar2sram),
 		.sram_awvalid   ( awvalid_xbar2sram),
 		.sram_awready   ( awready_xbar2sram),
@@ -202,10 +238,16 @@ module Top(
 		.uart_araddr    ( araddr_xbar2uart),
 		.uart_arvalid   ( arvalid_xbar2uart),
 		.uart_arready   ( arready_xbar2uart),
+		.uart_arid	  ( arid_xbar2uart),
+		.uart_arlen	 ( arlen_xbar2uart),
+		.uart_arsize	 ( arsize_xbar2uart),
+		.uart_arburst	 ( arburst_xbar2uart),
 		.uart_rdata     ( rdata_xbar2uart),
 		.uart_rresp     ( rresp_xbar2uart),
 		.uart_rvalid    ( rvalid_xbar2uart),
 		.uart_rready    ( rready_xbar2uart),
+		.uart_rlast	 ( rlast_xbar2uart),
+		.uart_rid	   ( rid_xbar2uart),
 		.uart_awaddr    ( awaddr_xbar2uart),
 		.uart_awvalid   ( awvalid_xbar2uart),
 		.uart_awready   ( awready_xbar2uart),
@@ -220,10 +262,16 @@ module Top(
 		.clint_araddr    ( araddr_xbar2clint),
 		.clint_arvalid   ( arvalid_xbar2clint),
 		.clint_arready   ( arready_xbar2clint),
+		.clint_arid	  ( arid_xbar2clint),
+		.clint_arlen	 ( arlen_xbar2clint),
+		.clint_arsize	 ( arsize_xbar2clint),
+		.clint_arburst	 ( arburst_xbar2clint),
 		.clint_rdata     ( rdata_xbar2clint),
 		.clint_rresp     ( rresp_xbar2clint),
 		.clint_rvalid    ( rvalid_xbar2clint),
 		.clint_rready    ( rready_xbar2clint),
+		.clint_rlast	 ( rlast_xbar2clint),
+		.clint_rid	   ( rid_xbar2clint),
 		.clint_awaddr    ( awaddr_xbar2clint),
 		.clint_awvalid   ( awvalid_xbar2clint),
 		.clint_awready   ( awready_xbar2clint),
@@ -242,10 +290,16 @@ module Top(
 		.araddr  	( araddr_xbar2uart   ),
 		.arvalid 	( arvalid_xbar2uart  ),
 		.arready 	( arready_xbar2uart  ),
+		.arid		( arid_xbar2uart	),
+		.arlen		( arlen_xbar2uart	),
+		.arsize		( arsize_xbar2uart	),
+		.arburst	( arburst_xbar2uart	),
 		.rdata   	( rdata_xbar2uart    ),
 		.rresp   	( rresp_xbar2uart    ),
 		.rvalid  	( rvalid_xbar2uart   ),
 		.rready  	( rready_xbar2uart   ),
+		.rlast		( rlast_xbar2uart   ),
+		.rid		( rid_xbar2uart		),
 		.awaddr  	( awaddr_xbar2uart   ),
 		.awvalid 	( awvalid_xbar2uart  ),
 		.awready 	( awready_xbar2uart  ),
@@ -264,10 +318,16 @@ module Top(
 		.araddr  	( araddr_xbar2clint   ),
 		.arvalid 	( arvalid_xbar2clint  ),
 		.arready 	( arready_xbar2clint  ),
+		.arid		( arid_xbar2clint	),
+		.arlen		( arlen_xbar2clint	),
+		.arsize		( arsize_xbar2clint	),
+		.arburst	( arburst_xbar2clint	),
 		.rdata   	( rdata_xbar2clint    ),
 		.rresp   	( rresp_xbar2clint    ),
 		.rvalid  	( rvalid_xbar2clint   ),
 		.rready  	( rready_xbar2clint   ),
+		.rlast		( rlast_xbar2clint   ),
+		.rid		( rid_xbar2clint		),
 		.awaddr  	( awaddr_xbar2clint   ),
 		.awvalid 	( awvalid_xbar2clint  ),
 		.awready 	( awready_xbar2clint  ),
@@ -287,11 +347,17 @@ module Top(
 		.araddr(araddr_xbar2sram),
 		.arvalid(arvalid_xbar2sram),
 		.arready(arready_xbar2sram),
+		.arid(arid_xbar2sram), // AXI4
+		.arlen(arlen_xbar2sram), // AXI4
+		.arsize(arsize_xbar2sram), // AXI4
+		.arburst(arburst_xbar2sram), // AXI4
 
 		.rdata(rdata_xbar2sram),
 		.rresp(rresp_xbar2sram),
 		.rvalid(rvalid_xbar2sram),
 		.rready(rready_xbar2sram),
+		.rlast(rlast_xbar2sram), // AXI4
+		.rid(rid_xbar2sram), // AXI4
 
 		.awaddr(awaddr_xbar2sram),
 		.awvalid(awvalid_xbar2sram),
