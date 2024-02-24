@@ -66,13 +66,13 @@ extern "C" void paddr_read(int raddr, int *rdata) {
 	htime = (uint32_t)(us >> 32);
 	
 	ltime_valid = true;
-  } /*else if (raddr == (RTC_MMIO + 4)) {
+  } else if (raddr == (RTC_MMIO + 4)) {
 	assert(ltime_valid);
 
 	(*rdata) = htime;
 	
 	ltime_valid = false;
-  } */else {
+  } else {
 	extern int EXEC_CODE;
 	EXEC_CODE = BAD_TIMER_IO;
 	printf("Bad Address: %x\n", raddr);
@@ -90,9 +90,9 @@ extern "C" void paddr_write(int waddr, int wdata, char wmask){
 	return;
   } 
   
-  assert(NULL);
-  // assert(waddr == SERIAL_MMIO && wmask == 1);
-  // putc((char)wdata, stderr);
+  // assert(NULL);
+  assert(waddr == SERIAL_MMIO && wmask == 1);
+  putc((char)wdata, stderr);
 }
 
 extern "C" void uart_display(int waddr, int wdata) {

@@ -133,18 +133,20 @@ module ysyx_23060061_XBar (
 			case (state) 
 				IDLE: begin
 					if (awvalid && wvalid) begin // When writing
-						if (awaddr == `ysyx_23060061_SERIAL_MMIO) begin
-							state <= UART;
-						end else begin
-							state <= SRAM;
-						end
+						// if (awaddr == `ysyx_23060061_SERIAL_MMIO) begin
+						// 	state <= UART;
+						// end else begin
+						// 	state <= SRAM;
+						// end
+						state <= SRAM;
 					end
 					if (arvalid) begin // When reading
-						if (araddr == `ysyx_23060061_RTC_MMIO || araddr == (`ysyx_23060061_RTC_MMIO + 4)) begin
-							state <= CLINT;
-						end else begin
-							state <= SRAM;
-						end
+						// if (araddr == `ysyx_23060061_RTC_MMIO || araddr == (`ysyx_23060061_RTC_MMIO + 4)) begin
+						// 	state <= CLINT;
+						// end else begin
+						// 	state <= SRAM;
+						// end
+						state <= SRAM;
 					end
 				end
 				SRAM: begin
@@ -169,25 +171,23 @@ module ysyx_23060061_XBar (
 		end
 	end
 	
-	ysyx_23060061_MuxKey #(4,2,41) to_arbitrater(
-		.out({arready, rdata, rresp, rvalid, awready, wready, bresp, bvalid}),
+	ysyx_23060061_MuxKeyWithDefault #(3,2,46) to_arbitrater(
+		.out({arready, rdata, rresp, rvalid, rlast, rid, awready, wready, bresp, bvalid}),
 		.key(state),
+		.default_out(0),
 		.lut({
-			IDLE, {/*arready*/ 1'b0, /*rdata*/ 32'h00000000, /*rresp*/ 2'b00, /*rvalid*/ 1'b0, /*awready*/ 1'b0, /*wready*/ 1'b0, /*bresp*/ 2'b00, /*bvalid*/ 1'b0},
-			SRAM, {/*arready*/ sram_arready, /*rdata*/ sram_rdata, /*rresp*/ sram_rresp, /*rvalid*/ sram_rvalid, /*awready*/ sram_awready, /*wready*/ sram_wready, /*bresp*/ sram_bresp, /*bvalid*/ sram_bvalid},
-			UART, {/*arready*/ uart_arready, /*rdata*/ uart_rdata, /*rresp*/ uart_rresp, /*rvalid*/ uart_rvalid, /*awready*/ uart_awready, /*wready*/ uart_wready, /*bresp*/ uart_bresp, /*bvalid*/ uart_bvalid},
-			CLINT, {/*arready*/ clint_arready, /*rdata*/ clint_rdata, /*rresp*/ clint_rresp, /*rvalid*/ clint_rvalid, /*awready*/ clint_awready, /*wready*/ clint_wready, /*bresp*/ clint_bresp, /*bvalid*/ clint_bvalid}
+			SRAM, {/*arready*/ sram_arready, /*rdata*/ sram_rdata, /*rresp*/ sram_rresp, /*rvalid*/ sram_rvalid, sram_rlast, sram_rid, /*awready*/ sram_awready, /*wready*/ sram_wready, /*bresp*/ sram_bresp, /*bvalid*/ sram_bvalid},
+			UART, {/*arready*/ uart_arready, /*rdata*/ uart_rdata, /*rresp*/ uart_rresp, /*rvalid*/ uart_rvalid, uart_rlast, uart_rid, /*awready*/ uart_awready, /*wready*/ uart_wready, /*bresp*/ uart_bresp, /*bvalid*/ uart_bvalid},
+			CLINT, {/*arready*/ clint_arready, /*rdata*/ clint_rdata, /*rresp*/ clint_rresp, /*rvalid*/ clint_rvalid, clint_rlast, clint_rid, /*awready*/ clint_awready, /*wready*/ clint_wready, /*bresp*/ clint_bresp, /*bvalid*/ clint_bvalid}
 		})
 	);
 	
-	ysyx_23060061_MuxKey #(4,2,105) to_sram(
-		.out({sram_araddr, sram_arvalid, sram_rready, sram_awaddr, sram_awvalid, sram_wdata, sram_wstrb, sram_wvalid, sram_bready}),
+	ysyx_23060061_MuxKeyWithDefault #(1,2,122) to_sram(
+		.out({sram_araddr, sram_arvalid, sram_arid, sram_arlen, sram_arsize, sram_arburst, sram_rready, sram_awaddr, sram_awvalid, sram_wdata, sram_wstrb, sram_wvalid, sram_bready}),
 		.key(state),
+		.default_out(0),
 		.lut({
-			IDLE, {/*sram_araddr*/ 32'h00000000, /*sram_arvalid*/ 1'b0, /*sram_rready*/ 1'b0, /*sram_awaddr*/ 32'h00000000, /*sram_awvalid*/ 1'b0, /*sram_wdata*/ 32'h00000000, /*sram_wstrb*/ 4'b0000, /*sram_wvalid*/ 1'b0, /*sram_bready*/ 1'b0},
-			SRAM, {/*sram_araddr*/ araddr, /*sram_arvalid*/ arvalid, /*sram_rready*/ rready, /*sram_awaddr*/ awaddr, /*sram_awvalid*/ awvalid, /*sram_wdata*/ wdata, /*sram_wstrb*/ wstrb, /*sram_wvalid*/ wvalid, /*sram_bready*/ bready},
-			UART, {/*sram_araddr*/ 32'h00000000, /*sram_arvalid*/ 1'b0, /*sram_rready*/ 1'b0, /*sram_awaddr*/ 32'h00000000, /*sram_awvalid*/ 1'b0, /*sram_wdata*/ 32'h00000000, /*sram_wstrb*/ 4'b0000, /*sram_wvalid*/ 1'b0, /*sram_bready*/ 1'b0},
-			CLINT, {/*sram_araddr*/ 32'h00000000, /*sram_arvalid*/ 1'b0, /*sram_rready*/ 1'b0, /*sram_awaddr*/ 32'h00000000, /*sram_awvalid*/ 1'b0, /*sram_wdata*/ 32'h00000000, /*sram_wstrb*/ 4'b0000, /*sram_wvalid*/ 1'b0, /*sram_bready*/ 1'b0}
+			SRAM, {/*sram_araddr*/ araddr, /*sram_arvalid*/ arvalid, arid, arlen, arsize, arburst, /*sram_rready*/ rready, /*sram_awaddr*/ awaddr, /*sram_awvalid*/ awvalid, /*sram_wdata*/ wdata, /*sram_wstrb*/ wstrb, /*sram_wvalid*/ wvalid, /*sram_bready*/ bready}
 		})
 	);
 

@@ -88,6 +88,10 @@ module ysyx_23060061_IFU(
 					if (delay_trigger) begin
 						araddr <= pc;
 						arvalid <= 1;
+						arid <= 4'b0000; // one read at a time so id won't change
+						arlen <= 8'b00000000; // one read in a burst
+						arsize <= 3'b010; // 32-bit read
+						arburst <= 2'b01; // incrementing burst
 					end
 
 					if (arvalid && arready) begin
@@ -96,13 +100,23 @@ module ysyx_23060061_IFU(
 					end
 				end
 				WAIT_DATA: begin
-					if (delay_trigger)
+					if (delay_trigger) begin
 						rready <= 1;		
+					end
 					if (rvalid & rready) begin
-						state <= WAIT_CPU;
-						rready <= 0;
-						inst <= rdata;
-						instValid <= 1;
+						/*
+						* since ifu only reads 4 bytes at a time(arid==0, burst_len==1, arsize==4bytes, burst=type==fixex)
+						* rlast is always 1 and rid always equals to arid
+						*/
+						if (rresp == 2'b00 /* OKAY */ && rid == arid && rlast) begin // finish read burst
+							state <= WAIT_CPU;
+							rready <= 0;
+							inst <= rdata;
+							instValid <= 1;
+						end else begin
+							$display("ERROR: IFU: rresp=%b, rid=%b, rlast=%b", rresp, rid, rlast);
+							$finish;
+						end
 					end
 				end
 				WAIT_CPU: begin

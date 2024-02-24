@@ -40,7 +40,14 @@ module ysyx_23060061_SRAM(
 	localparam WAIT_RESP = 4;
 
 	// Internal signals to store the address and data
+	// Read
 	reg [31:0] raddr;
+	reg [3:0] arid_internal;
+	reg [7:0] arlen_internal;
+	reg [2:0] arsize_internal;
+	reg [1:0] arburst_internal;
+
+	// Write
 	reg [31:0] waddr_internal;
 	reg [3:0] wstrb_internal;
 	reg [31:0] wdata_internal;
@@ -90,6 +97,10 @@ module ysyx_23060061_SRAM(
 						arready <= 0; // start feeding data and stop receiving address
 
 						raddr <= araddr; // store the araddr because reading data may take serval cycles
+						arid_internal <= arid;
+						arlen_internal <= arlen;
+						arsize_internal <= arsize;
+						arburst_internal <= arburst;
 					end
 					if (awvalid && awready && wvalid && wready) begin
 						state <= WRITE_DATA; // state transition
@@ -105,11 +116,21 @@ module ysyx_23060061_SRAM(
 				end
 				FEED_DATA: begin
 					if (delay_trigger) begin
-    					state <= WAIT_RECEIVE; // state transition
-    					// Now SRAM can feed data in one cycle
-    					rvalid <= 1;
-    					rdata <= rdata_internal;
-    					rresp <= 2'b00; // OKAY
+						if (arlen == 8'b00000000 && arsize == 3'b010) begin // read 4 bytes in a burst at a time
+    						state <= WAIT_RECEIVE; // state transition
+    						// Now SRAM can feed data in one cycle
+    						rvalid <= 1;
+    						rdata <= rdata_internal;
+    						rresp <= 2'b00; // OKAY
+							rlast <= 1;
+							rid <= arid_internal;
+						end else begin
+							$display("Error: SRAM does not support the read request");
+							$finish;
+							// state <= LISTEN_ADDR;
+							// rresp <= 2'b10; // SLVERR
+							// rvalid <= 1;
+						end
 					end
 				end
 				WAIT_RECEIVE: begin
