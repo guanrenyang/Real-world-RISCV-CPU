@@ -11,11 +11,17 @@ module ysyx_23060061_IFU(
 	output reg [31:0] araddr,
 	output reg arvalid,
 	input arready,
+  	output reg [3:0] arid, // AXI4
+  	output reg [7:0] arlen, // AXI4
+  	output reg [2:0] arsize, // AXI4
+  	output reg [1:0] arburst, // AXI4
 
 	input [31:0] rdata,
 	input [1:0] rresp,
 	input rvalid,
 	output reg rready,
+	input rlast, // AXI4
+	input [3:0] rid, // AXI4
 
 	output [31:0] awaddr,
 	output reg awvalid,

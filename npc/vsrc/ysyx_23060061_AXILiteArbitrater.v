@@ -6,11 +6,17 @@ module ysyx_23060061_AXILiteArbitrater(
 	output [31:0] araddr,
 	output arvalid,
 	input arready,
+	output [3:0] arid, // AXI4
+	output [7:0] arlen, // AXI4
+	output [2:0] arsize, // AXI4
+	output [1:0] arburst, // AXI4
 
 	input [31:0] rdata,
 	input [1:0] rresp,
 	input rvalid,
 	output rready,
+	input rlast, // AXI4
+	input [3:0] rid, // AXI4
 
 	output [31:0] awaddr,
 	output awvalid,
@@ -29,11 +35,17 @@ module ysyx_23060061_AXILiteArbitrater(
 	input [31:0] ifu_araddr,
 	input ifu_arvalid,
 	output ifu_arready,
+	input [3:0] ifu_arid, // AXI4
+	input [7:0] ifu_arlen, // AXI4
+	input [2:0] ifu_arsize, // AXI4
+	input [1:0] ifu_arburst, // AXI4
 
 	output [31:0] ifu_rdata,
 	output [1:0] ifu_rresp,
 	output ifu_rvalid,
 	input ifu_rready,
+	output ifu_rlast, // AXI4
+	output [3:0] ifu_rid, // AXI4
 
 	input [31:0] ifu_awaddr,
 	input ifu_awvalid,
@@ -52,11 +64,17 @@ module ysyx_23060061_AXILiteArbitrater(
 	input [31:0] lsu_araddr,
 	input lsu_arvalid,
 	output lsu_arready,
+	input [3:0] lsu_arid, // AXI4
+	input [7:0] lsu_arlen, // AXI4
+	input [2:0] lsu_arsize, // AXI4
+	input [1:0] lsu_arburst, // AXI
 
 	output [31:0] lsu_rdata,
 	output [1:0] lsu_rresp,
 	output lsu_rvalid,
 	input lsu_rready,
+	output lsu_rlast, // AXI4
+	output [3:0] lsu_rid, // AXI
 
 	input [31:0] lsu_awaddr,
 	input lsu_awvalid,

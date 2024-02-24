@@ -184,11 +184,17 @@ module ysyx_23060061 (
 	wire [31:0] ifu_araddr;
 	wire ifu_arvalid;
 	wire ifu_arready;
+	wire [3:0] ifu_arid; // AXI4
+	wire [7:0] ifu_arlen; // AXI4
+	wire [2:0] ifu_arsize; // AXI4
+	wire [1:0] ifu_arburst; // AXI4
 
 	wire [31:0] ifu_rdata;
 	wire [1:0] ifu_rresp;
 	wire ifu_rvalid;
 	wire ifu_rready;
+	wire ifu_rlast; // AXI4
+	wire [3:0] ifu_rid; // AXI4
 
 	wire [31:0] ifu_awaddr;
 	wire ifu_awvalid;
@@ -207,11 +213,17 @@ module ysyx_23060061 (
 	wire [31:0] lsu_araddr;
 	wire lsu_arvalid;
 	wire lsu_arready;
+	wire [3:0] lsu_arid; // AXI4
+	wire [7:0] lsu_arlen; // AXI4
+	wire [2:0] lsu_arsize; // AXI4
+	wire [1:0] lsu_arburst; // AXI4
 
 	wire [31:0] lsu_rdata;
 	wire [1:0] lsu_rresp;
 	wire lsu_rvalid;
 	wire lsu_rready;
+	wire lsu_rlast; // AXI4
+	wire [3:0] lsu_rid; // AXI4
 
 	wire [31:0] lsu_awaddr;
 	wire lsu_awvalid;
@@ -279,10 +291,16 @@ module ysyx_23060061 (
 		.araddr      	( io_master_araddr       ),
 		.arvalid     	( io_master_arvalid      ),
 		.arready     	( io_master_arready      ),
+		.arid			( io_master_arid         ),
+		.arlen			( io_master_arlen        ),
+		.arsize			( io_master_arsize       ),
+		.arburst		( io_master_arburst      ),
 		.rdata       	( io_master_rdata[31:0]        ),
 		.rresp       	( io_master_rresp        ),
 		.rvalid      	( io_master_rvalid       ),
 		.rready      	( io_master_rready       ),
+		.rlast	   	 	( io_master_rlast        ),
+		.rid			( io_master_rid          ),
 		.awaddr      	( io_master_awaddr       ),
 		.awvalid     	( io_master_awvalid      ),
 		.awready     	( io_master_awready      ),
@@ -296,10 +314,16 @@ module ysyx_23060061 (
 		.ifu_araddr  	( ifu_araddr   ),
 		.ifu_arvalid 	( ifu_arvalid  ),
 		.ifu_arready 	( ifu_arready  ),
+		.ifu_arid		( ifu_arid     ),
+		.ifu_arlen		( ifu_arlen    ),
+		.ifu_arsize		( ifu_arsize   ),
+		.ifu_arburst	( ifu_arburst  ),
 		.ifu_rdata   	( ifu_rdata    ),
 		.ifu_rresp   	( ifu_rresp    ),
 		.ifu_rvalid  	( ifu_rvalid   ),
 		.ifu_rready  	( ifu_rready   ),
+		.ifu_rlast   	( ifu_rlast    ),
+		.ifu_rid     	( ifu_rid      ),
 		.ifu_awaddr  	( ifu_awaddr   ),
 		.ifu_awvalid 	( ifu_awvalid  ),
 		.ifu_awready 	( ifu_awready  ),
@@ -313,10 +337,16 @@ module ysyx_23060061 (
 		.lsu_araddr     ( lsu_araddr   ),
 		.lsu_arvalid 	( lsu_arvalid  ),
 		.lsu_arready 	( lsu_arready  ),
+		.lsu_arid		( lsu_arid     ),
+		.lsu_arlen		( lsu_arlen    ),
+		.lsu_arsize		( lsu_arsize   ),
+		.lsu_arburst	( lsu_arburst  ),
 		.lsu_rdata   	( lsu_rdata    ),
 		.lsu_rresp   	( lsu_rresp    ),
 		.lsu_rvalid  	( lsu_rvalid   ),
 		.lsu_rready  	( lsu_rready   ),
+		.lsu_rlast   	( lsu_rlast    ),
+		.lsu_rid     	( lsu_rid      ),
 		.lsu_awaddr  	( lsu_awaddr   ),
 		.lsu_awvalid 	( lsu_awvalid  ),
 		.lsu_awready 	( lsu_awready  ),
@@ -342,11 +372,17 @@ module ysyx_23060061 (
 		.araddr(ifu_araddr),
 		.arvalid(ifu_arvalid),
 		.arready(ifu_arready),
+		.arid(ifu_arid),
+		.arlen(ifu_arlen),
+		.arsize(ifu_arsize),
+		.arburst(ifu_arburst),
 
 		.rdata(ifu_rdata),
 		.rresp(ifu_rresp),
 		.rvalid(ifu_rvalid),
 		.rready(ifu_rready),
+		.rlast(ifu_rlast),
+		.rid(ifu_rid),
 
 		.awaddr(ifu_awaddr),
 		.awvalid(ifu_awvalid),
@@ -421,11 +457,17 @@ module ysyx_23060061 (
 		.araddr(lsu_araddr),
 		.arvalid(lsu_arvalid),
 		.arready(lsu_arready),
+		.arid(lsu_arid),
+		.arlen(lsu_arlen),
+		.arsize(lsu_arsize),
+		.arburst(lsu_arburst),
 
 		.rdata(lsu_rdata),
 		.rresp(lsu_rresp),
 		.rvalid(lsu_rvalid),
 		.rready(lsu_rready),
+		.rlast(lsu_rlast),
+		.rid(lsu_rid),
 
 		.awaddr(lsu_awaddr),
 		.awvalid(lsu_awvalid),
