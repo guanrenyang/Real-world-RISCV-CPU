@@ -20,15 +20,21 @@ module ysyx_23060061_AXILiteArbitrater(
 
 	output [31:0] awaddr,
 	output awvalid,
+	output [3:0] awid, // AXI4
+	output [7:0] awlen, // AXI4
+	output [2:0] awsize, // AXI4
+	output [1:0] awburst, // AXI4
 	input awready,
 
 	output [31:0] wdata,
 	output [3:0] wstrb,
 	output wvalid,
+	output wlast, // AXI4
 	input wready,
 
 	input [1:0] bresp,
 	input bvalid,
+	input [3:0] bid, // AXI4
 	output bready,
 
 	// input from ifu
@@ -49,15 +55,21 @@ module ysyx_23060061_AXILiteArbitrater(
 
 	input [31:0] ifu_awaddr,
 	input ifu_awvalid,
+	input [3:0] ifu_awid, // AXI4
+	input [7:0] ifu_awlen, // AXI4
+	input [2:0] ifu_awsize, // AXI4
+	input [1:0] ifu_awburst, // AXI4
 	output ifu_awready,
 
 	input [31:0] ifu_wdata,
 	input [3:0] ifu_wstrb,
 	input ifu_wvalid,
+	input ifu_wlast, // AXI4
 	output ifu_wready,
 
 	output [1:0] ifu_bresp,
 	output ifu_bvalid,
+	output [3:0] ifu_bid, // AXI4
 	input ifu_bready,
 
 	// input from lsu
@@ -67,26 +79,32 @@ module ysyx_23060061_AXILiteArbitrater(
 	input [3:0] lsu_arid, // AXI4
 	input [7:0] lsu_arlen, // AXI4
 	input [2:0] lsu_arsize, // AXI4
-	input [1:0] lsu_arburst, // AXI
+	input [1:0] lsu_arburst, // AXI4
 
 	output [31:0] lsu_rdata,
 	output [1:0] lsu_rresp,
 	output lsu_rvalid,
 	input lsu_rready,
 	output lsu_rlast, // AXI4
-	output [3:0] lsu_rid, // AXI
+	output [3:0] lsu_rid, // AXI4
 
 	input [31:0] lsu_awaddr,
 	input lsu_awvalid,
+	input [3:0] lsu_awid, // AXI4
+	input [7:0] lsu_awlen, // AXI4
+	input [2:0] lsu_awsize, // AXI4
+	input [1:0] lsu_awburst, // AXI
 	output lsu_awready,
 
 	input [31:0] lsu_wdata,
 	input [3:0] lsu_wstrb,
 	input lsu_wvalid,
+	input lsu_wlast, // AXI4
 	output lsu_wready,
 
 	output [1:0] lsu_bresp,
 	output lsu_bvalid,
+	output [3:0] lsu_bid, // AXI4
 	input lsu_bready
 );
 	localparam [1:0] IDLE = 2'b00;

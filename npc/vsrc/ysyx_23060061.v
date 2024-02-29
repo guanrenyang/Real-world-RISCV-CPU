@@ -16,7 +16,7 @@ module ysyx_23060061 (
   output [3:0] io_master_awid, // AXI4
   output [7:0] io_master_awlen, // AXI4
   output [2:0] io_master_awsize, // AXI4
-  output [3:0] io_master_awburst, // AXI4
+  output [1:0] io_master_awburst, // AXI4
   // write data channel
   input io_master_wready,
   output io_master_wvalid,
@@ -51,7 +51,7 @@ module ysyx_23060061 (
   input [3:0] io_slave_awid, // AXI4
   input [7:0] io_slave_awlen, // AXI4
   input [2:0] io_slave_awsize, // AXI4
-  input [3:0] io_slave_awburst, // AXI4
+  input [1:0] io_slave_awburst, // AXI4
   output io_slave_wready,
   input io_slave_wvalid,
   input [63:0] io_slave_wdata,
@@ -119,67 +119,6 @@ module ysyx_23060061 (
 	wire [31:0] mtvec;
 	wire [31:0] mepc;
 
-	// // AXI4 reg signals
- //    wire io_awready;
- //    reg io_awvalid;
- //    reg [31:0]	io_awaddr;
- //    reg [3:0] io_awid; // AXI4
- //    reg [7:0] io_awlen; // AXI4
- //    reg [2:0] io_awsize; // AXI4
- //    reg [3:0] io_awburst; // AXI4
- //    wire io_wready;
- //    reg io_wvalid;
- //    reg [63:0] io_wdata;
- //    reg [7:0] io_wstrb;
- //    reg io_wlast; // AXI4
- //    reg io_bready;
- //    wire io_bvalid;
- //    wire [1:0] io_bresp;
- //    wire [3:0] io_bid; // AXI4
- //    wire io_arready;
- //    reg io_arvalid;
- //    reg [31:0] io_araddr;
- //    reg [3:0] io_arid; // AXI4
- //    reg [7:0] io_arlen; // AXI4
- //    reg [2:0] io_arsize; // AXI4
- //    reg [1:0] io_arburst; // AXI4
- //    reg io_rready;
- //    wire io_rvalid;
- //    wire [1:0] io_rresp;
- //    wire [63:0] io_rdata;
- //    wire io_rlast; // AXI4
- //    wire [3:0] io_rid; // AXI4
- //  
- //    assign io_awready = io_master_awready;
- //    assign io_master_awvalid = io_awvalid;
- //    assign io_master_awaddr = io_awaddr;
- //    assign io_master_awid = io_awid;
- //    assign io_master_awlen = io_awlen;
- //    assign io_master_awsize = io_awsize;
- //    assign io_master_awburst = io_awburst;
- //    assign io_wready = io_master_wready;
- //    assign io_master_wvalid = io_wvalid;
- //    assign io_master_wdata = io_wdata;
- //    assign io_master_wstrb = io_wstrb;
- //    assign io_master_wlast = io_wlast;
- //    assign io_master_bready = io_bready;
- //    assign io_bvalid = io_master_bvalid;
- //    assign io_bresp = io_master_bresp;
- //    assign io_bid = io_master_bid;
- //    assign io_arready = io_master_arready;
- //    assign io_master_arvalid = io_arvalid;
- //    assign io_master_araddr = io_araddr;
- //    assign io_master_arid = io_arid;
- //    assign io_master_arlen = io_arlen;
- //    assign io_master_arsize = io_arsize;
- //    assign io_master_arburst = io_arburst;
- //    assign io_master_rready = io_rready;
- //    assign io_rvalid = io_master_rvalid;
- //    assign io_rresp = io_master_rresp;
- //    assign io_rdata = io_master_rdata;
- //    assign io_rlast = io_master_rlast;
- //    assign io_rid = io_master_rid;
-
 	// AXI-Lite IFU -> Arbitrater
 	wire [31:0] ifu_araddr;
 	wire ifu_arvalid;
@@ -198,15 +137,21 @@ module ysyx_23060061 (
 
 	wire [31:0] ifu_awaddr;
 	wire ifu_awvalid;
+	wire [3:0] ifu_awid; // AXI4
+	wire [7:0] ifu_awlen; // AXI4
+	wire [2:0] ifu_awsize; // AXI4
+	wire [1:0] ifu_awburst; // AXI4
 	wire ifu_awready;
 
 	wire [31:0] ifu_wdata;
 	wire [3:0] ifu_wstrb;
 	wire ifu_wvalid;
+	wire ifu_wlast; // AXI4
 	wire ifu_wready;
 
 	wire [1:0] ifu_bresp;
 	wire ifu_bvalid;
+	wire [3:0] ifu_bid; // AXI4
 	wire ifu_bready;
 
 	// AXI-Lite: LSU -> Arbitrater
@@ -227,15 +172,21 @@ module ysyx_23060061 (
 
 	wire [31:0] lsu_awaddr;
 	wire lsu_awvalid;
+	wire [3:0] lsu_awid; // AXI4
+	wire [7:0] lsu_awlen; // AXI4
+	wire [2:0] lsu_awsize; // AXI4
+	wire [1:0] lsu_awburst; // AXI4
 	wire lsu_awready;
 
 	wire [31:0] lsu_wdata;
 	wire [3:0] lsu_wstrb;
 	wire lsu_wvalid;
+	wire lsu_wlast; // AXI4
 	wire lsu_wready;
 
 	wire [1:0] lsu_bresp;
 	wire lsu_bvalid;
+	wire [3:0] lsu_bid; // AXI4
 	wire lsu_bready;
 
 	// AXI-Lite 
@@ -274,17 +225,6 @@ module ysyx_23060061 (
     	.csrEn(csrEn & lsu_valid)
   	);
 
-	// // outports wire
-	// wire        	arready;
-	// wire [31:0] 	rdata;
-	// wire [1:0]  	rresp;
-	// wire        	rvalid;
-	// wire        	awready;
-	// wire        	wready;
-	// wire [1:0]  	bresp;
-	// wire        	bvalid;
-	
-	
 	ysyx_23060061_AXILiteArbitrater busArbitrater(
 		.clk         	( clock        ),
 		.rst         	( ~reset         ),
@@ -303,13 +243,19 @@ module ysyx_23060061 (
 		.rid			( io_master_rid          ),
 		.awaddr      	( io_master_awaddr       ),
 		.awvalid     	( io_master_awvalid      ),
+		.awid			( io_master_awid         ),
+		.awlen			( io_master_awlen        ),
+		.awsize			( io_master_awsize       ),
+		.awburst		( io_master_awburst      ),
 		.awready     	( io_master_awready      ),
 		.wdata       	( io_master_wdata[31:0]        ),
 		.wstrb       	( io_master_wstrb[3:0]        ),
 		.wvalid      	( io_master_wvalid       ),
+		.wlast	   		( io_master_wlast        ),
 		.wready      	( io_master_wready       ),
 		.bresp       	( io_master_bresp        ),
 		.bvalid      	( io_master_bvalid       ),
+		.bid			( io_master_bid          ),
 		.bready      	( io_master_bready       ),
 		.ifu_araddr  	( ifu_araddr   ),
 		.ifu_arvalid 	( ifu_arvalid  ),
@@ -326,13 +272,19 @@ module ysyx_23060061 (
 		.ifu_rid     	( ifu_rid      ),
 		.ifu_awaddr  	( ifu_awaddr   ),
 		.ifu_awvalid 	( ifu_awvalid  ),
+		.ifu_awid		( ifu_awid     ),
+		.ifu_awlen		( ifu_awlen    ),
+		.ifu_awsize		( ifu_awsize   ),
+		.ifu_awburst	( ifu_awburst  ),
 		.ifu_awready 	( ifu_awready  ),
 		.ifu_wdata   	( ifu_wdata    ),
 		.ifu_wstrb   	( ifu_wstrb    ),
 		.ifu_wvalid  	( ifu_wvalid   ),
+		.ifu_wlast   	( ifu_wlast    ),
 		.ifu_wready  	( ifu_wready   ),
 		.ifu_bresp   	( ifu_bresp    ),
 		.ifu_bvalid  	( ifu_bvalid   ),
+		.ifu_bid	 	( ifu_bid      ),
 		.ifu_bready  	( ifu_bready   ),
 		.lsu_araddr     ( lsu_araddr   ),
 		.lsu_arvalid 	( lsu_arvalid  ),
@@ -349,13 +301,19 @@ module ysyx_23060061 (
 		.lsu_rid     	( lsu_rid      ),
 		.lsu_awaddr  	( lsu_awaddr   ),
 		.lsu_awvalid 	( lsu_awvalid  ),
+		.lsu_awid		( lsu_awid     ),
+		.lsu_awlen		( lsu_awlen    ),
+		.lsu_awsize		( lsu_awsize   ),
+		.lsu_awburst	( lsu_awburst  ),
 		.lsu_awready 	( lsu_awready  ),
 		.lsu_wdata   	( lsu_wdata    ),
 		.lsu_wstrb   	( lsu_wstrb    ),
 		.lsu_wvalid  	( lsu_wvalid   ),
+		.lsu_wlast   	( lsu_wlast    ),
 		.lsu_wready  	( lsu_wready   ),
 		.lsu_bresp   	( lsu_bresp    ),
 		.lsu_bvalid  	( lsu_bvalid   ),
+		.lsu_bid	 	( lsu_bid      ),
 		.lsu_bready  	( lsu_bready   )
 	);
 	
@@ -386,15 +344,21 @@ module ysyx_23060061 (
 
 		.awaddr(ifu_awaddr),
 		.awvalid(ifu_awvalid),
+		.awid(ifu_awid),
+		.awlen(ifu_awlen),
+		.awsize(ifu_awsize),
+		.awburst(ifu_awburst),
 		.awready(ifu_awready),
 
 		.wdata(ifu_wdata),
 		.wstrb(ifu_wstrb),
 		.wvalid(ifu_wvalid),
+		.wlast(ifu_wlast),
 		.wready(ifu_wready),
 
 		.bresp(ifu_bresp),
 		.bvalid(ifu_bvalid),
+		.bid(ifu_bid),
 		.bready(ifu_bready)
 	);
 	
@@ -471,15 +435,21 @@ module ysyx_23060061 (
 
 		.awaddr(lsu_awaddr),
 		.awvalid(lsu_awvalid),
+		.awid(lsu_awid),
+		.awlen(lsu_awlen),
+		.awsize(lsu_awsize),
+		.awburst(lsu_awburst),
 		.awready(lsu_awready),
 
 		.wdata(lsu_wdata),
 		.wstrb(lsu_wstrb),
 		.wvalid(lsu_wvalid),
+		.wlast(lsu_wlast),
 		.wready(lsu_wready),
 
 		.bresp(lsu_bresp),
 		.bvalid(lsu_bvalid),
+		.bid(lsu_bid),
 		.bready(lsu_bready)
   	);
 

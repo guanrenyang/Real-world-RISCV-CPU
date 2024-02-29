@@ -20,15 +20,21 @@ module ysyx_23060061_SRAM(
 
 	input [31:0] awaddr,
 	input awvalid,
+	input [3:0] awid, // AXI4
+	input [7:0] awlen, // AXI4
+	input [2:0] awsize, // AXI4
+	input [1:0] awburst, // AXI4
 	output reg awready,
 
 	input [31:0] wdata,
 	input [3:0] wstrb,
 	input wvalid,
+	input wlast, // AXI4
 	output reg wready,
 
 	output reg [1:0] bresp,
 	output reg bvalid,
+	output reg [3:0] bid, // AXI4
 	input bready
 );
 	// FSM

@@ -20,15 +20,21 @@ module ysyx_23060061_XBar (
 
 	input [31:0] awaddr,
 	input awvalid,
+	input [3:0] awid, // AXI4
+	input [7:0] awlen, // AXI4
+	input [2:0] awsize, // AXI4
+	input [1:0] awburst, // AXI4
 	output awready,
 
 	input [31:0] wdata,
 	input [3:0] wstrb,
 	input wvalid,
+	input wlast, // AXI4
 	output wready,
 
 	output [1:0] bresp,
 	output bvalid,
+	output [3:0] bid, // AXI4
 	input bready,
 
 	// output for SRAM
@@ -49,15 +55,21 @@ module ysyx_23060061_XBar (
 
 	output [31:0] sram_awaddr,
 	output sram_awvalid,
+	output [3:0] sram_awid, // AXI4
+	output [7:0] sram_awlen, // AXI4
+	output [2:0] sram_awsize, // AXI4
+	output [1:0] sram_awburst, // AXI4
 	input sram_awready,
 
 	output [31:0] sram_wdata,
 	output [3:0] sram_wstrb,
 	output sram_wvalid,
+	output sram_wlast, // AXI4
 	input sram_wready,
 
 	input [1:0] sram_bresp,
 	input sram_bvalid,
+	input [3:0] sram_bid, // AXI4
 	output sram_bready,
 
 	// output for UART

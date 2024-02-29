@@ -24,19 +24,29 @@ module ysyx_23060061_IFU(
 	input [3:0] rid, // AXI4
 
 	output [31:0] awaddr,
-	output reg awvalid,
+	output awvalid,
+	output [3:0] awid, // AXI4
+	output [7:0] awlen, // AXI4
+	output [2:0] awsize, // AXI4
+	output [1:0] awburst, // AXI4
 	input awready,
 
 	output [31:0] wdata,
 	output [3:0] wstrb,
-	output reg wvalid,
+	output wvalid,
+	output wlast, // AXI4
 	input wready,
 
 	input [1:0] bresp,
 	input bvalid,
+	input [3:0] bid, // AXI4
 	output bready
 );	
 
+	// Write channel of IFU is not used
+	assign awvalid = 0;
+	assign wvalid = 0;
+	
 	reg [31:0] instImm_internal;
 
 	reg [31:0] pc_old;
@@ -68,8 +78,6 @@ module ysyx_23060061_IFU(
 		if (~rst) begin // do reset
 			// signals for InstMem -- determined by AXI-Lite protocol
 			arvalid <= 0;	
-			awvalid <= 0;
-			wvalid <=0;
 			// signals for IDU				
 			inst <= 0;
 			pc_old <= 0;

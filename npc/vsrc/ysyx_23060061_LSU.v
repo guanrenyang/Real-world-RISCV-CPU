@@ -33,17 +33,22 @@ module ysyx_23060061_LSU(
 
 	output reg [31:0] awaddr,
 	output reg awvalid,
+	output reg [3:0] awid, // AXI4
+	output reg [7:0] awlen, // AXI4
+	output reg [2:0] awsize, // AXI4
+	output reg [1:0] awburst, // AXI4
 	input awready,
 
 	output reg [31:0] wdata,
 	output reg [3:0] wstrb,
 	output reg wvalid,
+	output reg wlast, // AXI4
 	input wready,
 
 	input [1:0] bresp,
 	input bvalid,
+	input [3:0] bid, // AXI4
 	output reg bready
-
 );
 
 	localparam IDLE = 0; // Do nothing
@@ -87,12 +92,16 @@ module ysyx_23060061_LSU(
 
 						assert (memDataReady == 0);// In IDLE state, memDataReady must be 0
 						assert (lsu_valid == 0);
-						
+					
 						arvalid <= 1;
 						araddr <= memAddr;
+						arid <= 4'b0000; // one read at a time so id won't change
+						arlen <= 8'b00000000; // one read in a burst
+						arsize <= 3'b010; // TODO: set arsize according to the instruction instead of 4 bytes always
+						arburst <= 2'b01; // increamenting burst
 						rready <= 0;
 					end
-					if (exu_valid & MemRW[0] & delay_trigger) begin
+					if (exu_valid & MemRW[0] & delay_trigger) begin // write sram
 						state <= SEND_AWADDR_WDATA;
 
 						assert (memDataReady == 0);// In IDLE state, memDataReady must be 0
@@ -119,12 +128,17 @@ module ysyx_23060061_LSU(
 					if (delay_trigger)
 						rready <= 1;
 					if (rvalid & rready) begin
-						state <= WAIT_WBU;
+						if (rresp == 2'b00 /*OKAY*/ && rid == arid && rlast) begin // finish read burst
+							state <= WAIT_WBU;
 						
-						rready <= 0;
-						unextMemDataR <= rdata;
-						memDataReady <= 1;
-					end
+							rready <= 0;
+							unextMemDataR <= rdata;
+							memDataReady <= 1;
+						end else begin
+							$display("ERROR: LSU: rresp=%b, rid=%b, arid=%b, rlast=%b", rresp, rid, arid, rlast);
+							$finish;
+						end
+					end 
 				end
 				SEND_AWADDR_WDATA: begin
 					if (awvalid && awready) begin

@@ -20,15 +20,21 @@ module Top(
 
 	wire [31:0] awaddr_cpu2xbar;
 	wire awvalid_cpu2xbar;
+	wire [3:0] awid_cpu2xbar; // AXI4
+	wire [7:0] awlen_cpu2xbar; // AXI4
+	wire [2:0] awsize_cpu2xbar; // AXI4
+	wire [1:0] awburst_cpu2xbar; // AXI4
 	wire awready_cpu2xbar;
 
 	wire [63:0] wdata_cpu2xbar;
 	wire [7:0] wstrb_cpu2xbar;
 	wire wvalid_cpu2xbar;
+	wire wlast_cpu2xbar; // AXI4
 	wire wready_cpu2xbar;
 
 	wire [1:0] bresp_cpu2xbar;
 	wire bvalid_cpu2xbar;
+	wire [3:0] bid_cpu2xbar; // AXI4
 	wire bready_cpu2xbar;
 
 	// Xbar -> CLINT
@@ -78,15 +84,21 @@ module Top(
 
 	wire [31:0] awaddr_xbar2sram;
 	wire awvalid_xbar2sram;
+	wire [3:0] awid_xbar2sram; // AXI4
+	wire [7:0] awlen_xbar2sram; // AXI4
+	wire [2:0] awsize_xbar2sram; // AXI4
+	wire [1:0] awburst_xbar2sram; // AXI4
 	wire awready_xbar2sram;
 
 	wire [31:0] wdata_xbar2sram;
 	wire [3:0] wstrb_xbar2sram;
 	wire wvalid_xbar2sram;
+	wire wlast_xbar2sram; // AXI4
 	wire wready_xbar2sram;
 
 	wire [1:0] bresp_xbar2sram;
 	wire bvalid_xbar2sram;
+	wire [3:0] bid_xbar2sram; // AXI4
 	wire bready_xbar2sram;
 	
 	// Xbar -> UART
@@ -126,19 +138,19 @@ module Top(
 		.io_master_awready(awready_cpu2xbar),
 		.io_master_awvalid(awvalid_cpu2xbar),
 		.io_master_awaddr(awaddr_cpu2xbar),
-		.io_master_awid(),
-		.io_master_awlen(),
-		.io_master_awsize(),
-		.io_master_awburst(),
+		.io_master_awid(awid_cpu2xbar),
+		.io_master_awlen(awlen_cpu2xbar),
+		.io_master_awsize(awsize_cpu2xbar),
+		.io_master_awburst(awburst_cpu2xbar),
 		.io_master_wready(wready_cpu2xbar),
 		.io_master_wvalid(wvalid_cpu2xbar),
 		.io_master_wdata(wdata_cpu2xbar),
 		.io_master_wstrb(wstrb_cpu2xbar),
-		.io_master_wlast(),
+		.io_master_wlast(wlast_cpu2xbar),
 		.io_master_bready(bready_cpu2xbar),
 		.io_master_bvalid(bvalid_cpu2xbar),
 		.io_master_bresp(bresp_cpu2xbar),
-		.io_master_bid(),
+		.io_master_bid(bid_cpu2xbar),
 		.io_master_arready(arready_cpu2xbar),
 		.io_master_arvalid(arvalid_cpu2xbar),
 		.io_master_araddr(araddr_cpu2xbar),
@@ -198,17 +210,23 @@ module Top(
 		.rresp       	( rresp_cpu2xbar        ),
 		.rvalid      	( rvalid_cpu2xbar       ),
 		.rready      	( rready_cpu2xbar       ),
-		.rlast	   	( rlast_cpu2xbar       ),
+		.rlast	   	    ( rlast_cpu2xbar       ),
 		.rid			( rid_cpu2xbar			),
 		.awaddr      	( awaddr_cpu2xbar       ),
 		.awvalid     	( awvalid_cpu2xbar      ),
+		.awid			( awid_cpu2xbar			),
+		.awlen			( awlen_cpu2xbar		),
+		.awsize			( awsize_cpu2xbar		),
+		.awburst		( awburst_cpu2xbar		),
 		.awready     	( awready_cpu2xbar      ),
 		.wdata       	( wdata_cpu2xbar[31:0]        ),
 		.wstrb       	( wstrb_cpu2xbar[3:0]        ),
 		.wvalid      	( wvalid_cpu2xbar       ),
+		.wlast          ( wlast_cpu2xbar		),
 		.wready      	( wready_cpu2xbar       ),
 		.bresp       	( bresp_cpu2xbar        ),
 		.bvalid      	( bvalid_cpu2xbar       ),
+		.bid			( bid_cpu2xbar			),
 		.bready      	( bready_cpu2xbar       ),
 
 		.sram_araddr    ( araddr_xbar2sram),
@@ -226,13 +244,19 @@ module Top(
 		.sram_rid       ( rid_xbar2sram),
 		.sram_awaddr    ( awaddr_xbar2sram),
 		.sram_awvalid   ( awvalid_xbar2sram),
+		.sram_awid	  ( awid_xbar2sram),
+		.sram_awlen	 ( awlen_xbar2sram),
+		.sram_awsize	 ( awsize_xbar2sram),
+		.sram_awburst	 ( awburst_xbar2sram),	
 		.sram_awready   ( awready_xbar2sram),
 		.sram_wdata     ( wdata_xbar2sram),
 		.sram_wstrb     ( wstrb_xbar2sram),
 		.sram_wvalid    ( wvalid_xbar2sram),
+		.sram_wlast	 ( wlast_xbar2sram),
 		.sram_wready    ( wready_xbar2sram),
 		.sram_bresp     ( bresp_xbar2sram),
 		.sram_bvalid    ( bvalid_xbar2sram),
+		.sram_bid    ( bid_xbar2sram),
 		.sram_bready    ( bready_xbar2sram),
 
 		.uart_araddr    ( araddr_xbar2uart),
@@ -361,15 +385,21 @@ module Top(
 
 		.awaddr(awaddr_xbar2sram),
 		.awvalid(awvalid_xbar2sram),
+		.awid(awid_xbar2sram),
+		.awlen(awlen_xbar2sram),
+		.awsize(awsize_xbar2sram),
+		.awburst(awburst_xbar2sram),
 		.awready(awready_xbar2sram),
 
 		.wdata(wdata_xbar2sram),
 		.wstrb(wstrb_xbar2sram),
 		.wvalid(wvalid_xbar2sram),
+		.wlast(wlast_xbar2sram),
 		.wready(wready_xbar2sram),
 
 		.bresp(bresp_xbar2sram),
 		.bvalid(bvalid_xbar2sram),
+		.bid(bid_xbar2sram),
 		.bready(bready_xbar2sram)
 	);
 endmodule
