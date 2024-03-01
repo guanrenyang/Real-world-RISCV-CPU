@@ -90,15 +90,21 @@ module ysyx_23060061_XBar (
 
 	output [31:0] uart_awaddr,
 	output uart_awvalid,
+	output [3:0] uart_awid, // AXI4
+	output [7:0] uart_awlen, // AXI4
+	output [2:0] uart_awsize, // AXI4
+	output [1:0] uart_awburst, // AXI4
 	input uart_awready,
 
 	output [31:0] uart_wdata,
 	output [3:0] uart_wstrb,
 	output uart_wvalid,
+	output uart_wlast, // AXI4
 	input uart_wready,
 
 	input [1:0] uart_bresp,
 	input uart_bvalid,
+	input [3:0] uart_bid, // AXI4
 	output uart_bready,
 
 	// output for CLINT
@@ -119,15 +125,21 @@ module ysyx_23060061_XBar (
 
 	output [31:0] clint_awaddr,
 	output clint_awvalid,
+	output clint_awid, // AXI4
+	output clint_awlen, // AXI4
+	output clint_awsize, // AXI4
+	output clint_awburst, // AXI4
 	input clint_awready,
 
 	output [31:0] clint_wdata,
 	output [3:0] clint_wstrb,
 	output clint_wvalid,
+	output clint_wlast, // AXI4
 	input clint_wready,
 
 	input [1:0] clint_bresp,
 	input clint_bvalid,
+	input [3:0] clint_bid, // AXI4
 	output clint_bready
 );
 
@@ -183,23 +195,23 @@ module ysyx_23060061_XBar (
 		end
 	end
 	
-	ysyx_23060061_MuxKeyWithDefault #(3,2,46) to_arbitrater(
-		.out({arready, rdata, rresp, rvalid, rlast, rid, awready, wready, bresp, bvalid}),
+	ysyx_23060061_MuxKeyWithDefault #(3,2,50) to_arbitrater(
+		.out({arready, rdata, rresp, rvalid, rlast, rid, awready, wready, bresp, bvalid, bid}),
 		.key(state),
 		.default_out(0),
 		.lut({
-			SRAM, {/*arready*/ sram_arready, /*rdata*/ sram_rdata, /*rresp*/ sram_rresp, /*rvalid*/ sram_rvalid, sram_rlast, sram_rid, /*awready*/ sram_awready, /*wready*/ sram_wready, /*bresp*/ sram_bresp, /*bvalid*/ sram_bvalid},
-			UART, {/*arready*/ uart_arready, /*rdata*/ uart_rdata, /*rresp*/ uart_rresp, /*rvalid*/ uart_rvalid, uart_rlast, uart_rid, /*awready*/ uart_awready, /*wready*/ uart_wready, /*bresp*/ uart_bresp, /*bvalid*/ uart_bvalid},
-			CLINT, {/*arready*/ clint_arready, /*rdata*/ clint_rdata, /*rresp*/ clint_rresp, /*rvalid*/ clint_rvalid, clint_rlast, clint_rid, /*awready*/ clint_awready, /*wready*/ clint_wready, /*bresp*/ clint_bresp, /*bvalid*/ clint_bvalid}
+			SRAM, {/*arready*/ sram_arready, /*rdata*/ sram_rdata, /*rresp*/ sram_rresp, /*rvalid*/ sram_rvalid, sram_rlast, sram_rid, /*awready*/ sram_awready, /*wready*/ sram_wready, /*bresp*/ sram_bresp, /*bvalid*/ sram_bvalid, /*bid*/ sram_bid},
+			UART, {/*arready*/ uart_arready, /*rdata*/ uart_rdata, /*rresp*/ uart_rresp, /*rvalid*/ uart_rvalid, uart_rlast, uart_rid, /*awready*/ uart_awready, /*wready*/ uart_wready, /*bresp*/ uart_bresp, /*bvalid*/ uart_bvalid, /*bid*/ uart_bid},
+			CLINT, {/*arready*/ clint_arready, /*rdata*/ clint_rdata, /*rresp*/ clint_rresp, /*rvalid*/ clint_rvalid, clint_rlast, clint_rid, /*awready*/ clint_awready, /*wready*/ clint_wready, /*bresp*/ clint_bresp, /*bvalid*/ clint_bvalid, /*bid*/ clint_bid}
 		})
 	);
 	
-	ysyx_23060061_MuxKeyWithDefault #(1,2,122) to_sram(
-		.out({sram_araddr, sram_arvalid, sram_arid, sram_arlen, sram_arsize, sram_arburst, sram_rready, sram_awaddr, sram_awvalid, sram_wdata, sram_wstrb, sram_wvalid, sram_bready}),
+	ysyx_23060061_MuxKeyWithDefault #(1,2,140) to_sram(
+		.out({sram_araddr, sram_arvalid, sram_arid, sram_arlen, sram_arsize, sram_arburst, sram_rready, sram_awaddr, sram_awvalid, sram_awid, sram_awlen, sram_awsize, sram_awburst,sram_wdata, sram_wstrb, sram_wvalid, sram_wlast, sram_bready}),
 		.key(state),
 		.default_out(0),
 		.lut({
-			SRAM, {/*sram_araddr*/ araddr, /*sram_arvalid*/ arvalid, arid, arlen, arsize, arburst, /*sram_rready*/ rready, /*sram_awaddr*/ awaddr, /*sram_awvalid*/ awvalid, /*sram_wdata*/ wdata, /*sram_wstrb*/ wstrb, /*sram_wvalid*/ wvalid, /*sram_bready*/ bready}
+			SRAM, {/*sram_araddr*/ araddr, /*sram_arvalid*/ arvalid, arid, arlen, arsize, arburst, /*sram_rready*/ rready, /*sram_awaddr*/ awaddr, /*sram_awvalid*/ awvalid, /*sram_awid*/ awid, /*sram_awlen*/ awlen, /*sram_awsize*/ awsize, /*sram_awburst*/ awburst, /*sram_wdata*/ wdata, /*sram_wstrb*/ wstrb, /*sram_wvalid*/ wvalid, /*sram_wlast*/ wlast, /*sram_bready*/ bready}
 		})
 	);
 

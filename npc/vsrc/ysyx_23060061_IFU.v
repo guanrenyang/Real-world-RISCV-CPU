@@ -45,8 +45,20 @@ module ysyx_23060061_IFU(
 
 	// Write channel of IFU is not used
 	assign awvalid = 0;
+	assign awaddr = 0;
+	assign awid = 0;
+	assign awlen = 0;
+	assign awsize = 0;
+	assign awburst = 0;
+
+	assign wdata = 0;
 	assign wvalid = 0;
-	
+	assign wstrb = 0;
+	assign wlast = 0;
+
+	assign bready = 0;
+	// End of write channel
+		
 	reg [31:0] instImm_internal;
 
 	reg [31:0] pc_old;

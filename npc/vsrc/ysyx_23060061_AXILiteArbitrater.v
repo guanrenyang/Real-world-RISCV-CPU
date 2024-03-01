@@ -143,29 +143,29 @@ module ysyx_23060061_AXILiteArbitrater(
 			endcase
 		end
 	end
-	ysyx_23060061_MuxKeyWithDefault #(2, 2, 122) mux_arbitarter_to_sram(
-		.out({araddr, arvalid, arid, arlen, arsize, arburst, rready, awaddr, awvalid, wdata, wstrb, wvalid, bready}),
+	ysyx_23060061_MuxKeyWithDefault #(2, 2, 140) mux_arbitarter_to_sram(
+		.out({araddr, arvalid, arid, arlen, arsize, arburst, rready, awaddr, awvalid, awid, awlen, awsize, awburst, wdata, wstrb, wvalid, wlast, bready}),
 		.key(state),
 		.default_out(0),
 		.lut({
-			SERVE_IFU, {ifu_araddr, ifu_arvalid, ifu_arid, ifu_arlen, ifu_arsize, ifu_arburst, ifu_rready, ifu_awaddr, ifu_awvalid, ifu_wdata, ifu_wstrb, ifu_wvalid, ifu_bready},
-			SERVE_LSU, {lsu_araddr, lsu_arvalid, lsu_arid, ifu_arlen, ifu_arsize, ifu_arburst, lsu_rready, lsu_awaddr, lsu_awvalid, lsu_wdata, lsu_wstrb, lsu_wvalid, lsu_bready}
+			SERVE_IFU, {ifu_araddr, ifu_arvalid, ifu_arid, ifu_arlen, ifu_arsize, ifu_arburst, ifu_rready, ifu_awaddr, ifu_awvalid, ifu_awid, ifu_awlen, ifu_awsize, ifu_awburst, ifu_wdata, ifu_wstrb, ifu_wvalid, ifu_wlast, ifu_bready},
+			SERVE_LSU, {lsu_araddr, lsu_arvalid, lsu_arid, lsu_arlen, lsu_arsize, lsu_arburst, lsu_rready, lsu_awaddr, lsu_awvalid, lsu_awid, lsu_awlen, lsu_awsize, lsu_awburst, lsu_wdata, lsu_wstrb, lsu_wvalid, lsu_wlast, lsu_bready}
 		})
 	);
-	ysyx_23060061_MuxKeyWithDefault #(1, 2, 46) mux_arbitarter_from_sram_to_ifu(
-		.out({ifu_arready, ifu_rdata, ifu_rresp, ifu_rvalid, ifu_rlast, ifu_rid, ifu_awready, ifu_wready, ifu_bresp, ifu_bvalid}),
+	ysyx_23060061_MuxKeyWithDefault #(1, 2, 50) mux_arbitarter_from_sram_to_ifu(
+		.out({ifu_arready, ifu_rdata, ifu_rresp, ifu_rvalid, ifu_rlast, ifu_rid, ifu_awready, ifu_wready, ifu_bresp, ifu_bvalid, ifu_bid}),
 		.key(state),
 		.default_out(0),
 		.lut({
-			SERVE_IFU, {arready, rdata, rresp, rvalid, rlast, rid, awready, wready, bresp, bvalid}
+			SERVE_IFU, {arready, rdata, rresp, rvalid, rlast, rid, awready, wready, bresp, bvalid, bid}
 		})
 	);
-	ysyx_23060061_MuxKeyWithDefault #(1, 2, 46) mux_arbitarter_from_sram_to_lsu(
-		.out({lsu_arready, lsu_rdata, lsu_rresp, lsu_rvalid, lsu_rlast, lsu_rid, lsu_awready, lsu_wready, lsu_bresp, lsu_bvalid}),
+	ysyx_23060061_MuxKeyWithDefault #(1, 2, 50) mux_arbitarter_from_sram_to_lsu(
+		.out({lsu_arready, lsu_rdata, lsu_rresp, lsu_rvalid, lsu_rlast, lsu_rid, lsu_awready, lsu_wready, lsu_bresp, lsu_bvalid, lsu_bid}),
 		.key(state),
 		.default_out(0),
 		.lut({
-			SERVE_LSU, {arready, rdata, rresp, rvalid, rlast, rid, awready, wready, bresp, bvalid}
+			SERVE_LSU, {arready, rdata, rresp, rvalid, rlast, rid, awready, wready, bresp, bvalid, bid}
 		})
 	);
 endmodule
