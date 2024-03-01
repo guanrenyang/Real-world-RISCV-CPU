@@ -109,7 +109,13 @@ module ysyx_23060061_LSU(
 						
 						awvalid <= 1;
 						awaddr <= memAddr;	
+						awid <= 4'b0000;
+						awlen <= 8'b00000000; // one transfer in a burst
+						awsize <= 3'b010; // TODO: set arsize according to the instruction instead of 4 bytes always
+						awburst <= 2'b01; // increamenting burst
+
 						wvalid <= 1;
+						wlast <= 1;// one transfer in a burst
 						wdata <= memDataW;
 						wstrb <= wmask;
 
@@ -152,10 +158,16 @@ module ysyx_23060061_LSU(
 					if (delay_trigger)	
 						bready <= 1;
 					if (bvalid && bready) begin
-						state <= WAIT_WBU;
+						if (bid==awid && bresp==2'b00 /*OKAY*/) begin
+							state <= WAIT_WBU;
 
-						bready <= 0;
-						memDataReady <= 1;
+							bready <= 0;
+							memDataReady <= 1;
+						end else begin 
+							$display("ERROR: LSU: bid=%b, bresp=%b", bid, bresp);
+							$finish;
+						end
+
 					end
 				end
 				WAIT_WBU: begin

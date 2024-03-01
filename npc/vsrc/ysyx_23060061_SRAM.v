@@ -54,9 +54,14 @@ module ysyx_23060061_SRAM(
 	reg [1:0] arburst_internal;
 
 	// Write
+	reg [3:0] awid_internal;
+	reg [7:0] awlen_internal;
+	reg [2:0] awsize_internal;
+	reg [1:0] awburst_internal;
 	reg [31:0] waddr_internal;
 	reg [3:0] wstrb_internal;
 	reg [31:0] wdata_internal;
+	reg wlast_internal;
 	
 	// DPI-C to access SRAM
 	wire [31:0] rdata_internal;
@@ -115,9 +120,15 @@ module ysyx_23060061_SRAM(
 						awready <= 0; 
 						wready <= 0;
 						// store the waddr and wdata 
+						awid_internal <= awid;
+						awlen_internal <= awlen;
+						awsize_internal <= awsize;
+						awburst_internal <= awburst;
+						
 						waddr_internal <= awaddr;
 						wdata_internal <= wdata;
 						wstrb_internal <= wstrb;
+						wlast_internal <= wlast;
 					end
 				end
 				FEED_DATA: begin
@@ -151,10 +162,16 @@ module ysyx_23060061_SRAM(
 
 				WRITE_DATA: begin
 					if (delay_trigger) begin
-						state <= WAIT_RESP; // state transition
-						// Now SRAM can write data in one cycle
-						bvalid <= 1;
-						bresp <= 2'b00; // OKAY
+						if(awlen_internal == 8'b00000000 && awsize_internal == 3'b010 && awburst_internal == 2'b01) begin // write 4 bytes in a burst at a time
+							state <= WAIT_RESP; // state transition
+							// Now SRAM can write data in one cycle
+							bvalid <= 1;
+							bid <= awid_internal;
+							bresp <= 2'b00; // OKAY
+						end else begin
+							$display("Error: SRAM does not support the write request");
+							$finish;
+						end
 					end
 				end
 				WAIT_RESP: begin
@@ -163,10 +180,15 @@ module ysyx_23060061_SRAM(
 						bvalid <= 0; // stop writing data
 						// awready <= 1; // ready to receive address
 						// wready <= 1;
+						awid_internal <= 0;
+						awlen_internal <= 0;
+						awsize_internal <= 0;	
+						awburst_internal <= 0;
 						
 						waddr_internal <= 0;
 						wdata_internal <= 0;
 						wstrb_internal <= 0;
+						wlast_internal <= 0;
 					end
 				end
 			endcase
