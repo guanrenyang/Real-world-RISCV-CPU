@@ -32,6 +32,7 @@ module ysyx_23060061_IDEXU (
   output [31:0] memAddr,
   output [31:0] memDataW,
   output [3:0] wmask,
+  output [2:0] AxSIZE,
 
   // Forward to WBU
   input lsu_ready,
@@ -108,7 +109,8 @@ module ysyx_23060061_IDEXU (
 	.aluBsel(aluBsel),
 	.WBSel(WBSel),
 	.aluOp(aluOp),
-	.BrUn(BrUn)
+	.BrUn(BrUn),
+	.AxSIZE(AxSIZE)
   );
 
   always @(*) begin

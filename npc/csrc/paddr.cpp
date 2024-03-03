@@ -51,14 +51,18 @@ static bool in_pmem(uint32_t paddr) {
 
 static uint32_t htime = 0;
 static bool ltime_valid = false;
-extern "C" void paddr_read(int raddr, int *rdata) {
-
+static int nrbytes_read [] = {1, 2, 4, 8};
+static int shftbits_read [] = {0, 8, 16, 24};
+extern "C" void paddr_read(int raddr, int *rdata, int arsize, int ByteSel) {
+  
   if (in_pmem(raddr)) {
-	(*rdata) = pmem_read(raddr, 4);
+	(*rdata) = pmem_read(raddr, nrbytes_read[arsize]);
+	(*rdata) = (*rdata) << shftbits_read[ByteSel];
 	return;
   } 
 
   if (raddr == RTC_MMIO) {
+	assert(nrbytes_read[arsize]==4);
 	assert(!ltime_valid);
 
 	uint64_t us = get_time();	
@@ -67,6 +71,7 @@ extern "C" void paddr_read(int raddr, int *rdata) {
 	
 	ltime_valid = true;
   } else if (raddr == (RTC_MMIO + 4)) {
+	assert(nrbytes_read[arsize]==4);
 	assert(ltime_valid);
 
 	(*rdata) = htime;

@@ -63,11 +63,17 @@ module ysyx_23060061_SRAM(
 	reg [31:0] wdata_internal;
 	reg wlast_internal;
 	
+	// ByteSel_read signal for narrow read
+	wire [1:0] ByteSel_read;
+	assign ByteSel_read = raddr[1:0];
+
+	// ByteSel_Write Signal for narrow write
+	
 	// DPI-C to access SRAM
 	wire [31:0] rdata_internal;
 	always @(raddr) begin
 		if (state == FEED_DATA)
-			paddr_read(raddr, rdata_internal);
+			paddr_read(raddr, rdata_internal, {29'd0, arsize_internal}, {30'd0, ByteSel_read});
 	end
 	always @(waddr_internal or wstrb_internal or wdata_internal) begin
 		if (state == WRITE_DATA)
@@ -133,7 +139,8 @@ module ysyx_23060061_SRAM(
 				end
 				FEED_DATA: begin
 					if (delay_trigger) begin
-						if (arlen == 8'b00000000 && arsize == 3'b010) begin // read 4 bytes in a burst at a time
+						if (arlen == 8'b00000000) begin // read 4 bytes in a burst at a time
+							// $display("ARSIZE: %d", arsize);
     						state <= WAIT_RECEIVE; // state transition
     						// Now SRAM can feed data in one cycle
     						rvalid <= 1;
@@ -162,7 +169,8 @@ module ysyx_23060061_SRAM(
 
 				WRITE_DATA: begin
 					if (delay_trigger) begin
-						if(awlen_internal == 8'b00000000 && awsize_internal == 3'b010 && awburst_internal == 2'b01) begin // write 4 bytes in a burst at a time
+						if(awlen_internal == 8'b00000000 && awburst_internal == 2'b01) begin // write 4 bytes in a burst at a time
+							// $display("AWSIZE: %d", awsize_internal);
 							state <= WAIT_RESP; // state transition
 							// Now SRAM can write data in one cycle
 							bvalid <= 1;

@@ -1,5 +1,5 @@
 import "DPI-C" function void trap();
-import "DPI-C" function void paddr_read(input int raddr, output int rdata);
+import "DPI-C" function void paddr_read(input int raddr, output int rdata, input int arsize, input int ByteSel);
 import "DPI-C" function void paddr_write(input int waddr, input int wdata, input byte wmask);
 import "DPI-C" function void uart_display(input int waddr, input int wdata);
 
@@ -92,6 +92,8 @@ module ysyx_23060061 (
 	wire [1:0] WBSel; // WBU write back select
 	wire [31:0] memDataR; // LSU read data
 	wire [31:0] aluOut; // ALU output
+	
+	wire [2:0] AxSIZE_decoder2lsu;
 	
 	// For LSU
 	wire [2:0] memExt;
@@ -392,6 +394,7 @@ module ysyx_23060061 (
 		.memAddr(memAddr),
 		.memDataW(memDataW),
 		.wmask(wmask),
+		.AxSIZE(AxSIZE_decoder2lsu),
 
 		.exu_valid(exu_valid),
 		.lsu_ready(lsu_ready),
@@ -416,6 +419,7 @@ module ysyx_23060061 (
 		.lsu_valid(lsu_valid),
 		.wbu_ready(wbu_ready),
 		.memDataR(memDataR),
+		.AxSIZE(AxSIZE_decoder2lsu),
 
 		// For LSU->SRAM in AXI-Lite interface
 		.araddr(lsu_araddr),

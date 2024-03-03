@@ -13,6 +13,7 @@ module ysyx_23060061_LSU(
 	output lsu_valid,
 	input wbu_ready,
 	output [31:0] memDataR,
+	input [2:0] AxSIZE,
 
 	// signals for LSU->SRAM in AXI-Lite interface
 	output reg [31:0] araddr,
@@ -58,6 +59,8 @@ module ysyx_23060061_LSU(
 							 // WAIT_CPU->IDLE: when &lsu_valid is high, set lsu_valid low and pull lsu_ready high
 	localparam SEND_AWADDR_WDATA = 4;
 	localparam WAIT_WRESP = 5;
+	
+
 
 	reg [2:0] state;
 
@@ -73,7 +76,9 @@ module ysyx_23060061_LSU(
 		.delay_trigger(delay_trigger)
 	);
 
-	reg [31:0] unextMemDataR; // Store the data read from DataMem
+	wire [31:0] unextMemDataR; // Store the data shifted but not signed extended
+	reg [31:0] unshftMemDataR; // Store the data directly read from DataMemA
+
 	always @(posedge clk) begin
 		if (~rst) begin
 			state <= IDLE;
@@ -82,7 +87,7 @@ module ysyx_23060061_LSU(
 			awvalid <= 0;
 			wvalid <= 0;
 			// internal signals
-			unextMemDataR <= 0;
+			unshftMemDataR <= 0;
 			memDataReady <= 0;
 		end else begin
 			case (state) 
@@ -97,7 +102,7 @@ module ysyx_23060061_LSU(
 						araddr <= memAddr;
 						arid <= 4'b0000; // one read at a time so id won't change
 						arlen <= 8'b00000000; // one read in a burst
-						arsize <= 3'b010; // TODO: set arsize according to the instruction instead of 4 bytes always
+						arsize <= AxSIZE;
 						arburst <= 2'b01; // increamenting burst
 						rready <= 0;
 					end
@@ -111,7 +116,7 @@ module ysyx_23060061_LSU(
 						awaddr <= memAddr;	
 						awid <= 4'b0000;
 						awlen <= 8'b00000000; // one transfer in a burst
-						awsize <= 3'b010; // TODO: set arsize according to the instruction instead of 4 bytes always
+						awsize <= AxSIZE;
 						awburst <= 2'b01; // increamenting burst
 
 						wvalid <= 1;
@@ -138,7 +143,7 @@ module ysyx_23060061_LSU(
 							state <= WAIT_WBU;
 						
 							rready <= 0;
-							unextMemDataR <= rdata;
+							unshftMemDataR <= rdata;
 							memDataReady <= 1;
 						end else begin
 							$display("ERROR: LSU: rresp=%b, rid=%b, arid=%b, rlast=%b", rresp, rid, arid, rlast);
@@ -180,7 +185,9 @@ module ysyx_23060061_LSU(
 		end
 	end
 
-    // wire [31:0] memDataR_internal;
+	// Shift valid bytes to the LSB of the data according to ByteSel
+	wire [1:0] ByteSel;
+	assign ByteSel = memAddr[1:0];
 
 	// Memory bit extension
 	ysyx_23060061_MuxKey #(5, 3, 32) memDataR_ext(
@@ -188,10 +195,23 @@ module ysyx_23060061_LSU(
 		.key(memExt),
 		.lut({
 			3'b000, unextMemDataR,
-			3'b001, {{24{unextMemDataR[7]}}, unextMemDataR[7:0]}, 3'b010, {{16{unextMemDataR[15]}}, unextMemDataR[15:0]}, 3'b011, {24'd0, unextMemDataR[7:0]},
+			3'b001, {{24{unextMemDataR[7]}}, unextMemDataR[7:0]}, 
+			3'b010, {{16{unextMemDataR[15]}}, unextMemDataR[15:0]}, 
+			3'b011, {24'd0, unextMemDataR[7:0]},
 			3'b100, {16'd0, unextMemDataR[15:0]}
 		})
   	);
+	
+	ysyx_23060061_MuxKey #(4, 2, 32) memDataR_shift(
+		.out(unextMemDataR),
+		.key(ByteSel),
+		.lut({
+			2'b00, unshftMemDataR,
+			2'b01, {8'b00000000, unshftMemDataR[31:8]},
+			2'b10, {16'b00000000, unshftMemDataR[31:16]},
+			2'b11, {24'b00000000, unshftMemDataR[31:24]}
+		})
+	);
 
 	// Memory read
   // 	always @(MemRW, memAddr, memDataW) begin
