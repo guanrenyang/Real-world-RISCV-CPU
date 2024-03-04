@@ -1,4 +1,4 @@
-TOPNAME = Top
+TOPNAME = ysyxSoCFull
 SIM_PATH = ./csrc
 
 VERILATOR = verilator
@@ -11,11 +11,14 @@ BIN = $(BUILD_DIR)/$(TOPNAME)
 
 #project source
 VSRCS = $(shell find $(abspath ./vsrc) -name "*.v")
+VSRCS += $(shell find $(abspath ../ysyxSoC/perip) -name "*.v")
+VSRCS += $(abspath ../ysyxSoC/generated/ysyxSoCFull.v)
 CSRCS = $(shell find $(abspath $(SIM_PATH)) -name "*.c" -or -name "*.cc" -or -name "*.cpp")
 CSRCS += $(SRC_AUTO_BIND)
 # CSRCS := $(filter-out %/main.cpp,$(filter main.cpp,$(CSRCS)) $(filter-out main.cpp,$(CSRCS))) // filter main.cpp which is the old version of main.cpp, this line is only for testing
 
 VINCPATH = $(abspath ./vsrc) 
+VINCPATH += $(abspath ../ysyxSoC/perip/uart16550/rtl) $(abspath ../ysyxSoC/perip/spi/rtl)
 INC_PATH = $(abspath ./include)
 
 # rules for verilator
@@ -45,7 +48,8 @@ $(BIN): $(VSRCS) $(CSRCS)
 		--top-module $(TOPNAME) $^ \
 		$(addprefix -CFLAGS , $(CFLAGS)) \
 		$(addprefix -LDFLAGS , $(LDFLAGS)) \
-		--Mdir $(OBJ_DIR) --exe -o $(abspath $(BIN))
+		--Mdir $(OBJ_DIR) --exe -o $(abspath $(BIN)) \
+		--timescale "1ns/1ns" --no-timing
 
 NPC_EXEC := $(BIN) $(ARGS) $(IMG)
 

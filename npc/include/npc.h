@@ -16,7 +16,7 @@ struct CPU_State {
 
 void npc_exec(uint64_t n);
 
-CPU_State sim_init_then_reset();
+CPU_State sim_init_then_reset(int argc, char *argv[]);
 void sim_exit();
 
 CPU_State get_cpu_state();

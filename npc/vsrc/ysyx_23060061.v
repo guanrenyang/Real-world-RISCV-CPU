@@ -76,6 +76,19 @@ module ysyx_23060061 (
   output [3:0] io_slave_rid // AXI4
   // output [31 : 0] ftrace_dnpc // used only for ftrace，
 );
+
+	assign io_slave_awready = 0;
+	assign io_slave_wready = 0;
+	assign io_slave_bvalid = 0;
+	assign io_slave_bresp = 0;
+	assign io_slave_bid = 0;
+	assign io_slave_arready = 0;
+	assign io_slave_rvalid = 0;
+	assign io_slave_rresp = 0;
+	assign io_slave_rdata = 0;
+	assign io_slave_rlast = 0;
+	assign io_slave_rid = 0;
+	
 	// ifu->idu
 	wire ifu_valid; // IFU valid signal
 	wire idu_ready; // IDU ready signal

@@ -2,20 +2,20 @@
 #include "verilated_types.h"
 #include "verilated_vcd_c.h"
 #include "svdpi.h"
-#include "VTop__Dpi.h"
-#include <VTop.h>
-#include <VTop___024root.h>
+
+#include "VysyxSoCFull__Dpi.h"
+#include <VysyxSoCFull.h>
+#include <VysyxSoCFull___024root.h>
 
 #include <npc.h>
 #include <paddr.h>
 #include <trace.h>
 #include <difftest.h>
 
-#define TOPNAME VTop
 #define MAX_INST_TO_PRINT 10
 
-#define PC_ top->rootp->Top__DOT__CPU__DOT__pc
-#define GPRs_ top->rootp->Top__DOT__CPU__DOT__GPRs__DOT__rf
+#define PC_ top->rootp->ysyxSoCFull__DOT__asic__DOT__cpu__DOT__cpu__DOT__pc
+#define GPRs_ top->rootp->ysyxSoCFull__DOT__asic__DOT__cpu__DOT__cpu__DOT__GPRs__DOT__rf
 // #define DNPC_ top->rootp->ftrace_dnpc
 
 #ifdef CONFIG_WAVETRACE
@@ -25,7 +25,7 @@ static VerilatedVcdC *tfp = nullptr;
 int EXEC_CODE = SUCCESS;
 
 static VerilatedContext *contextp = nullptr;
-static TOPNAME *top = nullptr;
+static TOP_NAME *top = nullptr;
 
 static int cycle_cnt = 0;
 static uint32_t pc_old;
@@ -41,10 +41,11 @@ void step_and_dump_wave(){
 #endif
 }
 
-void sim_init() {
+void sim_init(int argc, char *argv[]) {
+	Verilated::commandArgs(argc, argv);
 	Verilated::traceEverOn(true);
 
-	top = new TOPNAME;
+	top = new TOP_NAME;
 	contextp = new VerilatedContext;
 #ifdef CONFIG_WAVETRACE
 	tfp = new VerilatedVcdC;
@@ -75,9 +76,9 @@ CPU_State get_cpu_state() {
 	return cpu;
 }
 
-CPU_State sim_init_then_reset() {
+CPU_State sim_init_then_reset(int argc, char *argv[]) {
 
-	sim_init();	
+	sim_init(argc, argv);	
 	
 	reset();
 	
@@ -164,7 +165,7 @@ void execute(uint64_t n) {
 				break;
 			case BAD_TIMER_IO:
 				printf("BAD TIMER IO ADDRESS\n");
-				printf("SRAM state: %x\n", top->rootp->Top__DOT__SRAM__DOT__state);
+				// printf("SRAM state: %x\n", top->rootp->Top__DOT__SRAM__DOT__state);
 				sim_exit();
 				assert(NULL);
 				break;
