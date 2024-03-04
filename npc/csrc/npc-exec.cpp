@@ -108,8 +108,7 @@ void exec_once() {
 	top->clock = 0b1; top->reset = 0b0; step_and_dump_wave();
 
 	// printf("pc = %x\n", PC_);
-	// if (top->rootp->ysyx_23060061__DOT__pc==0x80000014) {
-	// 	printf("ra = %x\n", top->rootp->ysyx_23060061__DOT__id_ex_wb__DOT__GPRs__DOT__rf[1]);
+	// if (cycle_cnt == 1000) {
 	// 	sim_exit();
 	// 	exit(0);
 	// }

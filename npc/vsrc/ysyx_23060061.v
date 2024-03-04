@@ -88,7 +88,7 @@ module ysyx_23060061 (
 	assign io_slave_rdata = 0;
 	assign io_slave_rlast = 0;
 	assign io_slave_rid = 0;
-	
+
 	// ifu->idu
 	wire ifu_valid; // IFU valid signal
 	wire idu_ready; // IDU ready signal
@@ -205,7 +205,7 @@ module ysyx_23060061 (
 	wire lsu_bready;
 
 	// AXI-Lite 
-	ysyx_23060061_Reg #(32, 32'h80000000) pc_reg(
+	ysyx_23060061_Reg #(32, `ysyx_23060061_PC_RESET) pc_reg(
 		.clk(clock),
 		.rst(reset),
 		.din(lsu_valid ? dnpc : pc),
