@@ -49,7 +49,7 @@ $(BIN): $(VSRCS) $(CSRCS)
 		$(addprefix -CFLAGS , $(CFLAGS)) \
 		$(addprefix -LDFLAGS , $(LDFLAGS)) \
 		--Mdir $(OBJ_DIR) --exe -o $(abspath $(BIN)) \
-		--timescale "1ns/1ns" --no-timing
+		--timescale "1ns/1ns" --no-timing --autoflush
 
 NPC_EXEC := $(BIN) $(ARGS) $(IMG)
 
