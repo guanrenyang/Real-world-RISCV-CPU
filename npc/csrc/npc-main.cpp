@@ -3,10 +3,7 @@
 #include <cstdio>
 
 extern "C" void flash_read(uint32_t addr, uint32_t *data) { assert(0); }
-extern "C" void mrom_read(uint32_t addr, uint32_t *data) { 
-	(*data) = 0x00100073; 
-	printf("%d, %d\n", addr, *data);
-}
+
 
 
 void init_monitor(int, char *[]);

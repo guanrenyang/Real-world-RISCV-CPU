@@ -8,7 +8,18 @@ extern char *img_file;
 void init_mem() {
 }
 
-uint8_t* guest_to_host(uint32_t paddr) { return  instMem + paddr - MEMBASE; }
+uint8_t* guest_to_host_pmem(uint32_t paddr) {
+	  return instMem + paddr - MEMBASE;
+}
+
+uint8_t* guest_to_host(uint32_t paddr) { 
+	if (in_pmem(paddr)) 
+		return guest_to_host_pmem(paddr);
+	if (in_mrom(paddr)) 
+		return guest_to_host_mrom(paddr);
+	assert(0);
+	return nullptr;
+}
 
 uint32_t host_read(void *addr, int len) {
 	assert(len == 1 || len == 2 || len == 4);
@@ -19,7 +30,7 @@ uint32_t host_read(void *addr, int len) {
 	}
 }
 
-void host_write(void *addr, int len, uint32_t data) {
+void host_write(void *addr, int len, uint32_t data){
 	assert(len == 1 || len == 2 || len == 4);
   	switch (len) {
     	case 1: *(uint8_t  *)addr = data; return;
@@ -44,9 +55,6 @@ void pmem_write(uint32_t paddr, int len, uint32_t data) {
   host_write(guest_to_host(paddr), len, data);
   
   // printf("\n[paddr_write]: write data %x at addr %x\n", data, paddr);
-}
-static bool in_pmem(uint32_t paddr) {
-  return MEMBASE <= paddr && paddr < MEMBASE + MEMSIZE;
 }
 
 static uint32_t htime = 0;

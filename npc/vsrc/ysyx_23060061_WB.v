@@ -3,7 +3,7 @@ module ysyx_23060061_WBU(
 	input rst,
 
 	input lsu_valid,
-	output wbu_ready,
+	output reg wbu_ready,
 
 	input [1:0] WBSel,
 	input [31:0] memDataR,

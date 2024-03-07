@@ -89,6 +89,8 @@ module ysyx_23060061_IFU(
 	always @(posedge clk) begin
 		if (~rst) begin // do reset
 			// signals for InstMem -- determined by AXI-Lite protocol
+			state <= IDLE;
+
 			arvalid <= 0;	
 			// signals for IDU				
 			inst <= 0;

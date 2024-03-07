@@ -11,9 +11,6 @@ char *img_file = NULL;
 char *elf_file = NULL;
 char *diff_so_file = NULL;
 
-extern uint8_t *instMem;
-
-// #define RESET_VECTOR 0x80000000
 
 void init_mem();
 void init_log(const char *);
@@ -35,6 +32,7 @@ static long load_img(){
   
   fseek(fp, 0, SEEK_SET); 
   int ret = fread(guest_to_host(RESET_VECTOR), size, 1, fp);
+
   // Assert(ret == 1, "fread failed");
 
   fclose(fp);
@@ -83,6 +81,7 @@ void init_monitor(int argc, char *argv[]) {
 	/* Load the image to memory. This will overwrite the built-in image. */	
 	long img_size = load_img();
 	printf("Load image from %s with size = %x\n", img_file, img_size);
+
 	/* Initialize disassemble module*/
 #ifdef CONFIG_ITRACE
   	init_disasm("riscv32-pc-linux-gnu");

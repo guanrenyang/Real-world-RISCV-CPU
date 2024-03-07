@@ -8,7 +8,19 @@
 
 #include <macro.h>
 
+uint8_t* guest_to_host_pmem(uint32_t paddr);
+uint8_t* guest_to_host_mrom(uint32_t paddr);
 uint8_t* guest_to_host(uint32_t paddr);
+
+inline bool in_pmem(uint32_t paddr) {
+  return MEMBASE <= paddr && paddr < MEMBASE + MEMSIZE;
+}
+
+inline bool in_mrom(uint32_t paddr) {
+  return MROMBASE <= paddr && paddr < MROMBASE + MROMSIZE;
+}
+
+
 uint32_t pmem_read(uint32_t paddr, int len); 
 
 #endif
