@@ -22,5 +22,5 @@ inline bool in_mrom(uint32_t paddr) {
 
 
 uint32_t pmem_read(uint32_t paddr, int len); 
-
+uint32_t mrom_read_internal(uint32_t addr);
 #endif
