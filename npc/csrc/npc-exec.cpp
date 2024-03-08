@@ -108,7 +108,7 @@ void exec_once() {
 	top->clock = 0b1; top->reset = 0b0; step_and_dump_wave();
 
 	// printf("pc = %x\n", PC_);
-	// if (cycle_cnt == 1000) {
+	// if (cycle_cnt == 50) {
 	// 	sim_exit();
 	// 	exit(0);
 	// }

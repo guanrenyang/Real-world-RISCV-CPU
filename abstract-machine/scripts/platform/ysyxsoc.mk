@@ -3,7 +3,7 @@ AM_SRCS := riscv/ysyxsoc/start.S \
 
 CFLAGS	+= -fdata-sections -ffunction-sections
 LDFLAGS	+= -T $(AM_HOME)/am/src/riscv/ysyxsoc/linker.ld \
-			--defsym=_sram_start=0x0f000000 --defsym=_mrom_start=0x20000000
+			--defsym=_sram_start=0x0f000000 --defsym=_sram_size=0x2000 --defsym=_mrom_start=0x20000000
 
 LDFLAGS   += --gc-sections -e _start
 

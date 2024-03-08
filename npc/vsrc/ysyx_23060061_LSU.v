@@ -60,8 +60,6 @@ module ysyx_23060061_LSU(
 	localparam SEND_AWADDR_WDATA = 4;
 	localparam WAIT_WRESP = 5;
 	
-
-
 	reg [2:0] state;
 
 	reg memDataReady;
@@ -78,7 +76,8 @@ module ysyx_23060061_LSU(
 
 	wire [31:0] unextMemDataR; // Store the data shifted but not signed extended
 	reg [31:0] unshftMemDataR; // Store the data directly read from DataMemA
-
+	wire [31:0] memDataShftedW;
+	wire [3:0] wmaskShfted;
 	always @(posedge clk) begin
 		if (~rst) begin
 			state <= IDLE;
@@ -121,8 +120,8 @@ module ysyx_23060061_LSU(
 
 						wvalid <= 1;
 						wlast <= 1;// one transfer in a burst
-						wdata <= memDataW;
-						wstrb <= wmask;
+						wdata <= memDataShftedW;
+						wstrb <= wmaskShfted;
 
 						bready <= 0;
 					end
@@ -213,26 +212,27 @@ module ysyx_23060061_LSU(
 		})
 	);
 
-	// Memory read
-  // 	always @(MemRW, memAddr, memDataW) begin
-		// if (exu_valid) begin
-  //   		if(MemRW==2'b10) begin
-  //   			paddr_read(memAddr, unextMemDataR);
-  //   		end else if (MemRW==2'b01) begin
-  //   			paddr_write(memAddr, memDataW, {4'b0000, wmask});
-  //   		end
-		// end
-  // 	end
-  
+	// Memory write shift
+	ysyx_23060061_MuxKey #(4, 2, 32) memDataW_shift(
+		.out(memDataShftedW),
+		.key(ByteSel),
+		.lut({
+			2'b00, memDataW,
+			2'b01, {memDataW[23:0], 8'd0},
+			2'b10, {memDataW[15:0], 16'd0},
+			2'b11, {memDataW[7:0], 24'd0}
+		})
+	);
 
-  // 	always @(posedge clk) begin
-		// if (~rst) begin
-		// 	memDataR <= 0;
-		// 	DataMemValid_internal <= 0;
-		// end else begin
-		// 	memDataR <= memDataR_internal;
-		// 	DataMemValid_internal <= exu_valid & MemRW[1] & ~wbu_ready;
-		// end
-  // 	end
+	ysyx_23060061_MuxKey #(4, 2, 4) wmask_shift(
+		.out(wmaskShfted),
+		.key(ByteSel),
+		.lut({
+			2'b00, wmask,
+			2'b01, {wmask[2:0], 1'd0},
+			2'b10, {wmask[1:0], 2'd0},
+			2'b11, {wmask[0], 3'd0}
+		})
+	);
 
 endmodule
