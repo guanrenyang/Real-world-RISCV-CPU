@@ -168,7 +168,7 @@ module ysyx_23060061_LSU(
 							bready <= 0;
 							memDataReady <= 1;
 						end else begin 
-							$display("ERROR: LSU: bid=%b, awaddr=%x, bresp=%b", bid, awaddr, bresp);
+							$display("ERROR: LSUv  bid=%b, awaddr=%x, bresp=%b", bid, awaddr, bresp);
 							$finish;
 						end
 

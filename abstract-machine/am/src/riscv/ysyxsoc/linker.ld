@@ -1,34 +1,40 @@
 ENTRY(_start)
 PHDRS { text PT_LOAD; data PT_LOAD; }
 
+MEMORY {
+  mrom : ORIGIN = 0x20000000, LENGTH = 4K
+  sram : ORIGIN = 0x0f000000, LENGTH = 8K
+}
+
 SECTIONS {
-  /* _sram_start and _mrom_start are defined in LDFLAGS */
-  . = _mrom_start;
+  . = ORIGIN(mrom);
   .text : {
-    *(entry)
-    *(.text*)
-  } : text
-  etext = .;
-  _etext = .;
+	*(entry)
+	*(.text*)
+  } >mrom AT>mrom : text
   .rodata : {
     *(.rodata*)
-  }
+	*(.srodata*)
+	. = ALIGN(4);
+  } >mrom AT>mrom
+  _erodata = .;
+
   .data : {
+	_data = .;
     *(.data)
-  } : data
-  edata = .;
-  _data = .;
+  } >sram AT>mrom : data
   .bss : {
-	_bss_start = .;
+    _edata = .;
+    _bstart = .;
     *(.bss*)
     *(.sbss*)
     *(.scommon)
-  }
-  . = _sram_start;
-  _heap_start = ALIGN(0x1000);
-  . = _heap_start + 0x1000;
+  	_bend = .;
+  } >sram AT>mrom
+  _heap_start = ALIGN(4);
+  . = _heap_start + _heap_size;
   _stack_top = .;
-  . = _stack_top + 0x1000;
+  . = ORIGIN(sram) + LENGTH(sram) - 16;
   _stack_pointer = .;
   end = .;
   _end = .;

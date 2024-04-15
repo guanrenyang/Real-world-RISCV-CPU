@@ -169,3 +169,34 @@ module ysyx_23060061_AXILiteArbitrater(
 		})
 	);
 endmodule
+
+module ysyx_23060061_AXI4_32To64(
+	input wQuadSel, // 0: low 4 bytes, 1: high 4 bytes
+	input rQuadSel,
+
+	input [31:0] wdata_32,
+	input [3:0] wstrb_32,
+	output [63:0] wdata_64,
+	output [7:0] wstrb_64,
+	
+	input [63:0] rdata_64,
+	output [31:0] rdata_32
+);
+	ysyx_23060061_MuxKey #(2, 1, 72) w_mux(
+		.out({wdata_64, wstrb_64}),
+		.key(wQuadSel),
+		.lut({
+			1'b0, {{32'd0, wdata_32}, {4'd0, wstrb_32}},
+			1'b1, {{wdata_32, 32'd0}, {wstrb_32, 4'd0}}
+		})
+	);
+
+	ysyx_23060061_MuxKey #(2, 1, 32) r_mux(
+		.out(rdata_32),
+		.key(rQuadSel),
+		.lut({
+			1'b0, rdata_64[31:0],
+			1'b1, rdata_64[63:32]
+		})
+	);
+endmodule

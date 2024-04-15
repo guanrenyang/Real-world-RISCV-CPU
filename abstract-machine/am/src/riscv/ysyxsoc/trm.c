@@ -26,7 +26,22 @@ void halt(int code) {
 	while (1);
 }
 
+extern char _erodata, _data, _edata, _bstart, _bend;
+void data_seg_copy(){
+	uint32_t *src = (uint32_t *) &_erodata;
+	uint32_t *dst = (uint32_t *) &_data;
+
+	/* ROM has data at the end of rodata section; copy it. */
+	while (dst <(uint32_t *) &_edata)
+		*dst++ = *src++;
+	
+	// /*Zero bss. */
+	// for (dst = &_bstart; dst< &_bend; dst++){
+	// 	*dst = 0;
+	// }
+}
 void _trm_init() {
+	data_seg_copy();
 	int ret = main(mainargs);
 	halt(ret);
 }

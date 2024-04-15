@@ -240,6 +240,21 @@ module ysyx_23060061 (
     	.csrEn(csrEn & lsu_valid)
   	);
 
+	wire [31:0] io_master_wdata_32;
+	wire [3:0] io_master_wstrb_32;
+	wire [31:0] io_master_rdata_32;
+
+	ysyx_23060061_AXI4_32To64 u_ysyx_23060061_AXI4_32bitTo64bit(
+		.wQuadSel( io_master_awaddr[2]),
+		.rQuadSel( io_master_araddr[2]),
+		.wdata_32( io_master_wdata_32),
+		.wstrb_32( io_master_wstrb_32),
+		.wdata_64( io_master_wdata),
+		.wstrb_64( io_master_wstrb),
+		.rdata_64( io_master_rdata),
+		.rdata_32( io_master_rdata_32)
+	);
+	
 	ysyx_23060061_AXILiteArbitrater busArbitrater(
 		.clk         	( clock        ),
 		.rst         	( ~reset         ),
@@ -250,7 +265,7 @@ module ysyx_23060061 (
 		.arlen			( io_master_arlen        ),
 		.arsize			( io_master_arsize       ),
 		.arburst		( io_master_arburst      ),
-		.rdata       	( io_master_rdata[31:0]        ),
+		.rdata       	( io_master_rdata_32     ),
 		.rresp       	( io_master_rresp        ),
 		.rvalid      	( io_master_rvalid       ),
 		.rready      	( io_master_rready       ),
@@ -263,8 +278,8 @@ module ysyx_23060061 (
 		.awsize			( io_master_awsize       ),
 		.awburst		( io_master_awburst      ),
 		.awready     	( io_master_awready      ),
-		.wdata       	( io_master_wdata[31:0]        ),
-		.wstrb       	( io_master_wstrb[3:0]        ),
+		.wdata       	( io_master_wdata_32     ),
+		.wstrb       	( io_master_wstrb_32     ),
 		.wvalid      	( io_master_wvalid       ),
 		.wlast	   		( io_master_wlast        ),
 		.wready      	( io_master_wready       ),
