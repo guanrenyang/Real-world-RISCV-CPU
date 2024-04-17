@@ -14,5 +14,5 @@ uint32_t mrom_read_internal(uint32_t addr) { // read 4 bytes
 	return host_read(guest_to_host_mrom(addr), 4);
 }
 extern "C" void mrom_read(uint32_t addr, uint32_t *data) { 
-	(*data) = mrom_read_internal(addr);
+	(*data) = mrom_read_internal(addr & 0xfffffffc);
 }
