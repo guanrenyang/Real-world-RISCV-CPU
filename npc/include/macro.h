@@ -9,6 +9,8 @@
 
 #define CONFIG_RVE y
 
+#define ENABLE_FLASH_TEST y
+
 #define FMT_WORD "0x%08" PRIx32
 
 #define RESET_VECTOR 0x20000000
@@ -18,6 +20,9 @@
 
 #define MROMBASE 0x20000000
 #define MROMSIZE 0x1000
+
+#define FLASHBASE 0x30000000
+#define FLASHSIZE 0x10000000
 
 #define SERIAL_MMIO 0xa00003f8
 #define RTC_MMIO 0xa0000048

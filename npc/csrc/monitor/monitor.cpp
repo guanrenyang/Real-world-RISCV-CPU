@@ -62,6 +62,7 @@ static int parse_args(int argc, char *argv[]) {
   return 0;
 }
 
+
 void init_monitor(int argc, char *argv[]) {
 	/* Perform some global initialization*/
 	
@@ -77,6 +78,10 @@ void init_monitor(int argc, char *argv[]) {
 	/* Initialize memory. */
 	init_mem();
 
+#ifdef ENABLE_FLASH_TEST
+	/* Initialize flash -- Only for flash-test*/
+	init_flash_test();
+#endif
 	/* Load the image to memory. This will overwrite the built-in image. */	
 	long img_size = load_img();
 	printf("Load image from %s with size = %x\n", img_file, img_size);
