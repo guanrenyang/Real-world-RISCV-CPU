@@ -107,7 +107,7 @@ void exec_once() {
 	// printf("pc: %x, ra: %x\n", top->rootp->ysyx_23060061__DOT__pc, top->rootp->ysyx_23060061__DOT__CSRs__DOT__rf[1]);
 	top->clock = 0b1; top->reset = 0b0; step_and_dump_wave();
 
-	printf("pc = %x\n", PC_);
+	// printf("pc = %x\n", PC_);
 	// if (cycle_cnt == 5000) {
 	// 	sim_exit();
 	// 	exit(0);
