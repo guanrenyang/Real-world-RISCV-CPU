@@ -48,7 +48,7 @@ int vsprintf(char *out, const char *fmt, va_list ap) {
   char *s;
   char c;
 
-  char out_tmp[10000];
+  char out_tmp[100];
   bool to_stdout = false;
   if(out==NULL) {
 	  out = out_tmp; 

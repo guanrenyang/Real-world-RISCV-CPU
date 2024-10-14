@@ -17,6 +17,8 @@ uint8_t* guest_to_host(uint32_t paddr) {
 		return guest_to_host_pmem(paddr);
 	if (in_mrom(paddr)) 
 		return guest_to_host_mrom(paddr);
+	if (in_flash(paddr))
+		return guest_to_host_flash(paddr);
 	assert(0);
 	return nullptr;
 }
