@@ -5,6 +5,54 @@
 
 #if !defined(__ISA_NATIVE__) || defined(__NATIVE_USE_KLIB__)
 
+static char* itox(int n, char* str) {
+  // handle 0 case
+  if (n == 0) {
+    str[0] = '0';
+    str[1] = '\0';
+    return str;
+  }
+
+  // handle negative case
+  bool is_negative = (n < 0);
+  unsigned int num;
+  if (is_negative) {
+    num = -n;
+  } else {
+    num = n;
+  }
+
+  // convert digits
+  int i = 0;
+  while (num != 0) {
+    int digit = num % 16;
+    if (digit < 10) {
+      str[i++] = digit + '0';
+    } else {
+      str[i++] = digit - 10 + 'a';
+    }
+    num = num / 16;
+  }
+
+  // add negative sign if needed
+  if (is_negative) {
+    str[i++] = '-';
+  }
+  str[i] = '\0';
+
+  // reverse the string in-place
+  int start = 0;
+  int end = i - 1;
+  while (start < end) {
+    char temp = str[start];
+    str[start] = str[end];
+    str[end] = temp;
+    start++;
+    end--;
+  }
+
+  return str;
+}
 static char* itoa(int n, char* str) {
   // digit parsing
   bool is_negative = (n<0);
@@ -62,6 +110,13 @@ int vsprintf(char *out, const char *fmt, va_list ap) {
       out[out_i++] = fmt[i];
     else {
       switch (fmt[++i]) {
+        case 'x':
+          d = va_arg(ap, int);
+          char str_x[20];
+          itox(d, str_x);
+          strcpy(out+out_i, str_x);
+          out_i += strlen(str_x);
+          break;
 	      case 'd':
 	        d = va_arg(ap, int);
 	        char str_d[20];
