@@ -6,11 +6,8 @@ static uint8_t flash[FLASHSIZE] __attribute((aligned(4096))) = {};
 extern char *img_file;
 
 void init_flash_test(){
-	for(size_t i = 0; i < FLASHSIZE * sizeof(uint8_t) / sizeof(uint32_t); i++){
-		if(i%27==26)
-			*((uint32_t *)flash + i) = '\n';
-		else
-			*((uint32_t *)flash + i)  = i % 27 + 'a';
+	for(size_t i = 0; i < FLASHSIZE * sizeof(uint8_t) / sizeof(uint32_t); i+=sizeof(uint32_t)){
+		*(uint32_t*)(flash+i) = i;
 	}
 }
 
